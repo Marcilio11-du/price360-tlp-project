@@ -1,0 +1,58 @@
+Ideia do projecto
+
+Pretende-se Criar um sistema que permite fazer a comparação dos preços de produtos de diferentes lojas a nível de angola.
+
+O Sistema, permite pesquisar pelo nome de um produto, e faz uma busca pelos preços disponíveis em todas as lojas quanto possível.
+De seguida, retorna uma lista de cards contendo detalhes dos produtos, oq englobal dados sobre as lojas às quais os produtos pertendem. Caso a loja possua um site de venda online, ele apresenta o link do site, caso ñ apresenta o link das redes socais, e caso ñ possua nem1 deles, o sistema permite apresentar a localização da loja física pelo google Maps.
+
+
+O Sistema engloba: Um site e um app mobile para que os usuário possam fazer as suas buscas, e uma API, que permite obter as informações dos dados dos produtos das lojas.
+
+
+Agora, pensado o conceito da funcionalidade do sistema, vamos ao levantamento de requisitos.
+
+
+
+
+REQUISITOS FUNCIONAIS(RF)
+RF-01: Cadastrar lojas e respetivos produtos.
+RF-02: Guardar preços atualizados dos produtos.
+RF-03: Comparar produtos iguais em diferentes lojas.
+RF-04: Filtrar por preço, qualidade, localização.
+RF-05: Redirecionar o utilizador para o site da loja.
+RF-06: Deve permitir o cadastro e login de usuários
+RF-07: 
+
+REQUISITOS NÃO FUNCIONAIS(RNF)
+RNF-01: Base escalável (suportar muitos produtos/lojas).
+RNF-02: Dados consistentes e atualizados.
+RNF-03: Consultas rápidas (pesquisa e comparação).
+RNF-04: Segurança: criptografar senhas dos clientes.
+RNF-05: Disponibilidade: banco deve suportar 1000 acessos simultâneos.
+RNF-06: Integridade: não permitir pedido sem cliente, nem item de pedido
+sem produto.
+RNF-07: Escalabilidade: permitir crescimento do número de
+clientes e pedidos.
+
+
+
+
+
+Elaboração do estudo de caso
+
+
+Pretende-se criar um sistema de comparação de preços de produtos vendidos em diferentes lojas a nível de Angola, de modos a ajudar o consumidor a economizar dinheiro, tempo e energia, permitindo que ele saia de casa já com a noção de onde pode encontrar certo produto que apresenta uma boa relação qualidade-preço.
+
+Cada usuário regista-se na plataforma, fornecendo informações como nome, idade e localização, sendo este último um dado essencial para que o sistema apresente as lojas mais próximas e torne a procura mais prática e personalizada. As lojas têm igualmente a sua presença no sistema, com informações como o nome, a localização, o contacto e um link que direciona para o seu canal
+de venda ou de comunicação, seja ele um site, WhatsApp ou página no Instagram. O sistema também permite o usuário saiba quais os produtos que já foram por ele procurados, ou seja, cada usuário pode ter vários produtos no seu carrinho de comprar.
+
+Os produtos aparecem detalhados de forma clara e organizada. Cada um possui nome, categoria e subcategoria, além de informações como preço, qualidade e, quando aplicável, o prazo de validade, sempre associados à loja que os disponibiliza. Um produto, pode aparecer em várias lojas. Ou seja, um mesmo produto pode pode ter várias lojas pertencentes, sendo que o sistema fará a comparação do mesmo produtos, no entanto, em diferentes lojas. Estes dados mantêm-se constantemente atualizados, o que garante ao usuário consultas fiáveis e em tempo real. A comparação dos preços acontece a partir da seleção de um produto específico. O sistema considera critérios como o preço, a qualidade, a localização da loja e o prazo de validade. Com base nessas variáveis, apresenta ao usuário as opções mais convenientes e viáveis para a sua decisão de compra. Os produtos estão organizados em categorias e subcategorias, o que facilita
+a navegação e torna a experiência de procura mais intuitiva. Um produto pertence a uma categoria, e a uma categoria podem pertencer vários produtos.
+
+
+
+
+
+
+
+
