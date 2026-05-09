@@ -1,0 +1,164 @@
+create database price_comparing;
+
+create table categoria (
+            id_categoria int primary key not null auto_increment,
+            nome varchar(50) not null,
+            descricao varchar(255) not null
+);
+
+create table produto (
+            id_produto int primary key not null auto_increment,
+            nome varchar(50) not null,
+            marca varchar(50) not null,
+            data_validade date not null,
+            descricao varchar(255) not null,
+            id_categoria int references categoria(id_categoria)
+        );
+
+create table loja (
+        id_loja int primary key not null auto_increment,
+        nome varchar(50) not null,
+        municipio varchar(50) not null,
+        bairro varchar(50) not null,
+        n_rua int not null,
+        nif int not null unique,
+        email varchar(20) not null unique,
+        link_loja varchar(255) not null,
+        n_telefone int not null
+);
+
+create table produto_loja (
+          id_produto_loja int primary key not null auto_increment,
+          id_produto int references produto(id_produto),
+          id_loja int references loja(id_loja),
+          preco decimal(10, 2) not null,
+          disponibilidade int not null
+);
+
+create table cliente (
+            id_cliente int primary key not null auto_increment,
+            p_nome varchar(50) not null,
+            sb_nome varchar(50) not null ,
+            email varchar(20) not null unique ,
+            data_nasc date not null ,
+            senha varchar(50) not null unique,
+            municipio varchar(50) not null,
+            bairro varchar(50) not null,
+            n_rua int not null
+);
+
+create table lista_compras (
+             id_lista int primary key not null auto_increment,
+             nome varchar(50) not null,
+             descricao varchar(50) not null ,
+             id_cliente int references cliente(id_cliente)
+);
+
+create table itens_lista (
+           id_itens_lista int primary key not null auto_increment,
+           id_lista int references lista_compras(id_lista),
+            id_produto int references produto(id_produto),
+            quantidade_itens int not null
+);
+
+CREATE TABLE telefone_loja (
+           id_telefone_loja INT PRIMARY KEY AUTO_INCREMENT,
+           id_loja INT NOT NULL,
+           telefone VARCHAR(20) NOT NULL,
+           FOREIGN KEY (id_loja) REFERENCES loja(id_loja)
+);
+
+CREATE TABLE link_loja (
+           id_link INT PRIMARY KEY AUTO_INCREMENT,
+           id_loja INT NOT NULL,
+           link VARCHAR(255) NOT NULL,
+           FOREIGN KEY (id_loja) REFERENCES loja(id_loja)
+);
+
+INSERT INTO telefone_loja (id_loja, telefone)
+SELECT id_loja, n_telefone FROM loja;
+
+INSERT INTO link_loja (id_loja, link)
+SELECT id_loja, link_loja FROM loja;
+
+
+
+
+
+INSERT INTO categoria (id_categoria, nome, descricao) VALUES
+          (1, 'Bebidas', 'Categoria que agrupa bebidas'),
+          (2, 'Lacticínios', 'Produtos derivados de leite'),
+          (3, 'Cereais', 'Produtos do tipo cereais'),
+          (4, 'Biscoitos', 'Biscoitos doces e salgados'),
+          (5, 'Higiene', 'Produtos de cuidado pessoal');
+
+INSERT INTO produto (id_produto, nome, marca, data_validade, descricao, id_categoria) VALUES
+          (1, 'Água pura 1.5L', 'Pura', '2025-02-07', 'Água mineral pura', 1),
+          (2, 'Água perla 500ml', 'Perla', '2027-03-10', 'Água mineral perla', 1),
+          (3, 'Chocomax Cereais', 'Chocomax', '2027-03-10', 'Cereais de chocolate', 3),
+          (4, 'Biscoito Smile', 'Smile', '2026-05-17', 'Biscoito de chocolate', 4),
+          (5, 'Iogurte Danone', 'Danone', '2025-11-11', 'Iogurte de morango', 2);
+
+
+INSERT INTO loja (id_loja, nome, municipio, bairro, n_rua, nif, email, link_loja, n_telefone) VALUES
+          (1, 'Angomart', 'Viana', 'Cacuaco', 15, 787878799, 'angomart@gmail.com', 'angomart.co.ao', 923456789),
+          (2, 'Girassol', 'Rangel', 'Precol', 7, 123456789, 'girassol@hotmail.com', 'girassol.com', 935730701),
+          (3, 'Arreiou', 'Kilamba Kiaxi', 'Calemba 2', 4, 999999999, 'tabarato@gmail.com', 'arreiou.gov.ao', 939264345),
+          (4, 'Candando', 'Viana', 'Vila de Viana', 16, 123456876, 'ficamelhor@gmail.com', 'candando.co.ao', 999999999),
+          (5, 'HugoBoss', 'Vila Alice', 'Mutamba', 37, 781567883, 'hb@hotmail.com', 'hb.co.ao', 955555555);
+
+
+INSERT INTO produto_loja (id_produto_loja, id_produto, id_loja, preco, disponibilidade) VALUES
+        (1, 1, 1, 500, 1),
+        (2, 1, 2, 520, 1),
+        (3, 2, 3, 350, 0),
+        (4, 3, 1, 1500, 1),
+        (5, 3, 4, 1550, 1),
+        (6, 4, 5, 700, 1),
+        (7, 5, 1, 650, 0),
+        (8, 5, 4, 600, 1),
+        (9, 2, 2, 360, 1),
+        (10, 4, 3, 680, 1);
+
+INSERT INTO cliente (id_cliente, p_nome, sb_nome, email, data_nasc, senha, municipio, bairro, n_rua) VALUES
+         (1, 'Neil', 'Dias', 'neil@gmail.com', '2007-09-12', '123456', 'Viana', 'Calemba 2', 23),
+         (2, 'Marcilio', 'Domingos', 'mar@mail.com', '2007-07-19', '000000', 'Viana', 'Vila Viana', 15),
+         (3, 'Anselmo', 'Gomes', 'gms@gmail.com', '2007-02-25', '888888', 'Rangel', 'Ffff', 28),
+         (4, 'Renato', 'Malebo', 'lebo@gmail.com', '2007-08-17', '999999', 'Cazenga', 'Nocal', 89),
+         (5, 'Alberto', 'Tchipili', 'lica@gmail.com', '2006-11-11', '111111', 'Mulenvo', 'Caop C', 5);
+
+
+
+INSERT INTO lista_compras (id_lista, nome, descricao, id_cliente) VALUES
+          (1, 'Compras fim do ano', 'Lista para festa de fim de ano', 1),
+          (2, 'Compras para o natal', 'Lista de compras natalinas', 2),
+          (3, 'Lanche escolar', 'Lista para lanche da semana', 3),
+          (4, 'Festa de casamento', 'Lista para festa de casamento', 4),
+          (5, 'Presente do pai', 'Compras para presente do pai', 5);
+
+
+INSERT INTO itens_lista (id_itens_lista, id_lista, id_produto, quantidade_itens) VALUES
+         (1, 1, 1, 4),
+         (2, 1, 3, 2),
+         (3, 2, 4, 5),
+         (4, 3, 5, 3),
+         (5, 3, 1, 2),
+         (6, 4, 2, 1),
+         (7, 4, 3, 6),
+         (8, 5, 5, 1),
+         (9, 2, 1, 3),
+         (10, 5, 2, 2);
+
+ALTER TABLE loja DROP COLUMN n_telefone;
+ALTER TABLE loja DROP COLUMN link_loja;
+
+show tables;
+select * from categoria;
+select * from cliente;
+select * from produto;
+select * from lista_compras;
+select * from loja;
+select * from itens_lista;
+select * from produto_loja;
+select * from link_loja;
+select * from telefone_loja;
