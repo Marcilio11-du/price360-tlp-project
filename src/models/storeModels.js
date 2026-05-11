@@ -12,6 +12,11 @@ const storeModel = {
         return rows[0];
     },
 
+    createStore: async (nome, endereco) => {
+        const [result] = await db.execute('INSERT INTO Loja (nome, endereco) VALUES (?, ?)', [nome, endereco])
+        return result.insertId;
+    },
+
 };
 
 module.exports = storeModel;
