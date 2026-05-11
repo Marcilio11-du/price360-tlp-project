@@ -21,9 +21,9 @@ const storeModel = {
         await db.execute('UPDATE Loja SET nome = ?, endereco = ? WHERE id = ?', [nome, endereco, id])
     },
 
-    
-
-
+    deleteStore: async (id) => {
+        await db.execute('DELETE FROM Loja WHERE id = ?', [id])
+    }
 
 };
 
