@@ -12,7 +12,7 @@ const storeModel = {
   },
 
   create: async (nif, name, street, municipality, email) => {
-    const [result] = await db.execute('INSERT INTO Loja (nif, name, street, municipality, email) VALUES (?, ?, ?, ?, ?)', [nif, name, street, municipality, email]);;
+    const [result] = await db.execute('INSERT INTO Loja (nif, name, street, municipality, email) VALUES (?, ?, ?, ?, ?)', [nif, name, street, municipality, email]);
     return result.insertId;
   },
 
