@@ -17,6 +17,14 @@ const storeModel = {
         return result.insertId;
     },
 
+    updateStore: async (id, nome, endereco) => {
+        await db.execute('UPDATE Loja SET nome = ?, endereco = ? WHERE id = ?', [nome, endereco, id])
+    },
+
+    
+
+
+
 };
 
 module.exports = storeModel;
