@@ -11,18 +11,20 @@ const storeModel = {
         return rows[0];
     },
 
-    create: async (nome, endereco) => {
-        const [result] = await db.execute('INSERT INTO Loja (nome, endereco) VALUES (?, ?)', [nome, endereco])
+    create: async (nif, name, street, municipality, email) => {
+        const [result] = await db.execute('INSERT INTO Loja (nif, name, street, municipality, email) VALUES (?, ?, ?, ?, ?)', [nif, name, street, municipality, email]);
         return result.insertId;
     },
 
-    update: async (id, nome, endereco) => {
-        await db.execute('UPDATE Loja SET nome = ?, endereco = ? WHERE id = ?', [nome, endereco, id])
+    update: async (nif, name, street, municipality, email, id) => {
+        await db.execute('UPDATE Loja SET nif = ?, name = ?, street = ?, municipality = ?, email = ? WHERE id = ?', [nif, name, street, municipality, email, id]);
     },
 
     delete: async (id) => {
-        await db.execute('DELETE FROM Loja WHERE id = ?', [id])
+        await db.execute('DELETE FROM Loja WHERE id = ?', [id]);
     }
+
+
 
 };
 
