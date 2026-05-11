@@ -1,5 +1,4 @@
 const db = require('../config/db');
-const { create } = require('./categoryModels');
 
 const storeModel = {
     findAll: async () => {
@@ -12,16 +11,16 @@ const storeModel = {
         return rows[0];
     },
 
-    createStore: async (nome, endereco) => {
+    create: async (nome, endereco) => {
         const [result] = await db.execute('INSERT INTO Loja (nome, endereco) VALUES (?, ?)', [nome, endereco])
         return result.insertId;
     },
 
-    updateStore: async (id, nome, endereco) => {
+    update: async (id, nome, endereco) => {
         await db.execute('UPDATE Loja SET nome = ?, endereco = ? WHERE id = ?', [nome, endereco, id])
     },
 
-    deleteStore: async (id) => {
+    delete: async (id) => {
         await db.execute('DELETE FROM Loja WHERE id = ?', [id])
     }
 
