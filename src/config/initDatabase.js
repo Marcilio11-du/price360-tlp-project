@@ -1,5 +1,30 @@
 const db = require('./db');
 
+const ensureColumnExists = async (connection, tableName, columnDefinition) => {
+  try {
+    await connection.query(`ALTER TABLE ${tableName} ADD COLUMN ${columnDefinition}`);
+  } catch (error) {
+    if (error.code !== 'ER_DUP_FIELDNAME') {
+      throw error;
+    }
+  }
+};
+
+const ensureUniqueConstraint = async (connection, tableName, columnName, duplicateWarningMessage) => {
+  try {
+    await connection.query(`ALTER TABLE ${tableName} ADD UNIQUE (${columnName})`);
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      console.warn(duplicateWarningMessage);
+      return;
+    }
+
+    if (error.code !== 'ER_DUP_KEYNAME') {
+      throw error;
+    }
+  }
+};
+
 const schemaStatements = [
   `
     CREATE TABLE IF NOT EXISTS Utilizador (
@@ -18,6 +43,29 @@ const schemaStatements = [
       deleted_at DATETIME NULL,
       restored_at DATETIME NULL
     ) ENGINE=InnoDB
+  `,
+  `
+    CREATE TABLE IF NOT EXISTS Categoria (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nome VARCHAR(255) NOT NULL UNIQUE,
+      description TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at TIMESTAMP NULL
+    ) ENGINE=InnoDB
+  `,
+  `
+    CREATE TABLE IF NOT EXISTS Loja (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nif VARCHAR(255) NOT NULL UNIQUE,
+      nome VARCHAR(255) NOT NULL,
+      endereco VARCHAR(255) NOT NULL,
+      municipio VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at TIMESTAMP NULL
+    ) ENGINE=InnoDB
   `
 ];
 
@@ -31,6 +79,24 @@ const initializeDatabaseSchema = async () => {
       // Running schema statements sequentially preserves FK dependency order.
       await connection.query(statement);
     }
+
+    await ensureColumnExists(connection, 'Categoria', 'description TEXT');
+    await ensureUniqueConstraint(
+      connection,
+      'Categoria',
+      'nome',
+      'Não foi possível adicionar a constraint UNIQUE no campo nome devido a entradas duplicadas existentes.'
+    );
+
+    await ensureColumnExists(connection, 'Loja', 'nif VARCHAR(255) NULL');
+    await ensureColumnExists(connection, 'Loja', 'municipio VARCHAR(255) NULL');
+    await ensureColumnExists(connection, 'Loja', 'email VARCHAR(255) NULL');
+    await ensureUniqueConstraint(
+      connection,
+      'Loja',
+      'nif',
+      'Não foi possível adicionar a constraint UNIQUE no campo nif devido a entradas duplicadas existentes.'
+    );
 
     await connection.commit();
     console.log('Schema de base de dados validado com sucesso.');
