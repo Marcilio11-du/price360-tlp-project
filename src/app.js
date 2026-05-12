@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const categoryRoutes = require('./routes/categoryRoutes');
+const storeRoutes = require('./routes/storeRoutes');
 const db = require('./config/db');
 require('dotenv').config();
 
@@ -11,6 +12,7 @@ app.use(express.json());
 
 // Rotas
 app.use('/api/v1/categories', categoryRoutes);
+app.use('/api/v1/stores', storeRoutes);
 
 // Função para inicializar tabelas
 const initializeTables = async () => {
@@ -57,13 +59,56 @@ const initializeTables = async () => {
     await db.execute(`
       CREATE TABLE IF NOT EXISTS Loja (
         id INT AUTO_INCREMENT PRIMARY KEY,
+        nif VARCHAR(255) NOT NULL UNIQUE,
         nome VARCHAR(255) NOT NULL,
         endereco VARCHAR(255) NOT NULL,
+        municipio VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         deleted_at TIMESTAMP NULL
       )
     `);
+
+    try {
+      await db.execute(`
+        ALTER TABLE Loja ADD COLUMN nif VARCHAR(255) NULL
+      `);
+    } catch (alterError) {
+      if (alterError.code !== 'ER_DUP_FIELDNAME') {
+        throw alterError;
+      }
+    }
+
+    try {
+      await db.execute(`
+        ALTER TABLE Loja ADD COLUMN municipio VARCHAR(255) NULL
+      `);
+    } catch (alterError) {
+      if (alterError.code !== 'ER_DUP_FIELDNAME') {
+        throw alterError;
+      }
+    }
+
+    try {
+      await db.execute(`
+        ALTER TABLE Loja ADD COLUMN email VARCHAR(255) NULL
+      `);
+    } catch (alterError) {
+      if (alterError.code !== 'ER_DUP_FIELDNAME') {
+        throw alterError;
+      }
+    }
+
+    try {
+      await db.execute(`
+        ALTER TABLE Loja ADD UNIQUE (nif)
+      `);
+    } catch (uniqueError) {
+      if (uniqueError.code !== 'ER_DUP_KEYNAME' && uniqueError.code !== 'ER_DUP_ENTRY') {
+        throw uniqueError;
+      }
+    }
 
     console.log('Tabelas inicializadas com sucesso.');
   } catch (error) {
