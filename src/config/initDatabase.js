@@ -1,25 +1,34 @@
-const db = require('./db');
+const db = require("./db");
 
 const ensureColumnExists = async (connection, tableName, columnDefinition) => {
   try {
-    await connection.query(`ALTER TABLE ${tableName} ADD COLUMN ${columnDefinition}`);
+    await connection.query(
+      `ALTER TABLE ${tableName} ADD COLUMN ${columnDefinition}`,
+    );
   } catch (error) {
-    if (error.code !== 'ER_DUP_FIELDNAME') {
+    if (error.code !== "ER_DUP_FIELDNAME") {
       throw error;
     }
   }
 };
 
-const ensureUniqueConstraint = async (connection, tableName, columnName, duplicateWarningMessage) => {
+const ensureUniqueConstraint = async (
+  connection,
+  tableName,
+  columnName,
+  duplicateWarningMessage,
+) => {
   try {
-    await connection.query(`ALTER TABLE ${tableName} ADD UNIQUE (${columnName})`);
+    await connection.query(
+      `ALTER TABLE ${tableName} ADD UNIQUE (${columnName})`,
+    );
   } catch (error) {
-    if (error.code === 'ER_DUP_ENTRY') {
+    if (error.code === "ER_DUP_ENTRY") {
       console.warn(duplicateWarningMessage);
       return;
     }
 
-    if (error.code !== 'ER_DUP_KEYNAME') {
+    if (error.code !== "ER_DUP_KEYNAME") {
       throw error;
     }
   }
@@ -109,7 +118,24 @@ const schemaStatements = [
         ON DELETE RESTRICT,
       CONSTRAINT uq_produtoloja_produto_loja UNIQUE (id_produto, id_loja)
     ) ENGINE=InnoDB
+  `,
   `
+    CREATE TABLE IF NOT EXISTS Lista_compras (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      nome VARCHAR(255) NOT NULL,
+      descricao TEXT NULL,
+      id_cliente INT NOT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at DATETIME NULL,
+      restored_at DATETIME NULL,
+      CONSTRAINT fk_listacompras_cliente
+        FOREIGN KEY (id_cliente)
+        REFERENCES Utilizador(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+    ) ENGINE=InnoDB
+  `,
 ];
 
 const initializeDatabaseSchema = async () => {
@@ -123,44 +149,64 @@ const initializeDatabaseSchema = async () => {
       await connection.query(statement);
     }
 
-    await ensureColumnExists(connection, 'Categoria', 'description TEXT');
+    await ensureColumnExists(connection, "Categoria", "description TEXT");
     await ensureUniqueConstraint(
       connection,
-      'Categoria',
-      'nome',
-      'Não foi possível adicionar a constraint UNIQUE no campo nome devido a entradas duplicadas existentes.'
+      "Categoria",
+      "nome",
+      "Não foi possível adicionar a constraint UNIQUE no campo nome devido a entradas duplicadas existentes.",
     );
 
-    await ensureColumnExists(connection, 'Loja', 'nif VARCHAR(255) NULL');
-    await ensureColumnExists(connection, 'Loja', 'municipio VARCHAR(255) NULL');
-    await ensureColumnExists(connection, 'Loja', 'email VARCHAR(255) NULL');
+    await ensureColumnExists(connection, "Loja", "nif VARCHAR(255) NULL");
+    await ensureColumnExists(connection, "Loja", "municipio VARCHAR(255) NULL");
+    await ensureColumnExists(connection, "Loja", "email VARCHAR(255) NULL");
     await ensureUniqueConstraint(
       connection,
-      'Loja',
-      'nif',
-      'Não foi possível adicionar a constraint UNIQUE no campo nif devido a entradas duplicadas existentes.'
+      "Loja",
+      "nif",
+      "Não foi possível adicionar a constraint UNIQUE no campo nif devido a entradas duplicadas existentes.",
     );
 
-    await ensureColumnExists(connection, 'Produto', 'data_validade DATE NULL');
-    await ensureColumnExists(connection, 'Produto', 'descricao TEXT NULL');
-    await ensureColumnExists(connection, 'Produto', 'id_categoria INT NULL');
-    await ensureColumnExists(connection, 'Produto', 'deleted_at DATETIME NULL');
-    await ensureColumnExists(connection, 'Produto', 'restored_at DATETIME NULL');
+    await ensureColumnExists(connection, "Produto", "data_validade DATE NULL");
+    await ensureColumnExists(connection, "Produto", "descricao TEXT NULL");
+    await ensureColumnExists(connection, "Produto", "id_categoria INT NULL");
+    await ensureColumnExists(connection, "Produto", "deleted_at DATETIME NULL");
+    await ensureColumnExists(
+      connection,
+      "Produto",
+      "restored_at DATETIME NULL",
+    );
 
-    await ensureColumnExists(connection, 'Produto_Loja', 'quantidade INT NOT NULL DEFAULT 0');
-    await ensureColumnExists(connection, 'Produto_Loja', 'preco DECIMAL(10,2) NOT NULL DEFAULT 0.00');
-    await ensureColumnExists(connection, 'Produto_Loja', 'deleted_at DATETIME NULL');
-    await ensureColumnExists(connection, 'Produto_Loja', 'restored_at DATETIME NULL');
+    await ensureColumnExists(
+      connection,
+      "Produto_Loja",
+      "quantidade INT NOT NULL DEFAULT 0",
+    );
+    await ensureColumnExists(
+      connection,
+      "Produto_Loja",
+      "preco DECIMAL(10,2) NOT NULL DEFAULT 0.00",
+    );
+    await ensureColumnExists(
+      connection,
+      "Produto_Loja",
+      "deleted_at DATETIME NULL",
+    );
+    await ensureColumnExists(
+      connection,
+      "Produto_Loja",
+      "restored_at DATETIME NULL",
+    );
 
     try {
       await connection.query(
-        'ALTER TABLE Produto ADD CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria) REFERENCES Categoria(id) ON UPDATE CASCADE ON DELETE RESTRICT'
+        "ALTER TABLE Produto ADD CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria) REFERENCES Categoria(id) ON UPDATE CASCADE ON DELETE RESTRICT",
       );
     } catch (error) {
       if (
-        error.code !== 'ER_DUP_KEYNAME' &&
-        error.code !== 'ER_CANT_CREATE_TABLE' &&
-        error.code !== 'ER_FK_DUP_NAME'
+        error.code !== "ER_DUP_KEYNAME" &&
+        error.code !== "ER_CANT_CREATE_TABLE" &&
+        error.code !== "ER_FK_DUP_NAME"
       ) {
         throw error;
       }
@@ -168,13 +214,13 @@ const initializeDatabaseSchema = async () => {
 
     try {
       await connection.query(
-        'ALTER TABLE Produto_Loja ADD CONSTRAINT fk_produtoloja_produto FOREIGN KEY (id_produto) REFERENCES Produto(id) ON UPDATE CASCADE ON DELETE RESTRICT'
+        "ALTER TABLE Produto_Loja ADD CONSTRAINT fk_produtoloja_produto FOREIGN KEY (id_produto) REFERENCES Produto(id) ON UPDATE CASCADE ON DELETE RESTRICT",
       );
     } catch (error) {
       if (
-        error.code !== 'ER_DUP_KEYNAME' &&
-        error.code !== 'ER_CANT_CREATE_TABLE' &&
-        error.code !== 'ER_FK_DUP_NAME'
+        error.code !== "ER_DUP_KEYNAME" &&
+        error.code !== "ER_CANT_CREATE_TABLE" &&
+        error.code !== "ER_FK_DUP_NAME"
       ) {
         throw error;
       }
@@ -182,30 +228,64 @@ const initializeDatabaseSchema = async () => {
 
     try {
       await connection.query(
-        'ALTER TABLE Produto_Loja ADD CONSTRAINT fk_produtoloja_loja FOREIGN KEY (id_loja) REFERENCES Loja(id) ON UPDATE CASCADE ON DELETE RESTRICT'
+        "ALTER TABLE Produto_Loja ADD CONSTRAINT fk_produtoloja_loja FOREIGN KEY (id_loja) REFERENCES Loja(id) ON UPDATE CASCADE ON DELETE RESTRICT",
       );
     } catch (error) {
       if (
-        error.code !== 'ER_DUP_KEYNAME' &&
-        error.code !== 'ER_CANT_CREATE_TABLE' &&
-        error.code !== 'ER_FK_DUP_NAME'
+        error.code !== "ER_DUP_KEYNAME" &&
+        error.code !== "ER_CANT_CREATE_TABLE" &&
+        error.code !== "ER_FK_DUP_NAME"
       ) {
         throw error;
       }
     }
 
     try {
-      await connection.query('ALTER TABLE Produto_Loja ADD UNIQUE (id_produto, id_loja)');
+      await connection.query(
+        "ALTER TABLE Produto_Loja ADD UNIQUE (id_produto, id_loja)",
+      );
     } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        console.warn('Não foi possível adicionar UNIQUE em Produto_Loja(id_produto, id_loja) devido a dados duplicados existentes.');
-      } else if (error.code !== 'ER_DUP_KEYNAME') {
+      if (error.code === "ER_DUP_ENTRY") {
+        console.warn(
+          "Não foi possível adicionar UNIQUE em Produto_Loja(id_produto, id_loja) devido a dados duplicados existentes.",
+        );
+      } else if (error.code !== "ER_DUP_KEYNAME") {
+        throw error;
+      }
+    }
+
+    await ensureColumnExists(
+      connection,
+      "Lista_compras",
+      "descricao TEXT NULL",
+    );
+    await ensureColumnExists(
+      connection,
+      "Lista_compras",
+      "deleted_at DATETIME NULL",
+    );
+    await ensureColumnExists(
+      connection,
+      "Lista_compras",
+      "restored_at DATETIME NULL",
+    );
+
+    try {
+      await connection.query(
+        "ALTER TABLE Lista_compras ADD CONSTRAINT fk_listacompras_cliente FOREIGN KEY (id_cliente) REFERENCES Utilizador(id) ON UPDATE CASCADE ON DELETE RESTRICT",
+      );
+    } catch (error) {
+      if (
+        error.code !== "ER_DUP_KEYNAME" &&
+        error.code !== "ER_CANT_CREATE_TABLE" &&
+        error.code !== "ER_FK_DUP_NAME"
+      ) {
         throw error;
       }
     }
 
     await connection.commit();
-    console.log('Schema de base de dados validado com sucesso.');
+    console.log("Schema de base de dados validado com sucesso.");
   } catch (error) {
     await connection.rollback();
     throw error;
@@ -215,5 +295,5 @@ const initializeDatabaseSchema = async () => {
 };
 
 module.exports = {
-  initializeDatabaseSchema
+  initializeDatabaseSchema,
 };
