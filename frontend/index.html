@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Price360 — Comparador de Preços</title>
+  <link rel="icon" type="image/png" href="./assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Base & Design System -->
+  <link rel="stylesheet" href="./css/main.css">
+  <link rel="stylesheet" href="./css/animations.css">
+
+  <!-- Layout Components -->
+  <link rel="stylesheet" href="./css/navbar.css">
+  <link rel="stylesheet" href="./css/footer.css">
+
+  <!-- UI Components -->
+  <link rel="stylesheet" href="./css/hero.css">
+  <link rel="stylesheet" href="./css/product-card.css">
+  <link rel="stylesheet" href="./css/category-card.css">
+  <link rel="stylesheet" href="./css/toast.css">
+  <link rel="stylesheet" href="./css/modal.css">
+  <link rel="stylesheet" href="./css/loader.css">
+
+  <!-- Pages -->
+  <link rel="stylesheet" href="./css/home.css">
+  <link rel="stylesheet" href="./css/products.css">
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/shopping-list.css">
+  <link rel="stylesheet" href="./css/admin.css">
+</head>
+<body>
+
+  <!-- Navbar renderizada dinamicamente aqui -->
+  <div id="navbar-root"></div>
+
+  <!-- Conteúdo das páginas (SPA router injection point) -->
+  <div id="app"></div>
+
+  <!-- Toast notifications (global) -->
+  <div id="toast-root" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Modal global (shared across all pages) -->
+  <div id="modal-root"></div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

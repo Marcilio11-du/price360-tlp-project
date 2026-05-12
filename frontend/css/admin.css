@@ -1,0 +1,536 @@
+/* =============================================================
+   admin.css — Painel de Administração | Price360
+   ============================================================= */
+
+
+/* ─── 1. Layout principal (sidebar + conteúdo) ───────────────── */
+.admin-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: calc(100vh - 72px);
+}
+
+
+/* ─── 2. Sidebar ────────────────────────────────────────────── */
+.admin-sidebar {
+  background-color: var(--color-primary-dark);
+  color: var(--color-white);
+  padding: var(--space-6) 0;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  overflow-y: auto;
+}
+
+/* Cabeçalho da sidebar */
+.admin-sidebar__brand {
+  padding: 0 var(--space-6) var(--space-6);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: var(--space-4);
+}
+
+.admin-sidebar__brand h2 {
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.admin-sidebar__brand p {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: var(--space-1);
+}
+
+/* Grupo / label de secção */
+.admin-sidebar__group-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.4);
+  padding: var(--space-4) var(--space-6) var(--space-2);
+}
+
+/* Item de navegação */
+.admin-sidebar__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition),
+              border-left-color var(--transition);
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  border-left: 3px solid transparent;
+  text-decoration: none;
+  border-right: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.admin-sidebar__item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--color-white);
+}
+
+/* Item ativo */
+.admin-sidebar__item--active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+  border-left-color: var(--color-secondary);
+}
+
+.admin-sidebar__item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Badge de contagem no item */
+.admin-sidebar__badge {
+  margin-left: auto;
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  padding: 0.1rem 0.5rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Rodapé da sidebar */
+.admin-sidebar__footer {
+  margin-top: auto;
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+/* ─── 3. Main Content ───────────────────────────────────────── */
+.admin-main {
+  padding: var(--space-6);
+  background-color: var(--color-gray-50);
+  overflow-y: auto;
+  min-height: calc(100vh - 72px);
+}
+
+/* Cabeçalho de cada página admin */
+.admin-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.admin-page-header h1 {
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.admin-page-header p {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  margin-top: var(--space-1);
+}
+
+
+/* ─── 4. Stat Cards ─────────────────────────────────────────── */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.stat-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  border-left: 4px solid var(--color-primary);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.stat-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Cores das bordas por posição */
+.stat-card:nth-child(1) { border-left-color: var(--color-primary); }
+.stat-card:nth-child(2) { border-left-color: var(--color-secondary); }
+.stat-card:nth-child(3) { border-left-color: var(--color-success); }
+.stat-card:nth-child(4) { border-left-color: #9C27B0; }
+.stat-card:nth-child(5) { border-left-color: var(--color-primary-light); }
+.stat-card:nth-child(6) { border-left-color: #F57C00; }
+
+.stat-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-1);
+  font-size: 1.2rem;
+}
+
+.stat-card__value {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.stat-card__label {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  font-weight: 500;
+}
+
+.stat-card__trend {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  margin-top: var(--space-1);
+}
+
+.stat-card__trend--up    { color: var(--color-success); }
+.stat-card__trend--down  { color: var(--color-error); }
+
+
+/* ─── 5. Admin Section (caixas de conteúdo) ─────────────────── */
+.admin-section {
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin-bottom: var(--space-6);
+}
+
+.admin-section__header {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.admin-section__header h3 {
+  font-weight: 700;
+  font-size: var(--font-size-lg);
+  color: var(--color-text);
+}
+
+.admin-section__body {
+  padding: var(--space-6);
+}
+
+
+/* ─── 6. Tabela de dados ────────────────────────────────────── */
+.admin-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+}
+
+.admin-table th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-gray-50);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-600);
+  border-bottom: 1px solid var(--color-gray-200);
+  white-space: nowrap;
+}
+
+.admin-table th:first-child { border-radius: var(--radius-sm) 0 0 0; }
+.admin-table th:last-child  { border-radius: 0 var(--radius-sm) 0 0; }
+
+.admin-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-gray-100);
+  color: var(--color-text);
+  vertical-align: middle;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+  background-color: var(--color-gray-50);
+}
+
+/* Célula de avatar + nome */
+.admin-table__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.admin-table__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-table__name {
+  font-weight: 600;
+}
+
+.admin-table__sub {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-600);
+}
+
+
+/* ─── 7. Badges de status ───────────────────────────────────── */
+.admin-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.admin-badge--active {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #388E3C;
+}
+
+.admin-badge--inactive {
+  background-color: rgba(189, 189, 189, 0.2);
+  color: var(--color-gray-600);
+}
+
+.admin-badge--deleted {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #C62828;
+}
+
+.admin-badge--pending {
+  background-color: rgba(245, 166, 35, 0.12);
+  color: #E65100;
+}
+
+.admin-badge--admin {
+  background-color: rgba(156, 39, 176, 0.1);
+  color: #7B1FA2;
+}
+
+
+/* ─── 8. Ações por linha ────────────────────────────────────── */
+.admin-actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.admin-actions .btn {
+  font-size: var(--font-size-xs);
+}
+
+
+/* ─── 9. Formulário de Admin (edição de registos) ───────────── */
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.admin-form__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-4);
+}
+
+.admin-form__section-title {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-gray-800);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+/* Barra de ações do formulário */
+.admin-form__actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  flex-wrap: wrap;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+
+/* ─── 10. Botão "Guardar alterações" ─────────────────────────── */
+.btn--save {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--color-success);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.75rem 1.75rem;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color var(--transition), transform var(--transition);
+}
+
+.btn--save:hover {
+  background-color: #388E3C;
+  transform: translateY(-1px);
+}
+
+/* Ícone de checkmark a seguir ao texto */
+.btn--save::after {
+  content: '\2611'; /* ☑ */
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+
+/* ─── 11. Botão "Cancelar" ───────────────────────────────────── */
+.btn--cancel-form {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--color-gray-400);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.75rem 1.75rem;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.btn--cancel-form:hover {
+  background-color: var(--color-gray-600);
+}
+
+
+/* ─── 12. Search bar dentro do painel ───────────────────────── */
+.admin-search {
+  position: relative;
+  max-width: 320px;
+}
+
+.admin-search input {
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  outline: none;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  background-color: var(--color-white);
+}
+
+.admin-search input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+}
+
+.admin-search svg {
+  position: absolute;
+  right: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: var(--color-gray-400);
+  pointer-events: none;
+}
+
+
+/* ─── 13. Responsividade ────────────────────────────────────── */
+@media (max-width: 768px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    display: none;
+    position: fixed;
+    top: 72px;
+    left: 0;
+    z-index: 500;
+    width: 260px;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .admin-sidebar.sidebar--open {
+    display: flex;
+  }
+
+  .admin-main {
+    padding: var(--space-4);
+  }
+
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-form__actions .btn--save,
+  .admin-form__actions .btn--cancel-form {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,287 @@
+/* =============================================================
+   shopping-list.css — Página de Listas de Compras | Price360
+   ============================================================= */
+
+.shopping-list-page {
+    padding: var(--space-8) 0 var(--space-16);
+    min-height: 70vh;
+}
+
+/* ── Page header ───────────────────────────────────────────── */
+.shopping-list-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.shopping-list-page__header h1 {
+    font-size: 2rem;
+    font-weight: 800;
+}
+.shopping-list-page__header h1 span {
+    color: var(--color-primary);
+}
+
+/* ── Tabs ──────────────────────────────────────────────────── */
+.list-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--color-gray-100);
+}
+
+.list-tab {
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 1.5px solid var(--color-gray-200);
+    background: #fff;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-gray-600);
+    transition: all 0.2s;
+    white-space: nowrap;
+    user-select: none;
+    font-family: inherit;
+}
+.list-tab:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+.list-tab--active {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+}
+.list-tab--new {
+    border-style: dashed;
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+.list-tab--new:hover {
+    background: rgba(21, 101, 192, 0.06);
+}
+
+/* ── List card ─────────────────────────────────────────────── */
+.list-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+    overflow: hidden;
+    border: 1px solid var(--color-gray-100);
+    margin-bottom: 16px;
+}
+
+.list-card__header {
+    padding: 18px 24px;
+    background: linear-gradient(
+        to right,
+        rgba(21, 101, 192, 0.04),
+        rgba(21, 101, 192, 0.01)
+    );
+    border-bottom: 1px solid var(--color-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+.list-card__header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+.list-card__header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* ── List items ────────────────────────────────────────────── */
+.list-card__items {
+    padding: 8px 0;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--color-gray-100);
+    transition: background 0.15s;
+}
+.list-item:last-child {
+    border-bottom: none;
+}
+.list-item:hover {
+    background: var(--color-gray-50);
+}
+
+/* Checkbox visual */
+.list-item__check {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--color-gray-400);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.list-item__check:hover {
+    border-color: var(--color-primary);
+}
+.list-item__check.checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+}
+.list-item__check.checked::after {
+    content: "";
+    width: 6px;
+    height: 10px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg) translate(-1px, -1px);
+}
+
+/* Item icon */
+.list-item__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--color-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.list-item__icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.list-item__icon svg {
+    color: var(--color-primary);
+}
+
+/* Item info */
+.list-item__info {
+    flex: 1;
+    min-width: 0;
+}
+.list-item__name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.list-item__store {
+    font-size: 0.78rem;
+    color: var(--color-gray-600);
+    margin-top: 2px;
+}
+.list-item--checked .list-item__name {
+    text-decoration: line-through;
+    color: var(--color-gray-400);
+}
+
+/* Item price */
+.list-item__price {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--color-secondary);
+    flex-shrink: 0;
+}
+
+/* Remove button */
+.list-item__remove {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: var(--color-gray-400);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
+}
+.list-item__remove:hover {
+    background: rgba(244, 67, 54, 0.08);
+    color: var(--color-error);
+}
+
+/* ── Card footer ───────────────────────────────────────────── */
+.list-card__footer {
+    padding: 14px 24px;
+    background: var(--color-gray-50);
+    border-top: 1px solid var(--color-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.list-card__count {
+    font-size: 0.875rem;
+    color: var(--color-gray-600);
+    font-weight: 500;
+}
+.list-card__total {
+    font-size: 1rem;
+    font-weight: 800;
+}
+.list-card__total span {
+    color: var(--color-secondary);
+}
+
+/* ── Empty state (lista vazia) ─────────────────────────────── */
+.list-empty {
+    text-align: center;
+    padding: 60px 24px;
+    color: var(--color-gray-600);
+}
+.list-empty__icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    display: block;
+}
+.list-empty h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 8px;
+}
+.list-empty p {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* ── Empty state (sem nenhuma lista) ───────────────────────── */
+.lists-empty-state {
+    text-align: center;
+    padding: 80px 24px;
+}
+.lists-empty-state__icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    display: block;
+}
+.lists-empty-state h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+.lists-empty-state p {
+    color: var(--color-gray-600);
+    margin-bottom: 24px;
+}

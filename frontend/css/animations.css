@@ -1,0 +1,134 @@
+/* =============================================================
+   animations.css — Scroll Animations (Intersection Observer),
+                    Fade, Slide & Stagger System | Price360
+   ============================================================= */
+
+
+/* ─── 1. Scroll Reveal (estado inicial — elementos invisíveis) ─ */
+.animate-scroll {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Quando o elemento entra no viewport (classe adicionada por JS) */
+.animate-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── 2. Stagger Delays — para grids de cards ───────────────── */
+.animate-scroll:nth-child(1) { transition-delay: 0s; }
+.animate-scroll:nth-child(2) { transition-delay: 0.1s; }
+.animate-scroll:nth-child(3) { transition-delay: 0.2s; }
+.animate-scroll:nth-child(4) { transition-delay: 0.3s; }
+.animate-scroll:nth-child(5) { transition-delay: 0.4s; }
+.animate-scroll:nth-child(6) { transition-delay: 0.5s; }
+.animate-scroll:nth-child(7) { transition-delay: 0.6s; }
+.animate-scroll:nth-child(8) { transition-delay: 0.7s; }
+
+
+/* ─── 3. Fade In Simples ────────────────────────────────────── */
+.animate-fade {
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+
+.animate-fade.is-visible {
+  opacity: 1;
+}
+
+
+/* ─── 4. Slide from Left ────────────────────────────────────── */
+.animate-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-left.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+/* ─── 5. Slide from Right ───────────────────────────────────── */
+.animate-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.animate-right.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+/* ─── 6. Scale Up (zoom) ────────────────────────────────────── */
+.animate-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.animate-scale.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+/* ─── 7. Keyframe Animations (reutilizáveis via classe) ──────── */
+
+/* Pulse — para badges, ícones de destaque */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.06); }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Bounce suave — para o chevron de scroll */
+@keyframes bounce-down {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(6px); }
+}
+
+.animate-bounce {
+  animation: bounce-down 1.4s ease-in-out infinite;
+}
+
+/* Shake — para erros de formulário */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+
+/* ─── 8. Respeita preferência de movimento reduzido ─────────── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-scroll,
+  .animate-fade,
+  .animate-left,
+  .animate-right,
+  .animate-scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .animate-pulse,
+  .animate-bounce,
+  .animate-shake {
+    animation: none;
+  }
+}
