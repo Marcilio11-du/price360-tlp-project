@@ -1,0 +1,184 @@
+/* =============================================================
+   footer.css — Rodapé do Site | Price360
+   ============================================================= */
+
+
+/* ─── 1. Footer Wrapper ─────────────────────────────────────── */
+.footer {
+  background-color: var(--color-primary-dark);
+  color: rgba(255, 255, 255, 0.9);
+  padding: var(--space-12) 0 var(--space-6);
+}
+
+
+/* ─── 2. Grid de Colunas ────────────────────────────────────── */
+.footer__inner {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-8);
+}
+
+
+/* ─── 3. Coluna de Marca ────────────────────────────────────── */
+.footer__brand {}
+
+.footer__logo-text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: var(--space-2);
+}
+
+.footer__logo-text .logo-price {
+  color: var(--color-white);
+}
+
+.footer__logo-text .logo-360 {
+  color: var(--color-secondary);
+}
+
+.footer__brand p {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-2);
+  line-height: 1.6;
+  max-width: 240px;
+}
+
+/* Social links */
+.footer__socials {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.footer__social-link {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.footer__social-link:hover {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+}
+
+.footer__social-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* ─── 4. Colunas de Links ───────────────────────────────────── */
+.footer__col {}
+
+.footer__title {
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+  font-size: var(--font-size-base);
+  color: var(--color-white);
+}
+
+.footer__links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.footer__links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition), padding-left var(--transition);
+  display: inline-block;
+}
+
+.footer__links a:hover {
+  color: var(--color-white);
+  padding-left: var(--space-1);
+}
+
+
+/* ─── 5. Barra inferior ─────────────────────────────────────── */
+.footer__bottom {
+  max-width: 1200px;
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+  margin-top: var(--space-8);
+  padding-top: var(--space-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.footer__copyright {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: var(--font-size-sm);
+}
+
+.footer__bottom-links {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.footer__bottom-links a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition);
+}
+
+.footer__bottom-links a:hover {
+  color: var(--color-white);
+}
+
+
+/* ─── 6. Responsividade ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  .footer {
+    padding: var(--space-8) 0 var(--space-6);
+  }
+
+  .footer__inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+  }
+
+  .footer__brand {
+    grid-column: 1 / -1;
+  }
+
+  .footer__brand p {
+    max-width: 100%;
+  }
+
+  .footer__bottom {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer__bottom-links {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+  }
+}

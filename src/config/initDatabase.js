@@ -34,10 +34,11 @@ const ensureColumnExists = async (connection, tableName, columnDefinition) => {
 
 /**
  * Adiciona uma constraint UNIQUE a uma coluna de forma idempotente.
- * Dois cenários são tratados graciosamente:
+ * Três cenários são tratados graciosamente:
  *  - `ER_DUP_KEYNAME`: a constraint UNIQUE já existe — ignora silenciosamente.
  *  - `ER_DUP_ENTRY`: existem dados duplicados na coluna, pelo que não é
  *    possível adicionar o índice — emite um aviso e continua sem falhar.
+ *  - `ER_TOO_MANY_KEYS`: MySQL atingiu o limite de 64 índices por tabela — ignora.
  * Qualquer outro erro é propagado.
  * @param {import('mysql2/promise').PoolConnection} connection        - Ligação ativa com transação.
  * @param {string} tableName                 - Nome da tabela a alterar.
@@ -62,9 +63,12 @@ const ensureUniqueConstraint = async (
     }
 
     // ER_DUP_KEYNAME: constraint UNIQUE já existe — ignora para tornar idempotente
-    if (error.code !== "ER_DUP_KEYNAME") {
-      throw error;
+    // ER_TOO_MANY_KEYS: MySQL atingiu limite de 64 índices — ignora
+    if (error.code === "ER_DUP_KEYNAME" || error.code === "ER_TOO_MANY_KEYS") {
+      return;
     }
+
+    throw error;
   }
 };
 
@@ -350,6 +354,10 @@ const initializeDatabaseSchema = async () => {
       if (error.code === "ER_DUP_ENTRY") {
         console.warn(
           "Não foi possível adicionar UNIQUE em Produto_Loja(id_produto, id_loja) devido a dados duplicados existentes.",
+        );
+      } else if (error.code === "ER_TOO_MANY_KEYS") {
+        console.warn(
+          "Não foi possível adicionar UNIQUE em Produto_Loja(id_produto, id_loja) — limite de 64 índices atingido.",
         );
       } else if (error.code !== "ER_DUP_KEYNAME") {
         throw error;

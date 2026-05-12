@@ -1,0 +1,364 @@
+/* =============================================================
+   products.css — Página de Listagem de Produtos | Price360
+   ============================================================= */
+
+
+/* ─── 1. Wrapper da Página ──────────────────────────────────── */
+.products-page {
+  padding-top: var(--space-4);
+}
+
+
+/* ─── 2. Header da Página ───────────────────────────────────── */
+.products-page__header {
+  padding: var(--space-6) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.products-page__title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--color-text);
+  flex: 1;
+  min-width: 200px;
+}
+
+.products-page__title span {
+  color: var(--color-secondary);
+  font-style: italic;
+}
+
+/* Sort / ordenação */
+.products-page__sort {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+}
+
+.products-page__sort select {
+  padding: 0.4rem 2rem 0.4rem 0.75rem;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  background-color: var(--color-white);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  transition: border-color var(--transition);
+}
+
+.products-page__sort select:focus {
+  border-color: var(--color-primary);
+}
+
+
+/* ─── 3. Filter Chips ───────────────────────────────────────── */
+.products-page__filters {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  padding: var(--space-4) 0;
+  align-items: center;
+}
+
+.products-page__filters-label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-600);
+  margin-right: var(--space-1);
+  white-space: nowrap;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-gray-200);
+  background-color: var(--color-white);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-gray-800);
+  transition: border-color var(--transition), color var(--transition),
+              background-color var(--transition);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.filter-chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+/* Estado ativo */
+.filter-chip--active {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+}
+
+.filter-chip--active:hover {
+  background-color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+  color: var(--color-white);
+}
+
+/* Botão para remover chip activo (x) */
+.filter-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.3);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.filter-chip__remove:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* ─── 4. Contagem de Resultados ─────────────────────────────── */
+.products-page__count {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--space-4);
+}
+
+.products-page__count strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+
+/* ─── 5. Grid de Produtos ───────────────────────────────────── */
+.products-page__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-6);
+}
+
+
+/* ─── 6. Sidebar de Filtros (layout com sidebar) ─────────────── */
+.products-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+.products-sidebar {
+  position: sticky;
+  top: 88px; /* navbar 72px + 16px */
+  background-color: var(--color-white);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.products-sidebar__title {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  margin-bottom: var(--space-4);
+  color: var(--color-text);
+}
+
+.filter-group {
+  margin-bottom: var(--space-6);
+}
+
+.filter-group:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group__title {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-800);
+  margin-bottom: var(--space-3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-group__divider {
+  border: none;
+  border-top: 1px solid var(--color-gray-200);
+  margin-bottom: var(--space-4);
+}
+
+/* Opções de filtro (checkbox style) */
+.filter-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) 0;
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-800);
+  transition: color var(--transition);
+}
+
+.filter-option:hover {
+  color: var(--color-primary);
+}
+
+.filter-option input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Range de preços */
+.price-range {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.price-range__inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.price-range__input {
+  padding: 0.4rem 0.6rem;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  outline: none;
+  width: 100%;
+  transition: border-color var(--transition);
+}
+
+.price-range__input:focus {
+  border-color: var(--color-primary);
+}
+
+
+/* ─── 7. Estado Vazio da Página ─────────────────────────────── */
+.products-page__empty {
+  text-align: center;
+  padding: var(--space-16) var(--space-4);
+  grid-column: 1 / -1;
+}
+
+.products-page__empty .empty-icon {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto var(--space-4);
+  border-radius: 50%;
+  background: rgba(21, 101, 192, 0.08);
+  color: var(--color-primary);
+  font-size: 2rem;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+
+.products-page__empty p {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-6);
+}
+
+
+/* ─── 8. Paginação ──────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-8) 0;
+}
+
+.pagination__btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  background-color: var(--color-white);
+  color: var(--color-gray-800);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: border-color var(--transition), color var(--transition),
+              background-color var(--transition);
+}
+
+.pagination__btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.pagination__btn--active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.pagination__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+/* ─── 9. Responsividade ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .products-layout {
+    grid-template-columns: 220px 1fr;
+    gap: var(--space-6);
+  }
+}
+
+@media (max-width: 768px) {
+  .products-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .products-sidebar {
+    position: static;
+    display: none; /* toggled por JS em mobile */
+  }
+
+  .products-sidebar.sidebar--open {
+    display: block;
+  }
+
+  .products-page__grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .products-page__grid {
+    grid-template-columns: 1fr;
+  }
+}

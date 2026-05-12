@@ -13,6 +13,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const productRoutes = require("./routes/productRoutes");
 const storeProductRoutes = require("./routes/storeProductRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -32,6 +33,11 @@ const app = express();
 app.use(cors());
 // Interpreta o body dos pedidos como JSON e popula req.body
 app.use(express.json());
+
+// --- Servir ficheiros estáticos da SPA (frontend) ---
+// Serve a pasta frontend/ para ficheiros CSS, JS, imagens, etc.
+const frontendPath = path.join(__dirname, '..', 'frontend');
+app.use(express.static(frontendPath));
 
 // --- Healthcheck ---
 /**
@@ -66,9 +72,33 @@ app.use("/api/v1/product-shopping-lists", productShoppingListRoutes);
 app.use("/api/v1/store-phones", storePhoneRoutes);
 app.use("/api/v1/store-links", storeLinkRoutes);
 
-// --- Handler 404 ---
-// Captura qualquer rota que não tenha sido registada acima
-app.use((_req, res) => {
+// --- SPA Fallback: redireciona para index.html se o ficheiro não existe ---
+// IMPORTANTE: Este deve estar DEPOIS de todas as rotas /api/* para não as interferir
+// Usa middleware em vez de app.get para capturar ALL requests, incluindo rotas não-existentes
+app.use((req, res, next) => {
+  // Se for uma rota /api, deixa passar para o handler 404
+  if (req.path.startsWith('/api')) {
+    return next();
+  }
+  // Se tiver extensão de ficheiro, deixa pass (pode estar procurando um static file)
+  if (req.path.includes('.')) {
+    return next();
+  }
+  // Para qualquer outro GET, serve index.html
+  if (req.method === 'GET') {
+    return res.sendFile(path.join(frontendPath, 'index.html'), (err) => {
+      if (err) {
+        console.error(`Erro ao servir index.html:`, err.message);
+        res.status(500).json({ error: 'Failed to serve index.html' });
+      }
+    });
+  }
+  next();
+});
+
+// --- Handler 404 (apenas para POST/PUT/DELETE ou rotas /api desconhecidas) ---
+// Captura qualquer rota API que não tenha sido registada acima
+app.use((req, res) => {
   return res.status(404).json({
     status: "error",
     data: null,

@@ -1,0 +1,254 @@
+/* =============================================================
+   modal.css — Modal Global (overlay + card) | Price360
+   ============================================================= */
+
+
+/* ─── 1. Overlay ────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+  display: none;          /* oculto por padrão */
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* Estado aberto — adicionado por JS */
+.modal-overlay.modal--open {
+  display: flex;
+  animation: fadeIn 0.2s ease-out;
+}
+
+
+/* ─── 2. Modal Card ─────────────────────────────────────────── */
+.modal {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease-out;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tamanho pequeno */
+.modal--sm {
+  max-width: 420px;
+}
+
+/* Tamanho grande */
+.modal--lg {
+  max-width: 720px;
+}
+
+/* Tamanho extra-grande */
+.modal--xl {
+  max-width: 900px;
+}
+
+
+/* ─── 3. Keyframe Animations ────────────────────────────────── */
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+/* ─── 4. Header ─────────────────────────────────────────────── */
+.modal__header {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-shrink: 0;
+}
+
+.modal__header h3 {
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+/* Botão fechar (X) */
+.modal__close {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--radius-full);
+  background-color: transparent;
+  color: var(--color-gray-600);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background-color var(--transition), color var(--transition);
+  padding: 0;
+}
+
+.modal__close:hover {
+  background-color: var(--color-gray-100);
+  color: var(--color-text);
+}
+
+.modal__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+/* ─── 5. Body ───────────────────────────────────────────────── */
+.modal__body {
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex: 1;
+  overflow-y: auto;
+}
+
+
+/* ─── 6. Footer ─────────────────────────────────────────────── */
+.modal__footer {
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-gray-200);
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+/* Footer com duas zonas (esquerda + direita) */
+.modal__footer--split {
+  justify-content: space-between;
+}
+
+
+/* ─── 7. Form Groups (dentro de modais) ─────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.form-group label {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-gray-800);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.6rem 0.875rem;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-sm);
+  outline: none;
+  font-size: var(--font-size-base);
+  color: var(--color-text);
+  background-color: var(--color-white);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  width: 100%;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--color-gray-400);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+}
+
+.form-group input.input--error,
+.form-group select.input--error,
+.form-group textarea.input--error {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+/* Mensagem de erro por campo */
+.form-group__error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  font-weight: 500;
+  margin-top: var(--space-1);
+}
+
+/* Select customizado */
+.form-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23757575' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.875rem center;
+  padding-right: 2.5rem;
+  cursor: pointer;
+}
+
+/* Grid de 2 colunas dentro de form */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+
+/* ─── 8. Responsividade ─────────────────────────────────────── */
+@media (max-width: 600px) {
+  .modal {
+    max-height: 95vh;
+    border-radius: var(--radius-md);
+  }
+
+  .modal__header,
+  .modal__body {
+    padding: var(--space-4);
+  }
+
+  .modal__footer {
+    padding: var(--space-3) var(--space-4);
+    flex-direction: column-reverse;
+  }
+
+  .modal__footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

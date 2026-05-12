@@ -1,0 +1,316 @@
+/* =============================================================
+   auth.css — Páginas de Login e Registo | Price360
+   ============================================================= */
+
+
+/* ─── 1. Auth Page Wrapper ──────────────────────────────────── */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary)      50%,
+    #90CAF9                   100%
+  );
+  padding: var(--space-8) var(--space-4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Blob decorativos de fundo */
+.auth-page::before {
+  content: '';
+  position: absolute;
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.auth-page::after {
+  content: '';
+  position: absolute;
+  bottom: -80px;
+  left: -80px;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+
+/* ─── 2. Auth Card ──────────────────────────────────────────── */
+.auth-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  width: 100%;
+  max-width: 460px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.4s ease-out;
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ─── 3. Logo no topo do card ───────────────────────────────── */
+.auth-card__logo {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.auth-card__logo img {
+  height: 64px;
+  width: auto;
+  margin: 0 auto;
+  object-fit: contain;
+}
+
+/* Logo textual fallback */
+.auth-card__logo-text {
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-top: var(--space-2);
+}
+
+.auth-card__logo-text .logo-price { color: var(--color-primary); }
+.auth-card__logo-text .logo-360   { color: var(--color-secondary); }
+
+
+/* ─── 4. Título ─────────────────────────────────────────────── */
+.auth-card__title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: var(--space-6);
+  color: var(--color-text);
+  line-height: 1.2;
+}
+
+.auth-card__title span {
+  color: var(--color-primary);
+}
+
+
+/* ─── 5. Formulário ─────────────────────────────────────────── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Grid de 2 colunas (nome + apelido no registo) */
+.auth-form .form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+/* Campo com ícone à esquerda */
+.form-field {
+  position: relative;
+}
+
+.form-field__icon {
+  position: absolute;
+  left: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-400);
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+  transition: color var(--transition);
+}
+
+.form-field input {
+  padding-left: 2.75rem;
+}
+
+.form-field input:focus + .form-field__icon,
+.form-field:focus-within .form-field__icon {
+  color: var(--color-primary);
+}
+
+/* Toggle visibilidade da password */
+.form-field__toggle {
+  position: absolute;
+  right: 0.875rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--color-gray-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  transition: color var(--transition);
+}
+
+.form-field__toggle:hover {
+  color: var(--color-gray-800);
+}
+
+.form-field__toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+
+/* ─── 6. Botão de submissão ─────────────────────────────────── */
+.auth-card__submit {
+  width: 100%;
+  padding: 0.875rem;
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  margin-top: var(--space-2);
+  transition: background-color var(--transition), transform var(--transition),
+              box-shadow var(--transition);
+}
+
+.auth-card__submit:hover {
+  background-color: var(--color-secondary-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
+}
+
+.auth-card__submit:active {
+  transform: translateY(0);
+}
+
+.auth-card__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+
+/* ─── 7. Rodapé do card (link de troca login/registo) ────────── */
+.auth-card__footer {
+  text-align: center;
+  margin-top: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+}
+
+.auth-card__footer a {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+  transition: text-decoration var(--transition);
+}
+
+.auth-card__footer a:hover {
+  text-decoration: underline;
+}
+
+
+/* ─── 8. "Esqueceste a password?" ───────────────────────────── */
+.auth-form__forgot {
+  text-align: right;
+  margin-top: calc(-1 * var(--space-2));
+}
+
+.auth-form__forgot a {
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: text-decoration var(--transition);
+}
+
+.auth-form__forgot a:hover {
+  text-decoration: underline;
+}
+
+
+/* ─── 9. Divider "ou" ───────────────────────────────────────── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+  color: var(--color-gray-400);
+  font-size: var(--font-size-sm);
+  margin: var(--space-2) 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--color-gray-200);
+}
+
+
+/* ─── 10. Botões sociais (oauth) ────────────────────────────── */
+.auth-social {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.btn-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-full);
+  background-color: var(--color-white);
+  color: var(--color-gray-800);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  text-decoration: none;
+}
+
+.btn-social:hover {
+  border-color: var(--color-gray-400);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-social svg,
+.btn-social img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+
+/* ─── 11. Responsividade ────────────────────────────────────── */
+@media (max-width: 500px) {
+  .auth-card {
+    padding: var(--space-6) var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .auth-form .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-card__title {
+    font-size: var(--font-size-xl);
+  }
+}

@@ -1,0 +1,130 @@
+/* =============================================================
+   home.css — Layout da Homepage | Price360
+   ============================================================= */
+
+.home {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Categories section ────────────────────────────────────── */
+.categories-section {
+    padding: 72px 0 60px;
+    background: #fff;
+}
+
+.section-header {
+    margin-bottom: 32px;
+}
+
+.section-label {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--color-gray-600);
+    display: block;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.section-title {
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 800;
+    color: var(--color-text);
+    line-height: 1.2;
+}
+.section-title em {
+    color: var(--color-secondary);
+    font-style: italic;
+}
+.section-title .highlight-blue {
+    color: var(--color-primary);
+}
+
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+}
+
+/* ── Products section ──────────────────────────────────────── */
+.products-section {
+    padding: 60px 0 80px;
+    background: var(--color-gray-50);
+}
+
+.products-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+}
+.products-section__header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+.products-section__header .view-all {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    text-decoration: none;
+    border: 1.5px solid var(--color-primary);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    transition:
+        background 0.2s,
+        color 0.2s;
+}
+.products-section__header .view-all:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 24px;
+}
+
+/* ── CTA banner ────────────────────────────────────────────── */
+.home-cta {
+    background: linear-gradient(
+        135deg,
+        var(--color-primary-dark),
+        var(--color-primary)
+    );
+    color: #fff;
+    padding: 60px var(--space-4);
+    text-align: center;
+}
+.home-cta h2 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+.home-cta p {
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 480px;
+    margin: 0 auto 24px;
+}
+
+/* ── Responsividade ────────────────────────────────────────── */
+@media (max-width: 960px) {
+    .categories-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+@media (max-width: 640px) {
+    .categories-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 400px) {
+    .categories-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

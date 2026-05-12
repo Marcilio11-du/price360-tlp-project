@@ -1,0 +1,181 @@
+/* =============================================================
+   toast.css — Sistema de Notificações Toast | Price360
+   ============================================================= */
+
+
+/* ─── 1. Root Container ─────────────────────────────────────── */
+#toast-root {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* Acessibilidade: lida por leitores de ecrã */
+  pointer-events: none;
+}
+
+
+/* ─── 2. Toast Base ─────────────────────────────────────────── */
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  color: var(--color-white);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  min-width: 280px;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+  animation: toastIn 0.3s ease-out forwards;
+  pointer-events: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Barra de progresso de auto-dismiss */
+.toast::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.4);
+  transform-origin: left;
+  animation: toastProgress var(--toast-duration, 4s) linear forwards;
+}
+
+/* Estado de saída */
+.toast.toast--hiding {
+  animation: toastOut 0.3s ease-in forwards;
+}
+.toast.toast--hiding::before {
+  animation: none;
+}
+
+
+/* ─── 3. Variantes de tipo ──────────────────────────────────── */
+.toast--success {
+  background-color: #388E3C;
+}
+
+.toast--error {
+  background-color: #C62828;
+}
+
+.toast--info {
+  background-color: var(--color-primary);
+}
+
+.toast--warning {
+  background-color: #F57C00;
+}
+
+
+/* ─── 4. Partes internas ────────────────────────────────────── */
+.toast__icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.toast__message {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toast__title {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  display: block;
+}
+
+.toast__description {
+  font-size: var(--font-size-xs);
+  opacity: 0.9;
+  margin-top: 2px;
+  display: block;
+}
+
+.toast__close {
+  cursor: pointer;
+  opacity: 0.7;
+  background: transparent;
+  border: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  padding: 0;
+  transition: opacity var(--transition), background-color var(--transition);
+  flex-shrink: 0;
+}
+
+.toast__close:hover {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.toast__close svg {
+  width: 14px;
+  height: 14px;
+}
+
+
+/* ─── 5. Keyframe Animations ────────────────────────────────── */
+@keyframes toastIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toastOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+@keyframes toastProgress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+
+/* ─── 6. Responsividade ─────────────────────────────────────── */
+@media (max-width: 480px) {
+  #toast-root {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+  }
+
+  .toast {
+    min-width: unset;
+    max-width: 100%;
+  }
+}
