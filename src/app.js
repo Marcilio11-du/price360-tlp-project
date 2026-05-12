@@ -1,0 +1,59 @@
+require('dotenv').config();
+
+const express = require('express');
+const cors = require('cors');
+const userRoutes = require('./routes/userRoutes');
+const { initializeDatabaseSchema } = require('./config/initDatabase');
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+app.get('/health', (_req, res) => {
+	return res.status(200).json({
+		status: 'success',
+		data: null,
+		message: 'API operacional.'
+	});
+});
+
+app.use('/api/v1/users', userRoutes);
+
+app.use((_req, res) => {
+	return res.status(404).json({
+		status: 'error',
+		data: null,
+		message: 'Rota nao encontrada.'
+	});
+});
+
+app.use((err, _req, res, _next) => {
+	console.error('Erro nao tratado:', err);
+	return res.status(500).json({
+		status: 'error',
+		data: null,
+		message: 'Falha interna no servidor.'
+	});
+});
+
+const PORT = Number(process.env.PORT || 3000);
+
+const startServer = async () => {
+	try {
+		await initializeDatabaseSchema();
+
+		app.listen(PORT, () => {
+			console.log(`Servidor ativo em http://localhost:${PORT}`);
+		});
+	} catch (error) {
+		console.error('Falha ao inicializar schema da base de dados:', error);
+		process.exit(1);
+	}
+};
+
+if (require.main === module) {
+	startServer();
+}
+
+module.exports = app;
