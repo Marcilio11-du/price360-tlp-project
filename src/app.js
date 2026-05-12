@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const userRoutes = require('./routes/userRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
 const { initializeDatabaseSchema } = require('./config/initDatabase');
 
 const app = express();
@@ -19,6 +20,7 @@ app.get('/health', (_req, res) => {
 });
 
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/categories', categoryRoutes);
 
 app.use((_req, res) => {
 	return res.status(404).json({
