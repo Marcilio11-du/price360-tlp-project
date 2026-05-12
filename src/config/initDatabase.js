@@ -136,6 +136,27 @@ const schemaStatements = [
         ON DELETE RESTRICT
     ) ENGINE=InnoDB
   `,
+  `
+    CREATE TABLE IF NOT EXISTS Lista_compras_Produto (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_lista INT NOT NULL,
+      id_produto INT NOT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at DATETIME NULL,
+      restored_at DATETIME NULL,
+      CONSTRAINT fk_lcp_lista
+        FOREIGN KEY (id_lista)
+        REFERENCES Lista_compras(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+      CONSTRAINT fk_lcp_produto
+        FOREIGN KEY (id_produto)
+        REFERENCES Produto(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+    ) ENGINE=InnoDB
+  `,
 ];
 
 const initializeDatabaseSchema = async () => {
@@ -273,6 +294,45 @@ const initializeDatabaseSchema = async () => {
     try {
       await connection.query(
         "ALTER TABLE Lista_compras ADD CONSTRAINT fk_listacompras_cliente FOREIGN KEY (id_cliente) REFERENCES Utilizador(id) ON UPDATE CASCADE ON DELETE RESTRICT",
+      );
+    } catch (error) {
+      if (
+        error.code !== "ER_DUP_KEYNAME" &&
+        error.code !== "ER_CANT_CREATE_TABLE" &&
+        error.code !== "ER_FK_DUP_NAME"
+      ) {
+        throw error;
+      }
+    }
+
+    await ensureColumnExists(
+      connection,
+      "Lista_compras_Produto",
+      "deleted_at DATETIME NULL",
+    );
+    await ensureColumnExists(
+      connection,
+      "Lista_compras_Produto",
+      "restored_at DATETIME NULL",
+    );
+
+    try {
+      await connection.query(
+        "ALTER TABLE Lista_compras_Produto ADD CONSTRAINT fk_lcp_lista FOREIGN KEY (id_lista) REFERENCES Lista_compras(id) ON UPDATE CASCADE ON DELETE RESTRICT",
+      );
+    } catch (error) {
+      if (
+        error.code !== "ER_DUP_KEYNAME" &&
+        error.code !== "ER_CANT_CREATE_TABLE" &&
+        error.code !== "ER_FK_DUP_NAME"
+      ) {
+        throw error;
+      }
+    }
+
+    try {
+      await connection.query(
+        "ALTER TABLE Lista_compras_Produto ADD CONSTRAINT fk_lcp_produto FOREIGN KEY (id_produto) REFERENCES Produto(id) ON UPDATE CASCADE ON DELETE RESTRICT",
       );
     } catch (error) {
       if (
