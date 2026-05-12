@@ -85,6 +85,30 @@ const schemaStatements = [
         ON UPDATE CASCADE
         ON DELETE RESTRICT
     ) ENGINE=InnoDB
+  `,
+  `
+    CREATE TABLE IF NOT EXISTS Produto_Loja (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_produto INT NOT NULL,
+      id_loja INT NOT NULL,
+      quantidade INT NOT NULL DEFAULT 0,
+      preco DECIMAL(10,2) NOT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at DATETIME NULL,
+      restored_at DATETIME NULL,
+      CONSTRAINT fk_produtoloja_produto
+        FOREIGN KEY (id_produto)
+        REFERENCES Produto(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+      CONSTRAINT fk_produtoloja_loja
+        FOREIGN KEY (id_loja)
+        REFERENCES Loja(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+      CONSTRAINT uq_produtoloja_produto_loja UNIQUE (id_produto, id_loja)
+    ) ENGINE=InnoDB
   `
 ];
 
@@ -123,6 +147,11 @@ const initializeDatabaseSchema = async () => {
     await ensureColumnExists(connection, 'Produto', 'deleted_at DATETIME NULL');
     await ensureColumnExists(connection, 'Produto', 'restored_at DATETIME NULL');
 
+    await ensureColumnExists(connection, 'Produto_Loja', 'quantidade INT NOT NULL DEFAULT 0');
+    await ensureColumnExists(connection, 'Produto_Loja', 'preco DECIMAL(10,2) NOT NULL DEFAULT 0.00');
+    await ensureColumnExists(connection, 'Produto_Loja', 'deleted_at DATETIME NULL');
+    await ensureColumnExists(connection, 'Produto_Loja', 'restored_at DATETIME NULL');
+
     try {
       await connection.query(
         'ALTER TABLE Produto ADD CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria) REFERENCES Categoria(id) ON UPDATE CASCADE ON DELETE RESTRICT'
@@ -133,6 +162,44 @@ const initializeDatabaseSchema = async () => {
         error.code !== 'ER_CANT_CREATE_TABLE' &&
         error.code !== 'ER_FK_DUP_NAME'
       ) {
+        throw error;
+      }
+    }
+
+    try {
+      await connection.query(
+        'ALTER TABLE Produto_Loja ADD CONSTRAINT fk_produtoloja_produto FOREIGN KEY (id_produto) REFERENCES Produto(id) ON UPDATE CASCADE ON DELETE RESTRICT'
+      );
+    } catch (error) {
+      if (
+        error.code !== 'ER_DUP_KEYNAME' &&
+        error.code !== 'ER_CANT_CREATE_TABLE' &&
+        error.code !== 'ER_FK_DUP_NAME'
+      ) {
+        throw error;
+      }
+    }
+
+    try {
+      await connection.query(
+        'ALTER TABLE Produto_Loja ADD CONSTRAINT fk_produtoloja_loja FOREIGN KEY (id_loja) REFERENCES Loja(id) ON UPDATE CASCADE ON DELETE RESTRICT'
+      );
+    } catch (error) {
+      if (
+        error.code !== 'ER_DUP_KEYNAME' &&
+        error.code !== 'ER_CANT_CREATE_TABLE' &&
+        error.code !== 'ER_FK_DUP_NAME'
+      ) {
+        throw error;
+      }
+    }
+
+    try {
+      await connection.query('ALTER TABLE Produto_Loja ADD UNIQUE (id_produto, id_loja)');
+    } catch (error) {
+      if (error.code === 'ER_DUP_ENTRY') {
+        console.warn('Não foi possível adicionar UNIQUE em Produto_Loja(id_produto, id_loja) devido a dados duplicados existentes.');
+      } else if (error.code !== 'ER_DUP_KEYNAME') {
         throw error;
       }
     }
