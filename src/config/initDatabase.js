@@ -1,17 +1,49 @@
+/**
+ * @module initDatabase
+ * @description Inicializa o schema da base de dados de forma idempotente.
+ * Cria as tabelas se não existirem (CREATE TABLE IF NOT EXISTS), adiciona
+ * colunas em falta e regista constraints (UNIQUE e FK) de forma segura,
+ * ignorando erros de duplicado quando o schema já se encontra atualizado.
+ * Toda a inicialização é executada dentro de uma transação para garantir
+ * consistência — em caso de erro, é feito rollback completo.
+ */
+
 const db = require("./db");
 
+/**
+ * Adiciona uma coluna a uma tabela de forma idempotente.
+ * Se a coluna já existir, o MySQL devolve o código `ER_DUP_FIELDNAME`;
+ * esse erro é silenciado para tornar a operação segura em execuções repetidas.
+ * Qualquer outro erro de BD é propagado normalmente.
+ * @param {import('mysql2/promise').PoolConnection} connection - Ligação ativa com transação.
+ * @param {string} tableName         - Nome da tabela a alterar.
+ * @param {string} columnDefinition  - Definição da coluna (ex.: "deleted_at DATETIME NULL").
+ */
 const ensureColumnExists = async (connection, tableName, columnDefinition) => {
   try {
     await connection.query(
       `ALTER TABLE ${tableName} ADD COLUMN ${columnDefinition}`,
     );
   } catch (error) {
+    // ER_DUP_FIELDNAME: coluna já existe — ignora para tornar idempotente
     if (error.code !== "ER_DUP_FIELDNAME") {
       throw error;
     }
   }
 };
 
+/**
+ * Adiciona uma constraint UNIQUE a uma coluna de forma idempotente.
+ * Dois cenários são tratados graciosamente:
+ *  - `ER_DUP_KEYNAME`: a constraint UNIQUE já existe — ignora silenciosamente.
+ *  - `ER_DUP_ENTRY`: existem dados duplicados na coluna, pelo que não é
+ *    possível adicionar o índice — emite um aviso e continua sem falhar.
+ * Qualquer outro erro é propagado.
+ * @param {import('mysql2/promise').PoolConnection} connection        - Ligação ativa com transação.
+ * @param {string} tableName                 - Nome da tabela a alterar.
+ * @param {string} columnName                - Nome da coluna a tornar única.
+ * @param {string} duplicateWarningMessage   - Mensagem a registar caso existam duplicados.
+ */
 const ensureUniqueConstraint = async (
   connection,
   tableName,
@@ -24,16 +56,27 @@ const ensureUniqueConstraint = async (
     );
   } catch (error) {
     if (error.code === "ER_DUP_ENTRY") {
+      // Não é possível adicionar UNIQUE: existem valores duplicados na coluna
       console.warn(duplicateWarningMessage);
       return;
     }
 
+    // ER_DUP_KEYNAME: constraint UNIQUE já existe — ignora para tornar idempotente
     if (error.code !== "ER_DUP_KEYNAME") {
       throw error;
     }
   }
 };
 
+/**
+ * Lista de instruções DDL para criação das tabelas base do schema.
+ * A ordem é relevante: as tabelas com FK devem ser criadas depois das tabelas
+ * referenciadas (ex.: Produto após Categoria, Produto_Loja após Produto e Loja).
+ * Ordem de dependência:
+ *   Utilizador → Lista_compras → Lista_compras_Produto
+ *   Categoria → Produto → Produto_Loja, Lista_compras_Produto
+ *   Loja → Produto_Loja, Telefone_Loja, Link_Loja
+ */
 const schemaStatements = [
   `
     CREATE TABLE IF NOT EXISTS Utilizador (
@@ -251,6 +294,12 @@ const initializeDatabaseSchema = async () => {
       "restored_at DATETIME NULL",
     );
 
+    /*
+     * Padrão try/catch para ALTER TABLE de FK:
+     * Ignora ER_DUP_KEYNAME (constraint já existe), ER_FK_DUP_NAME
+     * (nome de FK duplicado) e ER_CANT_CREATE_TABLE (já criada internamente).
+     * Qualquer outro erro é propagado e faz rollback da transação.
+     */
     try {
       await connection.query(
         "ALTER TABLE Produto ADD CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria) REFERENCES Categoria(id) ON UPDATE CASCADE ON DELETE RESTRICT",
