@@ -173,6 +173,22 @@ const schemaStatements = [
         ON DELETE RESTRICT
     ) ENGINE=InnoDB
   `,
+  `
+    CREATE TABLE IF NOT EXISTS Link_Loja (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      link VARCHAR(500) NOT NULL,
+      id_loja INT NOT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at DATETIME NULL,
+      restored_at DATETIME NULL,
+      CONSTRAINT fk_linkloja_loja
+        FOREIGN KEY (id_loja)
+        REFERENCES Loja(id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT
+    ) ENGINE=InnoDB
+  `,
 ];
 
 const initializeDatabaseSchema = async () => {
@@ -374,6 +390,31 @@ const initializeDatabaseSchema = async () => {
     try {
       await connection.query(
         "ALTER TABLE Telefone_Loja ADD CONSTRAINT fk_telefoneloja_loja FOREIGN KEY (id_loja) REFERENCES Loja(id) ON UPDATE CASCADE ON DELETE RESTRICT",
+      );
+    } catch (error) {
+      if (
+        error.code !== "ER_DUP_KEYNAME" &&
+        error.code !== "ER_CANT_CREATE_TABLE" &&
+        error.code !== "ER_FK_DUP_NAME"
+      ) {
+        throw error;
+      }
+    }
+
+    await ensureColumnExists(
+      connection,
+      "Link_Loja",
+      "deleted_at DATETIME NULL",
+    );
+    await ensureColumnExists(
+      connection,
+      "Link_Loja",
+      "restored_at DATETIME NULL",
+    );
+
+    try {
+      await connection.query(
+        "ALTER TABLE Link_Loja ADD CONSTRAINT fk_linkloja_loja FOREIGN KEY (id_loja) REFERENCES Loja(id) ON UPDATE CASCADE ON DELETE RESTRICT",
       );
     } catch (error) {
       if (
