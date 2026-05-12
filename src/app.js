@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const productRoutes = require('./routes/productRoutes');
+const storeProductRoutes = require('./routes/storeProductRoutes');
 const userRoutes = require('./routes/userRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const storeRoutes = require('./routes/storeRoutes');
@@ -25,6 +26,7 @@ app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/categories', categoryRoutes);
 app.use('/api/v1/stores', storeRoutes);
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/store-products', storeProductRoutes);
 
 app.use((_req, res) => {
 	return res.status(404).json({
