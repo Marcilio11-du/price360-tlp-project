@@ -128,7 +128,11 @@ const initializeDatabaseSchema = async () => {
         'ALTER TABLE Produto ADD CONSTRAINT fk_produto_categoria FOREIGN KEY (id_categoria) REFERENCES Categoria(id) ON UPDATE CASCADE ON DELETE RESTRICT'
       );
     } catch (error) {
-      if (error.code !== 'ER_DUP_KEYNAME' && error.code !== 'ER_CANT_CREATE_TABLE') {
+      if (
+        error.code !== 'ER_DUP_KEYNAME' &&
+        error.code !== 'ER_CANT_CREATE_TABLE' &&
+        error.code !== 'ER_FK_DUP_NAME'
+      ) {
         throw error;
       }
     }
