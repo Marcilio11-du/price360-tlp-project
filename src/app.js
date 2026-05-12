@@ -9,6 +9,7 @@ const categoryRoutes = require("./routes/categoryRoutes");
 const storeRoutes = require("./routes/storeRoutes");
 const shoppingListRoutes = require("./routes/shoppingListRoutes");
 const productShoppingListRoutes = require("./routes/productShoppingListRoutes");
+const storePhoneRoutes = require("./routes/storePhoneRoutes");
 const { initializeDatabaseSchema } = require("./config/initDatabase");
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/store-products", storeProductRoutes);
 app.use("/api/v1/shopping-lists", shoppingListRoutes);
 app.use("/api/v1/product-shopping-lists", productShoppingListRoutes);
+app.use("/api/v1/store-phones", storePhoneRoutes);
 
 app.use((_req, res) => {
   return res.status(404).json({
