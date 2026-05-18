@@ -8,12 +8,12 @@
     left: 50%;
     transform: translateX(-50%);
     width: calc(100% - 32px);
-    max-width: 1200px;
+    max-width: 1300px;
     z-index: 1000;
     background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
+    border-radius: 50px;
     height: 70px;
     box-shadow:
         0 4px 24px rgba(0, 0, 0, 0.09),
