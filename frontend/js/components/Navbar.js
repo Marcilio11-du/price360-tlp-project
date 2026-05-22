@@ -54,7 +54,7 @@ export class Navbar {
           <!-- Logo -->
           <a href="#/" class="navbar__logo">
             <img src="./assets/logo.png" alt="Price360" onerror="this.style.display='none'">
-            <span class="navbar__logo-text">PRICE<span class="logo-360">360</span></span>
+            <span class="navbar__logo-text"></span>
           </a>
 
           <!-- Pesquisa -->
