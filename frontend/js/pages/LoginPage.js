@@ -42,7 +42,7 @@ export default class LoginPage {
             <button type="submit" class="auth-card__submit" id="login-submit">Entrar</button>
           </form>
           <div class="auth-card__footer">
-            Não tens conta? <a href="#/cadastro">Criar conta</a>
+            Não possui uma conta? <a href="#/onboarding">Criar conta</a>
           </div>
         </div>
       </div>

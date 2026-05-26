@@ -60,7 +60,7 @@ export class Navbar {
       `
       : `
         <a href="#/login"   class="btn btn--outline">Login</a>
-        <a href="#/cadastro" class="btn btn--primary">Sign in</a>
+        <a href="#/onboarding" class="btn btn--primary">Sign in</a>
       `;
 
     return `
@@ -189,11 +189,32 @@ export class Navbar {
   }
 
   /**
-   * Inicializa a navbar: injeta HTML e associa eventos.
+   * Re-renderiza a navbar (HTML + eventos). Chama-se a cada mudança de rota
+   * para garantir que o estado de auth (logado/deslogado) está sempre correcto.
+   * @param {HTMLElement} container
+   */
+  refresh(container) {
+    container.innerHTML = this.render();
+    this.bindEvents(container);
+  }
+
+  /**
+   * Inicializa a navbar: injeta HTML, associa eventos e regista re-render
+   * automático a cada hashchange para reflectir mudanças de estado de auth.
    * @param {HTMLElement} container - Elemento raiz onde a navbar deve ser montada
    */
   init(container) {
-    container.innerHTML = this.render();
-    this.bindEvents(container);
+    this.refresh(container);
+    // Re-renderiza e mostra/esconde a cada mudança de rota
+    window.addEventListener("hashchange", () => {
+      const currentPath = router.getCurrentPath();
+      const hideNavbarRoutes = ["/login", "/cadastro", "/onboarding"];
+      if (hideNavbarRoutes.includes(currentPath)) {
+        container.style.display = "none";
+      } else {
+        container.style.display = "";
+        this.refresh(container);
+      }
+    });
   }
 }
