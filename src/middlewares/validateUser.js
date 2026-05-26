@@ -183,6 +183,8 @@ const validateUpdateUser = (req, res, next) => {
     "palavra_passe",
     "genero",
     "role",
+    "municipio_preferencial",
+    "avatar_path",
   ];
 
   const bodyKeys = Object.keys(req.body);

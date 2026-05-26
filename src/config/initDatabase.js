@@ -89,11 +89,13 @@ const schemaStatements = [
       u_nome VARCHAR(100) NOT NULL,
       rua VARCHAR(255) NOT NULL,
       municipio VARCHAR(120) NOT NULL,
+      municipio_preferencial VARCHAR(120) NULL,
       email VARCHAR(255) NOT NULL UNIQUE,
       data_nascimento DATE NOT NULL,
       palavra_passe VARCHAR(255) NOT NULL,
       genero ENUM('masculino', 'feminino', 'outro') NOT NULL,
       role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
+      avatar_path VARCHAR(500) NULL,
       created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       deleted_at DATETIME NULL,
@@ -255,6 +257,18 @@ const initializeDatabaseSchema = async () => {
       "Categoria",
       "nome",
       "Não foi possível adicionar a constraint UNIQUE no campo nome devido a entradas duplicadas existentes.",
+    );
+
+    // Adicionar campos de perfil para Utilizador
+    await ensureColumnExists(
+      connection,
+      "Utilizador",
+      "municipio_preferencial VARCHAR(120) NULL",
+    );
+    await ensureColumnExists(
+      connection,
+      "Utilizador",
+      "avatar_path VARCHAR(500) NULL",
     );
 
     await ensureColumnExists(connection, "Loja", "nif VARCHAR(255) NULL");

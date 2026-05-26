@@ -21,11 +21,13 @@ const baseSelectColumns = `
   u_nome,
   rua,
   municipio,
+  municipio_preferencial,
   email,
   data_nascimento,
   palavra_passe,
   genero,
   role,
+  avatar_path,
   created_at,
   updated_at,
   deleted_at,
@@ -230,11 +232,13 @@ const updateUser = async (id, userData) => {
     "u_nome",
     "rua",
     "municipio",
+    "municipio_preferencial",
     "email",
     "data_nascimento",
     "palavra_passe",
     "genero",
     "role",
+    "avatar_path",
   ];
 
   const updates = [];
@@ -326,6 +330,28 @@ const hardDeleteUser = async (id) => {
   return result.affectedRows;
 };
 
+/**
+ * Atualiza o caminho do avatar de um utilizador.
+ * Função auxiliar especializada para upload de imagens.
+ *
+ * @param {number} id         - ID do utilizador.
+ * @param {string} avatarPath - Caminho relativo do avatar (ex.: "uploads/avatars/user_123_avatar.jpg").
+ * @returns {Promise<number>} Número de linhas afectadas.
+ */
+const updateUserAvatar = async (id, avatarPath) => {
+  const sql = `
+    UPDATE ${USER_TABLE}
+    SET
+      avatar_path = ?,
+      updated_at = NOW()
+    WHERE id = ?
+      AND deleted_at IS NULL
+  `;
+
+  const [result] = await db.execute(sql, [avatarPath, id]);
+  return result.affectedRows;
+};
+
 module.exports = {
   getAllUsers,
   getAllActiveUsers,
@@ -339,4 +365,5 @@ module.exports = {
   softDeleteUser,
   restoreUser,
   hardDeleteUser,
+  updateUserAvatar,
 };
