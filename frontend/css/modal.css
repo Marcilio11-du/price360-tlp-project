@@ -7,20 +7,41 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0);
   z-index: 2000;
-  display: none;          /* oculto por padrão */
+  display: flex;              /* sempre flex — controlamos via opacity/pointer-events */
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  opacity: 0;
+  pointer-events: none;       /* invisível e não-clicável quando fechado */
+
+  /* Transição suave do overlay */
+  transition:
+    opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+    -webkit-backdrop-filter 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Estado aberto — adicionado por JS */
 .modal-overlay.modal--open {
-  display: flex;
-  animation: fadeIn 0.2s ease-out;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Estado a fechar — adicionado por JS antes de remover do DOM */
+.modal-overlay.modal--closing {
+  background-color: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  opacity: 0;
+  pointer-events: none;
 }
 
 
@@ -33,10 +54,33 @@
   max-height: 90vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);
-  animation: slideUp 0.3s ease-out;
   position: relative;
   display: flex;
   flex-direction: column;
+
+  /* Estado inicial (fechado) */
+  opacity: 0;
+  transform: translateY(28px) scale(0.97);
+
+  /* Transição de entrada */
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Quando o overlay está aberto, o card entra */
+.modal-overlay.modal--open .modal {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Saída suave do card */
+.modal-overlay.modal--closing .modal {
+  opacity: 0;
+  transform: translateY(16px) scale(0.97);
+  transition:
+    opacity 0.25s cubic-bezier(0.4, 0, 1, 1),
+    transform 0.25s cubic-bezier(0.4, 0, 1, 1);
 }
 
 /* Tamanho pequeno */
@@ -55,7 +99,7 @@
 }
 
 
-/* ─── 3. Keyframe Animations ────────────────────────────────── */
+/* ─── 3. Keyframes (mantidos por compatibilidade) ───────────── */
 @keyframes slideUp {
   from {
     transform: translateY(30px);
@@ -250,5 +294,14 @@
 
   .form-row {
     grid-template-columns: 1fr;
+  }
+}
+
+
+/* ─── 9. Respeitar preferência de movimento reduzido ────────── */
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay,
+  .modal {
+    transition: none;
   }
 }

@@ -4,6 +4,9 @@
  * Suporta título, corpo HTML arbitrário, botão de confirmação assíncrono
  * e estado de loading durante a operação.
  *
+ * Abertura: overlay + card fazem fade-in + slide-up suave com blur.
+ * Fecho: animação de saída antes de limpar o DOM (close com delay).
+ *
  * Uso:
  *   import { modal } from './components/Modal.js';
  *   modal.open({
@@ -17,6 +20,9 @@
 
 /** Referência ao contentor DOM (lazy init) */
 let modalRoot = null;
+
+/** Duração da animação de saída em ms — deve coincidir com a transition do CSS */
+const CLOSE_DURATION = 260;
 
 /**
  * Devolve (ou localiza) o elemento raiz do modal no DOM.
@@ -50,8 +56,9 @@ export const modal = {
     const root = getRoot();
     if (!root) return;
 
+    // Injecta o HTML sem a classe modal--open (estado "fechado" inicial)
     root.innerHTML = `
-      <div class="modal-overlay modal--open" id="modal-overlay">
+      <div class="modal-overlay" id="modal-overlay">
         <div class="modal ${size ? 'modal--' + size : ''}">
           <div class="modal__header">
             <h3>${title}</h3>
@@ -68,14 +75,25 @@ export const modal = {
       </div>
     `;
 
+    // Forçar reflow antes de adicionar modal--open garante que a transição CSS dispara
+    const overlay = root.querySelector('#modal-overlay');
+    overlay.getBoundingClientRect(); // flush layout
+    overlay.classList.add('modal--open');
+
     // Fechar ao clicar no X ou no botão cancelar
     root.querySelector('#modal-close')?.addEventListener('click',  () => this.close());
     root.querySelector('#modal-cancel')?.addEventListener('click', () => this.close());
 
-    // Fechar ao clicar no overlay (fora do modal)
-    root.querySelector('#modal-overlay')?.addEventListener('click', (e) => {
+    // Fechar ao clicar no overlay (fora do modal card)
+    overlay?.addEventListener('click', (e) => {
       if (e.target === e.currentTarget) this.close();
     });
+
+    // Tecla Escape fecha o modal
+    this._onKeyDown = (e) => {
+      if (e.key === 'Escape') this.close();
+    };
+    document.addEventListener('keydown', this._onKeyDown);
 
     // Botão de confirmação assíncrono
     if (onConfirm) {
@@ -91,11 +109,29 @@ export const modal = {
   },
 
   /**
-   * Fecha e limpa o modal.
+   * Fecha o modal com animação de saída suave antes de limpar o DOM.
    */
   close() {
     const root = getRoot();
-    if (root) root.innerHTML = '';
+    if (!root) return;
+
+    const overlay = root.querySelector('#modal-overlay');
+    if (!overlay) return;
+
+    // Remove listener do Escape
+    if (this._onKeyDown) {
+      document.removeEventListener('keydown', this._onKeyDown);
+      this._onKeyDown = null;
+    }
+
+    // Troca modal--open por modal--closing para disparar transição de saída
+    overlay.classList.remove('modal--open');
+    overlay.classList.add('modal--closing');
+
+    // Limpa o DOM após a animação terminar
+    setTimeout(() => {
+      if (root) root.innerHTML = '';
+    }, CLOSE_DURATION);
   },
 
   /**

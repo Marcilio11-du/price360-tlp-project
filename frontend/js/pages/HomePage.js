@@ -1,11 +1,6 @@
 /**
  * @file pages/HomePage.js
  * @description Home reformulada | Price360
- * — Hero com bolas animadas a descer
- * — Secção Categorias (skeleton → cards)
- * — Secção Produtos Em Alta (skeleton → cards)
- * — Secção "Conhecer o Price360"
- * — Footer conforme protótipo
  */
 
 import { api }               from '../api.js';
@@ -15,6 +10,7 @@ import { CategoryCard }      from '../components/CategoryCard.js';
 import { ProductCard }       from '../components/ProductCard.js';
 import { Footer }            from '../components/Footer.js';
 import { Loader }            from '../components/Loader.js';
+import { modal }             from '../components/Modal.js';
 import { observeNewElements } from '../animations.js';
 
 export default class HomePage {
@@ -269,7 +265,22 @@ export default class HomePage {
     }
   }
 
+  /* ─── Eventos dos cards de produto ──────────────────────────── */
   _bindProductEvents(grid) {
+    // Clique no card → abre modal de detalhes
+    grid.querySelectorAll('.product-card').forEach(card => {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', (e) => {
+        // Não abre modal se clicou nos botões de acção
+        if (e.target.closest('.btn-add') || e.target.closest('.btn-visit-store')) return;
+
+        const id = Number(card.dataset.id);
+        const sp = this.storeProducts.find(p => p.id === id);
+        if (sp) openProductModal(sp);
+      });
+    });
+
+    // Botão "+" → adicionar à lista
     grid.querySelectorAll('.btn-add').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
@@ -282,16 +293,71 @@ export default class HomePage {
   }
 
   _bindEvents() {
-    // "Conhecer o price360" → scroll até à secção About
     this.container.querySelector('#hero-cta')?.addEventListener('click', () => {
       this.container
         .querySelector('#conhecer-section')
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    // Botão lupa → foca search da navbar
     this.container.querySelector('#hero-search-btn')?.addEventListener('click', () => {
       document.querySelector('#navbar-search-input')?.focus();
     });
   }
+}
+
+/* ─── Modal de detalhes do produto (exportado para reutilização) ─ */
+export function openProductModal(sp) {
+  const available = sp.quantidade > 0;
+
+  const body = `
+    <div class="product-modal">
+      <div class="product-modal__image-wrap">
+        <img
+          src="./assets/products/${sp.id_produto}.jpg"
+          alt="${sp.produto_nome}"
+          onerror="this.src='./assets/product-placeholder.png'"
+          class="product-modal__image"
+        />
+      </div>
+
+      <div class="product-modal__info">
+        <p class="product-modal__store">Vendido por <strong>${sp.loja_nome}</strong></p>
+        <p class="product-modal__price">${formatPrice(sp.preco)}</p>
+
+        ${sp.produto_descricao
+          ? `<p class="product-modal__desc">${sp.produto_descricao}</p>`
+          : ''}
+
+        <span class="product-card__availability product-card__availability--${available ? 'available' : 'unavailable'}">
+          ${available ? `Disponível (${sp.quantidade} un.)` : 'Indisponível'}
+        </span>
+      </div>
+    </div>
+  `;
+
+  modal.open({
+    title: sp.produto_nome,
+    body,
+    confirmText: 'Adicionar à lista',
+    cancelText: 'Fechar',
+    size: 'sm',
+    onConfirm: async () => {
+      if (!auth.isAuthenticated()) {
+        modal.close();
+        router.navigate('/login');
+        return;
+      }
+      const { openAddToListModal } = await import('./ShoppingListPage.js');
+      modal.close();
+      openAddToListModal(sp.id_produto);
+    }
+  });
+}
+
+/* helper local — evita import circular */
+function formatPrice(preco) {
+  if (preco == null) return '—';
+  return new Intl.NumberFormat('pt-AO', {
+    style: 'currency', currency: 'AOA', minimumFractionDigits: 2
+  }).format(preco);
 }
