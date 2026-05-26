@@ -25,6 +25,7 @@ const storePhoneRoutes = require("./routes/storePhoneRoutes");
 const storeLinkRoutes = require("./routes/storeLinkRoutes");
 const authRoutes = require("./routes/authRoutes");
 const { initializeDatabaseSchema } = require("./config/initDatabase");
+const { initScheduler } = require("./scrapers/scheduler");
 
 const app = express();
 
@@ -122,8 +123,8 @@ app.use((err, _req, res, _next) => {
 const PORT = Number(process.env.PORT || 3000);
 
 /**
- * Inicializa o schema da base de dados e arranca o servidor HTTP.
- * A inicialização do schema é garantida antes de aceitar ligações;
+ * Inicializa o schema da base de dados, o scheduler de scrapers e arranca o servidor HTTP.
+ * A inicialização é garantida antes de aceitar ligações;
  * em caso de falha crítica, o processo termina com código de saída 1.
  */
 const startServer = async () => {
@@ -131,11 +132,17 @@ const startServer = async () => {
     // Garante que todas as tabelas e constraints estão criadas antes de aceitar pedidos
     await initializeDatabaseSchema();
 
+    // Inicia o scheduler de scrapers (agendador automático de atualização de preços)
+    if (process.env.ENABLE_SCRAPERS !== 'false') {
+      console.log("Inicializando scheduler de scrapers...");
+      initScheduler();
+    }
+
     app.listen(PORT, () => {
       console.log(`Servidor ativo em http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error("Falha ao inicializar schema da base de dados:", error);
+    console.error("Falha ao inicializar:", error);
     process.exit(1);
   }
 };

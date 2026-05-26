@@ -498,7 +498,43 @@ const initializeDatabaseSchema = async () => {
     }
 
     await connection.commit();
-    console.log("Schema de base de dados validado com sucesso.");
+    
+  // ─── Migrations de colunas adicionais (scrapers) ────────────────────────
+  const migrations = [
+    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS link TEXT NULL",
+    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS imagem TEXT NULL",
+    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS moeda VARCHAR(10) NOT NULL DEFAULT 'AKZ'",
+    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS data_atualizacao DATETIME NULL",
+    "ALTER TABLE Loja ADD COLUMN IF NOT EXISTS codigo VARCHAR(50) NULL",
+  ];
+  for (const sql of migrations) {
+    try { await db.query(sql); }
+    catch (err) {
+      if (!err.message.includes('Duplicate column') && !err.message.includes('already exists'))
+        console.warn('[DB migration] ' + err.message);
+    }
+  }
+
+  // Garantir lojas de scraping com codigo
+  const lojasScraper = [
+    ['ncr',      'NCR Angola'],
+    ['buitanda', 'Buitanda'],
+    ['multitek', 'MultiTek'],
+    ['itec',     'iTec'],
+  ];
+  for (const [codigo, nome] of lojasScraper) {
+    try {
+      await db.query(
+        'INSERT INTO Loja (codigo, nome, municipio) VALUES (?, ?, \'Luanda\') ON DUPLICATE KEY UPDATE codigo = VALUES(codigo)',
+        [codigo, nome]
+      );
+    } catch (_) {
+      try { await db.query('UPDATE Loja SET codigo = ? WHERE nome = ? AND (codigo IS NULL OR codigo = "")', [codigo, nome]); }
+      catch (__) {}
+    }
+  }
+
+  console.log("Schema de base de dados validado com sucesso.");
   } catch (error) {
     await connection.rollback();
     throw error;
