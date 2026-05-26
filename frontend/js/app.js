@@ -22,6 +22,7 @@ import ProductsPage        from './pages/ProductsPage.js';
 import LoginPage           from './pages/LoginPage.js';
 import RegisterPage        from './pages/RegisterPage.js';
 import ShoppingListPage    from './pages/ShoppingListPage.js';
+import ProfilePage         from './pages/ProfilePage.js';
 import AdminDashboardPage  from './pages/AdminDashboardPage.js';
 
 // ─── 1. Navbar persistente ────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ router.register('/produtos', (container) => new ProductsPage(container).render()
 router.register('/login',    (container) => new LoginPage(container).render());
 router.register('/cadastro', (container) => new RegisterPage(container).render());
 router.register('/lista',    (container) => new ShoppingListPage(container).render());
+router.register('/profile',  (container) => new ProfilePage(container).render());
 router.register('/admin',    (container) => new AdminDashboardPage(container).render());
 
 /** Página 404 inline */
@@ -58,6 +60,32 @@ window.addEventListener('scroll', () => {
     navbarEl.classList.toggle('navbar--scrolled', window.scrollY > 10);
   }
 });
+
+// ─── 3b. Mostrar/esconder navbar conforme a rota ───────────────────────────────
+window.addEventListener('hashchange', () => {
+  const navbarEl = document.querySelector('.navbar');
+  const currentPath = router.getCurrentPath();
+  const hideNavbarRoutes = ['/login', '/cadastro'];
+  
+  if (navbarEl) {
+    if (hideNavbarRoutes.includes(currentPath)) {
+      navbarEl.style.display = 'none';
+    } else {
+      navbarEl.style.display = '';
+    }
+  }
+});
+
+// Executar na primeira carga
+{
+  const navbarEl = document.querySelector('.navbar');
+  const currentPath = router.getCurrentPath();
+  const hideNavbarRoutes = ['/login', '/cadastro'];
+  
+  if (navbarEl && hideNavbarRoutes.includes(currentPath)) {
+    navbarEl.style.display = 'none';
+  }
+}
 
 // ─── 4 & 5. Animações + router ───────────────────────────────────────────────
 initAnimations();
