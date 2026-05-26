@@ -140,7 +140,9 @@ export default class ProductsPage {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!auth.isAuthenticated()) { router.navigate('/login'); return; }
-        import('./ShoppingListPage.js').then(m => m.openAddToListModal(btn.dataset.produto));
+        const sp = this.allProducts.find(p => String(p.id_produto) === btn.dataset.produto);
+        const name = sp?.produto_nome || 'Produto';
+        import('./ShoppingListPage.js').then(m => m.openAddToListModal(btn.dataset.produto, name));
       });
     });
 

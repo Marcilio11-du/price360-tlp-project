@@ -285,8 +285,10 @@ export default class HomePage {
       btn.addEventListener('click', e => {
         e.stopPropagation();
         if (!auth.isAuthenticated()) { router.navigate('/login'); return; }
+        const sp2 = this.storeProducts.find(p => String(p.id_produto) === btn.dataset.produto);
+        const name2 = sp2?.produto_nome || 'Produto';
         import('./ShoppingListPage.js').then(m =>
-          m.openAddToListModal(btn.dataset.produto)
+          m.openAddToListModal(btn.dataset.produto, name2)
         );
       });
     });
@@ -349,7 +351,7 @@ export function openProductModal(sp) {
       }
       const { openAddToListModal } = await import('./ShoppingListPage.js');
       modal.close();
-      openAddToListModal(sp.id_produto);
+      openAddToListModal(sp.id_produto, sp.produto_nome || 'Produto');
     }
   });
 }
