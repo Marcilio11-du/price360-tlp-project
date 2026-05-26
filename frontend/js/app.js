@@ -21,6 +21,7 @@ import HomePage            from './pages/HomePage.js';
 import ProductsPage        from './pages/ProductsPage.js';
 import LoginPage           from './pages/LoginPage.js';
 import RegisterPage        from './pages/RegisterPage.js';
+import OnboardingPage      from './pages/OnboardingPage.js';
 import ShoppingListPage    from './pages/ShoppingListPage.js';
 import ProfilePage         from './pages/ProfilePage.js';
 import AdminDashboardPage  from './pages/AdminDashboardPage.js';
@@ -37,6 +38,7 @@ router.register('/',         (container) => new HomePage(container).render());
 router.register('/produtos', (container) => new ProductsPage(container).render());
 router.register('/login',    (container) => new LoginPage(container).render());
 router.register('/cadastro', (container) => new RegisterPage(container).render());
+router.register('/onboarding', (container) => new OnboardingPage(container).render());
 router.register('/lista',    (container) => new ShoppingListPage(container).render());
 router.register('/profile',  (container) => new ProfilePage(container).render());
 router.register('/admin',    (container) => new AdminDashboardPage(container).render());
@@ -61,29 +63,13 @@ window.addEventListener('scroll', () => {
   }
 });
 
-// ─── 3b. Mostrar/esconder navbar conforme a rota ───────────────────────────────
-window.addEventListener('hashchange', () => {
-  const navbarEl = document.querySelector('.navbar');
-  const currentPath = router.getCurrentPath();
-  const hideNavbarRoutes = ['/login', '/cadastro'];
-  
-  if (navbarEl) {
-    if (hideNavbarRoutes.includes(currentPath)) {
-      navbarEl.style.display = 'none';
-    } else {
-      navbarEl.style.display = '';
-    }
-  }
-});
-
-// Executar na primeira carga
+// Navbar visibility on first load (Navbar.js handles subsequent route changes)
 {
-  const navbarEl = document.querySelector('.navbar');
+  const navbarRoot = document.getElementById('navbar-root');
   const currentPath = router.getCurrentPath();
-  const hideNavbarRoutes = ['/login', '/cadastro'];
-  
-  if (navbarEl && hideNavbarRoutes.includes(currentPath)) {
-    navbarEl.style.display = 'none';
+  const hideNavbarRoutes = ['/login', '/cadastro', '/onboarding'];
+  if (navbarRoot && hideNavbarRoutes.includes(currentPath)) {
+    navbarRoot.style.display = 'none';
   }
 }
 
