@@ -35,28 +35,12 @@ class ProfilePage {
   async loadUserData() {
     try {
       if (!this.currentUser?.id) return false;
-      
-      const token = auth.getToken();
-      const response = await fetch(`/api/v1/users/${this.currentUser.id}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        if (result.status === 'success' && result.data) {
-          // Atualizar dados com informações do servidor
-          this.currentUser = {
-            ...this.currentUser,
-            ...result.data
-          };
-          // Atualizar localStorage com dados completos
-          auth.setAuth(token, this.currentUser);
-          return true;
-        }
+      // Usar api.js para resolver automaticamente a porta correcta (3000 vs 43097)
+      const result = await api.get(`/users/${this.currentUser.id}`);
+      if (result.status === 'success' && result.data) {
+        this.currentUser = { ...this.currentUser, ...result.data };
+        auth.setAuth(auth.getToken(), this.currentUser);
+        return true;
       }
     } catch (error) {
       console.warn('Erro ao carregar dados do utilizador:', error);
@@ -382,32 +366,29 @@ class ProfilePage {
       const formData = new FormData();
       formData.append("avatar", file);
 
-      // Usar API relativa com suporte automático de detecção de base
-      const endpoint = `/api/v1/users/${this.currentUser.id}/upload-avatar`;
-      const apiBase = window.localStorage.getItem('price360_api_base') || 
-                     `${window.location.origin}/api/v1`;
+      const apiBase = window.localStorage.getItem('price360_api_base') ||
+                      `${window.location.origin}/api/v1`;
       const baseUrl = apiBase.replace('/api/v1', '');
-      
-      const response = await fetch(
-        `${baseUrl}${endpoint}`,
-        {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${auth.getToken()}`,
-          },
-          body: formData,
-        }
-      );
+      const endpoint = `/api/v1/users/${this.currentUser.id}/upload-avatar`;
 
+      const response = await fetch(`${baseUrl}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${auth.getToken()}` },
+        body: formData,
+      });
       const jsonResponse = await response.json();
-
-      if (!response.ok) {
-        throw new Error(jsonResponse.message || "Erro ao fazer upload do avatar.");
-      }
+      if (!response.ok) throw new Error(jsonResponse.message || 'Erro ao fazer upload do avatar.');
 
       // Actualizar utilizador no auth com novo avatar
-      this.currentUser = jsonResponse.data.user;
+      this.currentUser = { ...this.currentUser, avatar_path: jsonResponse.data?.avatar_path };
       auth.setAuth(auth.getToken(), this.currentUser);
+
+      // Actualizar navbar com novo avatar
+      const navbarRootAvatar = document.getElementById('navbar-root');
+      if (navbarRootAvatar) {
+        const { Navbar } = await import('../components/Navbar.js');
+        new Navbar().refresh(navbarRootAvatar);
+      }
 
       // Re-renderizar para mostrar o novo avatar corretamente
       const avatarImg = this.container.querySelector("#avatar-image");
@@ -459,31 +440,8 @@ class ProfilePage {
     if (!confirm("Tem a certeza que quer remover o avatar?")) return;
 
     try {
-      const endpoint = `/api/v1/users/${this.currentUser.id}`;
-      const apiBase = window.localStorage.getItem('price360_api_base') || 
-                     `${window.location.origin}/api/v1`;
-      const baseUrl = apiBase.replace('/api/v1', '');
-
-      const response = await fetch(
-        `${baseUrl}${endpoint}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${auth.getToken()}`,
-          },
-          body: JSON.stringify({ avatar_path: null }),
-        }
-      );
-
-      const jsonResponse = await response.json();
-
-      if (!response.ok) {
-        throw new Error(jsonResponse.message || "Erro ao remover avatar.");
-      }
-
-      // Actualizar utilizador no auth
-      this.currentUser = jsonResponse.data.user;
+      await api.put(`/users/${this.currentUser.id}`, { avatar_path: null });
+      this.currentUser = { ...this.currentUser, avatar_path: null };
       auth.setAuth(auth.getToken(), this.currentUser);
 
       // Re-renderizar o avatar
@@ -539,33 +497,17 @@ class ProfilePage {
         return;
       }
 
-      // Chamar API
-      const endpoint = `/api/v1/users/${this.currentUser.id}`;
-      const apiBase = window.localStorage.getItem('price360_api_base') || 
-                     `${window.location.origin}/api/v1`;
-      const baseUrl = apiBase.replace('/api/v1', '');
-
-      const response = await fetch(
-        `${baseUrl}${endpoint}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${auth.getToken()}`,
-          },
-          body: JSON.stringify(updateData),
-        }
-      );
-
-      const jsonResponse = await response.json();
-
-      if (!response.ok) {
-        throw new Error(jsonResponse.message || "Erro ao guardar dados pessoais.");
-      }
-
-      // Actualizar utilizador no auth
-      this.currentUser = jsonResponse.data.user;
+      // Chamar API via cliente centralizado (resolve porta/base automaticamente)
+      const jsonResponse = await api.put(`/users/${this.currentUser.id}`, updateData);
+      this.currentUser = { ...this.currentUser, ...jsonResponse.data };
       auth.setAuth(auth.getToken(), this.currentUser);
+
+      // Actualizar navbar com novos dados (nome, avatar, etc.)
+      const navbarRoot = document.getElementById('navbar-root');
+      if (navbarRoot) {
+        const { Navbar } = await import('../components/Navbar.js');
+        new Navbar().refresh(navbarRoot);
+      }
 
       toast.success("Perfil guardado com sucesso!");
     } catch (error) {

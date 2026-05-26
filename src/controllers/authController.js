@@ -101,10 +101,23 @@ const login = async (req, res) => {
     // --- 6. Geração do token JWT ---
     const token = signToken({ id: user.id, email: user.email, role: user.role });
 
-    // --- 7. Resposta de sucesso (palavra_passe nunca é exposta) ---
+    // --- 7. Buscar dados completos do utilizador (para popular Navbar e Perfil) ---
+    const userModel = require('../models/userModel');
+    const fullUser = await userModel.getUserById(user.id);
+
+    // --- 8. Resposta de sucesso (palavra_passe nunca é exposta) ---
     return sendSuccess(res, 200, {
       token,
-      user: { id: user.id, email: user.email, role: user.role }
+      user: {
+        id: fullUser.id,
+        email: fullUser.email,
+        role: fullUser.role,
+        p_nome: fullUser.p_nome,
+        u_nome: fullUser.u_nome,
+        avatar_path: fullUser.avatar_path,
+        municipio: fullUser.municipio,
+        municipio_preferencial: fullUser.municipio_preferencial,
+      }
     }, 'Login efetuado com sucesso.');
   } catch (error) {
     console.error('Erro ao efetuar login:', error);
@@ -112,4 +125,57 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { login };
+/**
+ * Regista um novo utilizador e retorna um token JWT imediatamente.
+ * O utilizador fica autenticado logo após o cadastro — não precisa de fazer login separado.
+ *
+ * @route  POST /api/v1/auth/register
+ * @param  {import('express').Request}  req - Body esperado conforme validateCreateUser
+ * @param  {import('express').Response} res
+ */
+const register = async (req, res) => {
+  try {
+    const userModel = require('../models/userModel');
+    const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 10);
+
+    const payload = req.body;
+
+    // Verificar unicidade do email
+    const existing = await userModel.getUserByEmail(payload.email);
+    if (existing) {
+      return sendError(res, 409, 'Já existe uma conta com este email.');
+    }
+
+    // Hash da palavra-passe
+    const hashedPassword = await bcrypt.hash(payload.palavra_passe, SALT_ROUNDS);
+
+    // Criar utilizador
+    const userId = await userModel.createUser({
+      ...payload,
+      palavra_passe: hashedPassword,
+      role: 'user',
+    });
+
+    const createdUser = await userModel.getUserByIdIncludingDeleted(userId);
+
+    // Gerar token JWT — o utilizador fica autenticado imediatamente
+    const token = signToken({ id: createdUser.id, email: createdUser.email, role: createdUser.role });
+
+    return sendSuccess(res, 201, {
+      token,
+      user: {
+        id: createdUser.id,
+        email: createdUser.email,
+        role: createdUser.role,
+        p_nome: createdUser.p_nome,
+        u_nome: createdUser.u_nome,
+        municipio_preferencial: createdUser.municipio_preferencial,
+      }
+    }, 'Conta criada com sucesso. Bem-vindo ao Price360!');
+  } catch (error) {
+    console.error('Erro ao registar utilizador:', error);
+    return sendError(res, 500, 'Falha interna ao criar conta.');
+  }
+};
+
+module.exports = { login, register };
