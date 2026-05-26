@@ -1,184 +1,170 @@
 /* =============================================================
-   footer.css — Rodapé do Site | Price360
+   footer.css — Rodapé conforme protótipo Price360
    ============================================================= */
 
-
-/* ─── 1. Footer Wrapper ─────────────────────────────────────── */
 .footer {
-  background-color: var(--color-primary-dark);
-  color: rgba(255, 255, 255, 0.9);
-  padding: var(--space-12) 0 var(--space-6);
+  background-color: #fff;
+  border-top: 1px solid var(--color-gray-200);
+  padding: var(--space-12) 0 0;
+  color: var(--color-text);
 }
 
-
-/* ─── 2. Grid de Colunas ────────────────────────────────────── */
+/* ── Grid de colunas ───────────────────────────────────────── */
 .footer__inner {
-  max-width: 1200px;
-  margin-inline: auto;
-  padding-inline: var(--space-6);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 220px 1fr 220px;
   gap: var(--space-8);
+  align-items: flex-start;
 }
 
-
-/* ─── 3. Coluna de Marca ────────────────────────────────────── */
-.footer__brand {}
-
-.footer__logo-text {
-  font-size: 1.5rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1;
-  margin-bottom: var(--space-2);
+/* ── Branding ──────────────────────────────────────────────── */
+.footer__brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
-.footer__logo-text .logo-price {
-  color: var(--color-white);
-}
-
-.footer__logo-text .logo-360 {
-  color: var(--color-secondary);
+.footer__logo img {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
 }
 
 .footer__brand p {
-  color: rgba(255, 255, 255, 0.7);
   font-size: var(--font-size-sm);
-  margin-top: var(--space-2);
+  color: var(--color-gray-600);
   line-height: 1.6;
-  max-width: 240px;
+  max-width: 200px;
 }
 
-/* Social links */
-.footer__socials {
-  display: flex;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
-}
-
-.footer__social-link {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-full);
-  background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  transition: background-color var(--transition), color var(--transition);
-}
-
-.footer__social-link:hover {
-  background-color: var(--color-secondary);
-  color: var(--color-white);
-}
-
-.footer__social-link svg {
-  width: 18px;
-  height: 18px;
-}
-
-
-/* ─── 4. Colunas de Links ───────────────────────────────────── */
-.footer__col {}
+/* ── Categorias ────────────────────────────────────────────── */
+.footer__categories {}
 
 .footer__title {
-  font-weight: 700;
-  margin-bottom: var(--space-4);
   font-size: var(--font-size-base);
-  color: var(--color-white);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.footer__categories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-6);
+}
+
+.footer__cat-col {}
+
+.footer__cat-heading {
+  display: block;
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
 }
 
 .footer__links {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 6px;
 }
 
 .footer__links a {
-  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-600);
   text-decoration: none;
-  font-size: var(--font-size-sm);
-  transition: color var(--transition), padding-left var(--transition);
+  transition: color var(--transition);
   display: inline-block;
 }
 
 .footer__links a:hover {
-  color: var(--color-white);
-  padding-left: var(--space-1);
+  color: var(--color-primary);
 }
 
+/* ── Contacto ──────────────────────────────────────────────── */
+.footer__contact {}
 
-/* ─── 5. Barra inferior ─────────────────────────────────────── */
-.footer__bottom {
-  max-width: 1200px;
-  margin-inline: auto;
-  padding-inline: var(--space-6);
-  margin-top: var(--space-8);
-  padding-top: var(--space-6);
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+.footer__contact-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer__contact-list li {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: var(--space-4);
-}
-
-.footer__copyright {
-  color: rgba(255, 255, 255, 0.5);
+  gap: var(--space-2);
   font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
 }
 
-.footer__bottom-links {
-  display: flex;
-  gap: var(--space-4);
+.footer__contact-list svg {
+  flex-shrink: 0;
+  color: var(--color-gray-600);
 }
 
-.footer__bottom-links a {
-  color: rgba(255, 255, 255, 0.5);
+.footer__contact-list a {
+  color: var(--color-gray-600);
   text-decoration: none;
-  font-size: var(--font-size-sm);
   transition: color var(--transition);
 }
 
-.footer__bottom-links a:hover {
-  color: var(--color-white);
+.footer__contact-list a:hover {
+  color: var(--color-primary);
 }
 
+/* ── Linha inferior ────────────────────────────────────────── */
+.footer__bottom {
+  margin-top: var(--space-8);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--color-gray-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
 
-/* ─── 6. Responsividade ─────────────────────────────────────── */
-@media (max-width: 768px) {
-  .footer {
-    padding: var(--space-8) 0 var(--space-6);
-  }
+.footer__credits,
+.footer__copyright {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-600);
+}
 
+.footer__credits::after {
+  content: " •";
+}
+
+/* ── Responsividade ────────────────────────────────────────── */
+@media (max-width: 960px) {
   .footer__inner {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-6);
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-8);
   }
-
-  .footer__brand {
+  .footer__categories {
     grid-column: 1 / -1;
   }
+  .footer__categories-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 
+@media (max-width: 640px) {
+  .footer__inner {
+    grid-template-columns: 1fr;
+  }
+  .footer__categories-grid {
+    grid-template-columns: 1fr 1fr;
+  }
   .footer__brand p {
     max-width: 100%;
   }
-
-  .footer__bottom {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .footer__bottom-links {
-    justify-content: center;
-  }
 }
 
-@media (max-width: 480px) {
-  .footer__inner {
+@media (max-width: 400px) {
+  .footer__categories-grid {
     grid-template-columns: 1fr;
   }
 }
