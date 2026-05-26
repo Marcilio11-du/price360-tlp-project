@@ -68,3 +68,13 @@
 {"timestamp":"2026-05-26T07:50:14.576Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
 {"timestamp":"2026-05-26T07:50:14.576Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
 {"timestamp":"2026-05-26T07:50:14.577Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":10,"total_updates":0,"total_errors":0,"duracao_total_ms":10430,"horario_inicio":"2026-05-26T07:50:04.147Z","horario_fim":"2026-05-26T07:50:14.577Z"}
+{"timestamp":"2026-05-26T07:58:24.455Z","level":"INFO","message":"🕐 Iniciando ScraperScheduler"}
+{"timestamp":"2026-05-26T07:58:24.493Z","level":"INFO","message":"✅ ScraperScheduler iniciado com sucesso","jobs_agendadas":3,"tarefas":["Main Pipeline","Clean Old Logs","Clean Old Data"]}
+{"timestamp":"2026-05-26T07:58:39.410Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T07:58:39.410Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:58:39.426Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:58:42.303Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:58:49.473Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":10,"errors":0,"totalProcessados":10,"duracao_ms":117}
+{"timestamp":"2026-05-26T07:58:49.475Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T07:58:49.475Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T07:58:49.476Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":10,"total_errors":0,"duracao_total_ms":10067,"horario_inicio":"2026-05-26T07:58:39.409Z","horario_fim":"2026-05-26T07:58:49.476Z"}
