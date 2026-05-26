@@ -23,7 +23,8 @@ const shoppingListRoutes = require("./routes/shoppingListRoutes");
 const productShoppingListRoutes = require("./routes/productShoppingListRoutes");
 const storePhoneRoutes = require("./routes/storePhoneRoutes");
 const storeLinkRoutes = require("./routes/storeLinkRoutes");
-const authRoutes = require("./routes/authRoutes");
+const authRoutes  = require("./routes/authRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 const { initializeDatabaseSchema } = require("./config/initDatabase");
 const { initScheduler } = require("./scrapers/scheduler");
 
@@ -72,6 +73,7 @@ app.use("/api/v1/product-shopping-lists", productShoppingListRoutes);
 // Informação de contacto de lojas
 app.use("/api/v1/store-phones", storePhoneRoutes);
 app.use("/api/v1/store-links", storeLinkRoutes);
+app.use("/api/v1/admin",       adminRoutes);
 
 // --- SPA Fallback: redireciona para index.html se o ficheiro não existe ---
 // IMPORTANTE: Este deve estar DEPOIS de todas as rotas /api/* para não as interferir

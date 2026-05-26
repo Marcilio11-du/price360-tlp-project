@@ -44,6 +44,26 @@ export default class LoginPage {
           <div class="auth-card__footer">
             Não possui uma conta? <a href="#/onboarding">Criar conta</a>
           </div>
+          <div style="text-align:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--color-gray-100)">
+            <button id="admin-login-btn" style="
+              display:inline-flex;align-items:center;gap:0.5rem;
+              background:transparent;border:1.5px solid var(--color-gray-300);
+              border-radius:var(--radius-full);padding:0.5rem 1.25rem;
+              font-size:0.8rem;font-weight:600;color:var(--color-gray-600);
+              cursor:pointer;transition:all 0.2s;
+            ">
+              🔐 Entrar como Admin
+            </button>
+          </div>
+          <div id="admin-credentials-box" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:var(--color-gray-50);border:1px solid var(--color-gray-200);border-radius:var(--radius-md);font-size:0.78rem;color:var(--color-gray-600);text-align:left">
+            <div style="font-weight:700;margin-bottom:0.4rem;color:var(--color-gray-700)">Credenciais de Admin</div>
+            <div id="admin-creds-display" style="font-family:monospace"></div>
+            <button id="admin-fill-btn" style="
+              margin-top:0.6rem;width:100%;padding:0.45rem;
+              background:var(--color-primary);color:#fff;border:none;
+              border-radius:var(--radius-md);font-size:0.8rem;font-weight:600;cursor:pointer;
+            ">Preencher e entrar</button>
+          </div>
         </div>
       </div>
     `;
@@ -103,6 +123,42 @@ export default class LoginPage {
         e.preventDefault();
         form.querySelector("#login-password")?.focus();
       }
+    });
+
+    // Hint de admin — clique discreto revela nota
+    this.container.querySelector("#admin-login-hint")?.addEventListener("click", () => {
+      const note = this.container.querySelector("#admin-login-note");
+      if (note) note.style.display = note.style.display === "none" ? "block" : "none";
+    });
+
+    // Botão "Entrar como Admin" — mostra credenciais e preenche
+    const adminBtn  = this.container.querySelector("#admin-login-btn");
+    const adminBox  = this.container.querySelector("#admin-credentials-box");
+    const adminCreds = this.container.querySelector("#admin-creds-display");
+    const adminFill  = this.container.querySelector("#admin-fill-btn");
+
+    const ADMIN_EMAIL = "admin@price360.ao";
+    const ADMIN_PASS  = "Admin@123456";
+
+    adminBtn?.addEventListener("click", () => {
+      const isOpen = adminBox.style.display !== "none";
+      adminBox.style.display = isOpen ? "none" : "block";
+      if (!isOpen && adminCreds) {
+        adminCreds.innerHTML = `
+          <div>📧 <strong>Email:</strong> ${ADMIN_EMAIL}</div>
+          <div>🔐 <strong>Password:</strong> ${ADMIN_PASS}</div>
+        `;
+      }
+    });
+
+    adminFill?.addEventListener("click", async () => {
+      const emailInput = form.querySelector("#login-email");
+      const passInput  = form.querySelector("#login-password");
+      if (emailInput) emailInput.value = ADMIN_EMAIL;
+      if (passInput)  passInput.value  = ADMIN_PASS;
+      adminBox.style.display = "none";
+      // Submete automaticamente
+      form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
     });
   }
 }

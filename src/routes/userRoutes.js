@@ -10,6 +10,7 @@ const express = require("express");
 const userController = require("../controllers/userController");
 const avatarController = require("../controllers/avatarController");
 const { authenticate } = require("../middlewares/authenticate");
+const { isAdmin } = require("../middlewares/authenticate");
 const {
   validateUserIdParam,
   validateCreateUser,
@@ -19,20 +20,15 @@ const uploadAvatar = require("../middlewares/multerConfig");
 
 const router = express.Router();
 
-router.get("/", userController.getUsers);
-router.get("/all", userController.getAllUsers);
-router.get("/deleted", userController.getDeletedUsers);
+router.get("/", isAdmin, userController.getUsers);
+router.get("/all",     isAdmin, userController.getAllUsers);
+router.get("/deleted", isAdmin, userController.getDeletedUsers);
 router.get("/:id", authenticate, validateUserIdParam, userController.getUserById);
 router.post("/", validateCreateUser, userController.createUser);
-router.put(
-  "/:id",
-  validateUserIdParam,
-  validateUpdateUser,
-  userController.updateUser,
-);
-router.delete("/:id", validateUserIdParam, userController.deleteUser);
-router.patch("/:id/restore", validateUserIdParam, userController.restoreUser);
-router.delete("/:id/hard", validateUserIdParam, userController.hardDeleteUser);
+router.put("/:id", validateUserIdParam, validateUpdateUser, userController.updateUser);
+router.delete("/:id",        isAdmin, validateUserIdParam, userController.deleteUser);
+router.patch("/:id/restore", isAdmin, validateUserIdParam, userController.restoreUser);
+router.delete("/:id/hard",   isAdmin, validateUserIdParam, userController.hardDeleteUser);
 
 // Rota de upload de avatar
 // Nota: Esta rota deve estar ANTES da rota GET /:id para evitar conflitos de routing

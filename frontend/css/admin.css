@@ -534,3 +534,132 @@
     align-items: flex-start;
   }
 }
+
+/* ─── 14. Log Dashboard ─────────────────────────────────────── */
+.log-controls {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.log-filter-bar {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.log-filter-btn {
+  padding: 0.3rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  border: 1.5px solid var(--color-gray-200);
+  background: transparent;
+  cursor: pointer;
+  transition: all var(--transition);
+  color: var(--color-gray-600);
+}
+.log-filter-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+.log-filter-btn.active { background: var(--color-primary); color: #fff; border-color: var(--color-primary); }
+.log-filter-btn.level-info.active    { background: #1565C0; border-color: #1565C0; }
+.log-filter-btn.level-error.active   { background: #C62828; border-color: #C62828; }
+.log-filter-btn.level-warn.active    { background: #E65100; border-color: #E65100; }
+
+.log-list {
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  max-height: 560px;
+  overflow-y: auto;
+  padding: var(--space-2) 0;
+}
+
+.log-entry {
+  display: grid;
+  grid-template-columns: 160px 60px 1fr;
+  gap: var(--space-2);
+  padding: 0.35rem var(--space-6);
+  border-bottom: 1px solid var(--color-gray-100);
+  align-items: start;
+  transition: background var(--transition);
+}
+.log-entry:hover { background: var(--color-gray-50); }
+.log-entry:last-child { border-bottom: none; }
+
+.log-entry__time { color: var(--color-gray-500); white-space: nowrap; font-size: 0.72rem; }
+
+.log-entry__level {
+  font-weight: 700;
+  font-size: 0.68rem;
+  border-radius: var(--radius-sm);
+  padding: 0.1rem 0.4rem;
+  text-align: center;
+  white-space: nowrap;
+}
+.log-entry__level--INFO  { background: rgba(21,101,192,0.1);  color: #1565C0; }
+.log-entry__level--ERROR { background: rgba(198,40,40,0.1);   color: #C62828; }
+.log-entry__level--WARN  { background: rgba(230,81,0,0.1);    color: #E65100; }
+.log-entry__level--RAW   { background: var(--color-gray-100); color: var(--color-gray-600); }
+
+.log-entry__msg { color: var(--color-text); word-break: break-word; }
+.log-entry__meta { grid-column: 3; font-size: 0.68rem; color: var(--color-gray-400); margin-top: 0.2rem; }
+
+.log-empty { padding: 2rem; text-align: center; color: var(--color-gray-500); }
+
+/* ─── 15. Botão "Criar" na section header ───────────────────── */
+.btn--create {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full);
+  padding: 0.55rem 1.2rem;
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color var(--transition), transform var(--transition);
+}
+.btn--create:hover { background-color: var(--color-primary-dark); transform: translateY(-1px); }
+
+/* ─── 16. Formulário inline (criar/editar dentro da section) ── */
+.admin-inline-form {
+  padding: var(--space-6);
+  border-bottom: 1px solid var(--color-gray-200);
+  background: var(--color-gray-50);
+}
+.admin-inline-form .form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.admin-inline-form .form-group label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-gray-700);
+  margin-bottom: var(--space-1);
+  display: block;
+}
+.admin-inline-form .form-group input,
+.admin-inline-form .form-group select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  background: #fff;
+  outline: none;
+  transition: border-color var(--transition);
+}
+.admin-inline-form .form-group input:focus,
+.admin-inline-form .form-group select:focus {
+  border-color: var(--color-primary);
+}
+.admin-inline-form .form-actions {
+  display: flex;
+  gap: var(--space-3);
+}

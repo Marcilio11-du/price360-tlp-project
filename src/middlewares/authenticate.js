@@ -58,4 +58,14 @@ const authorize = (...roles) => (req, res, next) => {
   return next();
 };
 
-module.exports = { authenticate, authorize };
+
+/**
+ * Alias conveniente para proteger rotas exclusivamente de administradores.
+ * Equivale a authenticate seguido de authorize('admin').
+ */
+const isAdmin = [
+  (req, res, next) => authenticate(req, res, next),
+  (req, res, next) => authorize('admin')(req, res, next),
+];
+
+module.exports = { authenticate, authorize, isAdmin };

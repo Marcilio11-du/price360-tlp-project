@@ -80,7 +80,7 @@ export class ProductCard {
 
           <!-- Acções -->
           <div class="product-card__actions">
-            <button class="btn-visit-store" data-store="${loja_nome}">
+            <button class="btn-visit-store" data-store="${loja_nome}" data-loja-id="${this.data.id_loja}">
               Visitar loja
             </button>
             <button

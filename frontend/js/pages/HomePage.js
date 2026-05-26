@@ -4,6 +4,7 @@
  */
 
 import { api }               from '../api.js';
+import { toast }             from '../components/Toast.js';
 import { auth }              from '../auth.js';
 import { router }            from '../router.js';
 import { CategoryCard }      from '../components/CategoryCard.js';
@@ -277,6 +278,32 @@ export default class HomePage {
         const id = Number(card.dataset.id);
         const sp = this.storeProducts.find(p => p.id === id);
         if (sp) openProductModal(sp);
+      });
+    });
+
+    // Botão "Visitar Loja" → abre o site da loja em nova aba
+    grid.querySelectorAll('.btn-visit-store').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const lojaId = btn.dataset.lojaId;
+        const storeName = btn.dataset.store;
+        if (!lojaId) return;
+        try {
+          btn.disabled = true;
+          btn.textContent = '…';
+          const res = await api.get(`/store-links/store/${lojaId}`);
+          const links = res.data || [];
+          if (links.length === 0) {
+            toast.error(`Sem website registado para ${storeName}.`);
+          } else {
+            window.open(links[0].link, '_blank', 'noopener,noreferrer');
+          }
+        } catch {
+          toast.error('Não foi possível obter o link da loja.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Visitar loja';
+        }
       });
     });
 

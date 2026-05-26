@@ -9,6 +9,7 @@
 const express = require("express");
 const router = express.Router();
 const storeController = require("../controllers/storeControllers");
+const { isAdmin } = require("../middlewares/authenticate");
 const {
   validateStoreIdParam,
   validateCreateStore,
@@ -16,26 +17,19 @@ const {
 } = require("../middlewares/validateStore");
 
 router.get("/", storeController.getStores);
-router.get("/all", storeController.getAllStores);
-router.get("/deleted", storeController.getDeletedStores);
+router.get("/all",     isAdmin, storeController.getAllStores);
+router.get("/deleted", isAdmin, storeController.getDeletedStores);
 router.get("/:id", validateStoreIdParam, storeController.getStoreById);
-router.post("/", validateCreateStore, storeController.createStore);
+router.post("/",   isAdmin, validateCreateStore, storeController.createStore);
 router.put(
   "/:id",
+  isAdmin,
   validateStoreIdParam,
   validateUpdateStore,
   storeController.updateStore,
 );
-router.delete("/:id", validateStoreIdParam, storeController.softDeleteStore);
-router.patch(
-  "/:id/restore",
-  validateStoreIdParam,
-  storeController.restoreStore,
-);
-router.delete(
-  "/:id/hard",
-  validateStoreIdParam,
-  storeController.hardDeleteStore,
-);
+router.delete("/:id",        isAdmin, validateStoreIdParam, storeController.softDeleteStore);
+router.patch("/:id/restore", isAdmin, validateStoreIdParam, storeController.restoreStore);
+router.delete("/:id/hard",   isAdmin, validateStoreIdParam, storeController.hardDeleteStore);
 
 module.exports = router;
