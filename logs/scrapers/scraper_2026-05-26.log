@@ -1,0 +1,70 @@
+{"timestamp":"2026-05-26T06:18:26.037Z","level":"ERROR","message":"Erro no teste do pipeline","error":"ScraperPipeline.execute is not a function"}
+{"timestamp":"2026-05-26T06:19:03.485Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T06:19:03.486Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:03.505Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:06.285Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:06.786Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":1}
+{"timestamp":"2026-05-26T06:19:06.787Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:19:06.787Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:19:06.787Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":0,"total_errors":0,"duracao_total_ms":3302,"horario_inicio":"2026-05-26T06:19:03.485Z","horario_fim":"2026-05-26T06:19:06.787Z"}
+{"timestamp":"2026-05-26T06:19:41.185Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T06:19:41.186Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:41.198Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:44.069Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:44.571Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":32}
+{"timestamp":"2026-05-26T06:19:44.572Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:19:44.572Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":1}
+{"timestamp":"2026-05-26T06:19:44.572Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":0,"total_errors":0,"duracao_total_ms":3387,"horario_inicio":"2026-05-26T06:19:41.185Z","horario_fim":"2026-05-26T06:19:44.572Z"}
+{"timestamp":"2026-05-26T06:19:55.654Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T06:19:55.654Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:55.665Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:58.492Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:19:58.994Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":10}
+{"timestamp":"2026-05-26T06:19:58.994Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:19:58.994Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:19:58.994Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":0,"total_errors":0,"duracao_total_ms":3341,"horario_inicio":"2026-05-26T06:19:55.653Z","horario_fim":"2026-05-26T06:19:58.994Z"}
+{"timestamp":"2026-05-26T06:20:09.941Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T06:20:09.941Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:20:09.952Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:20:13.150Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:20:13.653Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":24}
+{"timestamp":"2026-05-26T06:20:13.653Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:20:13.654Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:20:13.654Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":0,"total_errors":0,"duracao_total_ms":3713,"horario_inicio":"2026-05-26T06:20:09.941Z","horario_fim":"2026-05-26T06:20:13.654Z"}
+{"timestamp":"2026-05-26T06:20:37.233Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T06:20:37.234Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:20:37.249Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:20:40.074Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:20:40.576Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":16}
+{"timestamp":"2026-05-26T06:20:40.578Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:20:40.578Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:20:40.579Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":0,"total_errors":0,"duracao_total_ms":3346,"horario_inicio":"2026-05-26T06:20:37.233Z","horario_fim":"2026-05-26T06:20:40.579Z"}
+{"timestamp":"2026-05-26T06:21:01.083Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T06:21:01.083Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:21:01.095Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:21:04.451Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T06:21:04.954Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":31}
+{"timestamp":"2026-05-26T06:21:04.955Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:21:04.955Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T06:21:04.956Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":0,"total_errors":0,"duracao_total_ms":3874,"horario_inicio":"2026-05-26T06:21:01.082Z","horario_fim":"2026-05-26T06:21:04.956Z"}
+{"timestamp":"2026-05-26T07:34:06.802Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T07:34:06.803Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:34:06.816Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:34:09.769Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:34:10.272Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":40}
+{"timestamp":"2026-05-26T07:34:10.273Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T07:34:10.273Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T07:34:10.274Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":0,"total_updates":0,"total_errors":0,"duracao_total_ms":3472,"horario_inicio":"2026-05-26T07:34:06.802Z","horario_fim":"2026-05-26T07:34:10.274Z"}
+{"timestamp":"2026-05-26T07:35:34.701Z","level":"INFO","message":"🕐 Iniciando ScraperScheduler"}
+{"timestamp":"2026-05-26T07:48:02.739Z","level":"INFO","message":"🕐 Iniciando ScraperScheduler"}
+{"timestamp":"2026-05-26T07:48:02.777Z","level":"INFO","message":"✅ ScraperScheduler iniciado com sucesso","jobs_agendadas":3,"tarefas":["Main Pipeline","Clean Old Logs","Clean Old Data"]}
+{"timestamp":"2026-05-26T07:49:53.559Z","level":"INFO","message":"🕐 Iniciando ScraperScheduler"}
+{"timestamp":"2026-05-26T07:49:53.596Z","level":"INFO","message":"✅ ScraperScheduler iniciado com sucesso","jobs_agendadas":3,"tarefas":["Main Pipeline","Clean Old Logs","Clean Old Data"]}
+{"timestamp":"2026-05-26T07:50:04.147Z","level":"INFO","message":"🚀 Iniciando pipeline de scrapers","termos_busca":["Laptop"],"lojas_ativas":3}
+{"timestamp":"2026-05-26T07:50:04.148Z","level":"INFO","message":"Iniciando NCR Angola","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:50:04.161Z","level":"INFO","message":"Iniciando Buitanda","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:50:07.403Z","level":"INFO","message":"Iniciando MultiTek","termos":1,"lojas_restantes":3}
+{"timestamp":"2026-05-26T07:50:14.575Z","level":"INFO","message":"[NCR Angola] Execução concluída com sucesso","inserts":10,"updates":0,"errors":0,"totalProcessados":10,"duracao_ms":176}
+{"timestamp":"2026-05-26T07:50:14.576Z","level":"INFO","message":"[Buitanda] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T07:50:14.576Z","level":"INFO","message":"[MultiTek] Execução concluída com sucesso","inserts":0,"updates":0,"errors":0,"totalProcessados":0,"duracao_ms":0}
+{"timestamp":"2026-05-26T07:50:14.577Z","level":"INFO","message":"Pipeline de scrapers completo","lojas_processadas":3,"lojas_com_erro":0,"total_inserts":10,"total_updates":0,"total_errors":0,"duracao_total_ms":10430,"horario_inicio":"2026-05-26T07:50:04.147Z","horario_fim":"2026-05-26T07:50:14.577Z"}
