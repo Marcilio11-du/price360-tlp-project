@@ -25,18 +25,34 @@ export class Navbar {
     const user = auth.getUser();
     const isAuth = auth.isAuthenticated();
 
+    // Gerar iniciais (primeira letra do p_nome + primeira letra do u_nome)
+    const initials = user
+      ? `${user.p_nome?.[0]?.toUpperCase() || ""}${user.u_nome?.[0]?.toUpperCase() || ""}`.slice(0, 2)
+      : "U";
+
+    // Construir nome completo
+    const fullName = user
+      ? `${user.p_nome || ""} ${user.u_nome || ""}`.trim()
+      : "Utilizador";
+
+    // Avatar image URL se existir
+    const avatarImg = user?.avatar_path
+      ? `<img src="${user.avatar_path}" alt="${fullName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+      : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:600;font-size:0.85rem">${initials}</span>`;
+
     // --- Bloco de autenticação ---
     const authButtons = isAuth
       ? `
         <div class="navbar__user" id="navbar-user-menu">
-          <div class="navbar__user-avatar">${user?.p_nome?.[0]?.toUpperCase() || "U"}</div>
-          <span class="navbar__user-name">${user?.p_nome || "Utilizador"}</span>
+          <div class="navbar__user-avatar">${avatarImg}</div>
+          <span class="navbar__user-name">${fullName}</span>
           <div class="navbar__user-dropdown" id="user-dropdown" style="display:none">
             ${
               auth.isAdmin()
                 ? `<div class="dropdown-item" data-nav="/admin">Dashboard Admin</div>`
                 : ""
             }
+            <div class="dropdown-item" data-nav="/profile">Perfil</div>
             <div class="dropdown-item" data-nav="/lista">Listas de Compras</div>
             <div class="dropdown-item dropdown-item--danger" id="logout-btn">Terminar Sessão</div>
           </div>
