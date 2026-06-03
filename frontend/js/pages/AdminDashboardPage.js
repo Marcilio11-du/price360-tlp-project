@@ -8,12 +8,12 @@ import { observeNewElements } from '../animations.js';
 
 /* ─── Secções disponíveis na sidebar ──────────────────────────── */
 const SECTIONS = [
-  { id: 'overview',      label: 'Visão Geral',  icon: '📊' },
-  { id: 'lojas',         label: 'Lojas',         icon: '🏪' },
-  { id: 'utilizadores',  label: 'Utilizadores',  icon: '👤' },
-  { id: 'categorias',    label: 'Categorias',    icon: '🏷️' },
-  { id: 'produtos',      label: 'Produtos',      icon: '📦' },
-  { id: 'logs',          label: 'Logs Scrapers', icon: '📋' },
+  { id: 'overview',      label: 'Visão Geral',  icon: '[●]' },
+  { id: 'lojas',         label: 'Lojas',         icon: '[●]' },
+  { id: 'utilizadores',  label: 'Utilizadores',  icon: '[●]' },
+  { id: 'categorias',    label: 'Categorias',    icon: '[●]' },
+  { id: 'produtos',      label: 'Produtos',      icon: '[●]' },
+  { id: 'logs',          label: 'Logs Scrapers', icon: '[●]' },
 ];
 
 export default class AdminDashboardPage {

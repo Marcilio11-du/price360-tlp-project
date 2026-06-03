@@ -35,7 +35,7 @@ class ScraperPipeline {
     };
 
     try {
-      logger.info('🚀 Iniciando pipeline de scrapers', {
+      logger.info('[START] Iniciando pipeline de scrapers', {
         termos_busca: termosBusca,
         lojas_ativas: getActiveScrapers().length
       });

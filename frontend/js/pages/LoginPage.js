@@ -52,7 +52,7 @@ export default class LoginPage {
               font-size:0.8rem;font-weight:600;color:var(--color-gray-600);
               cursor:pointer;transition:all 0.2s;
             ">
-              🔐 Entrar como Admin
+              <i class="icon-lock"></i> Entrar como Admin
             </button>
           </div>
           <div id="admin-credentials-box" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:var(--color-gray-50);border:1px solid var(--color-gray-200);border-radius:var(--radius-md);font-size:0.78rem;color:var(--color-gray-600);text-align:left">
@@ -146,7 +146,7 @@ export default class LoginPage {
       if (!isOpen && adminCreds) {
         adminCreds.innerHTML = `
           <div>📧 <strong>Email:</strong> ${ADMIN_EMAIL}</div>
-          <div>🔐 <strong>Password:</strong> ${ADMIN_PASS}</div>
+          <div><i class="icon-lock"></i> <strong>Password:</strong> ${ADMIN_PASS}</div>
         `;
       }
     });

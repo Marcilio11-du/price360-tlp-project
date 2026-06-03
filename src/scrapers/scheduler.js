@@ -48,7 +48,7 @@ class ScraperScheduler {
     });
     this.scheduledJobs.push({ name: 'Clean Old Data', job: cleanDataJob });
 
-    logger.info('✅ ScraperScheduler iniciado com sucesso', {
+    logger.info('[OK] ScraperScheduler iniciado com sucesso', {
       jobs_agendadas: this.scheduledJobs.length,
       tarefas: this.scheduledJobs.map(j => j.name)
     });
@@ -78,7 +78,7 @@ class ScraperScheduler {
       // Notificar sobre status
       this.notifyExecutionComplete(stats);
     } catch (error) {
-      logger.error('❌ Erro crítico na execução do pipeline', {
+      logger.error('[ERROR] Erro crítico na execução do pipeline', {
         erro: error.message,
         stack: error.stack?.split('\n').slice(0, 2).join(' | ')
       });
@@ -91,9 +91,9 @@ class ScraperScheduler {
   async executeDataCleanup() {
     try {
       const result = await this.pipeline.cleanOldData(30);
-      logger.info('✅ Limpeza de dados concluída', result);
+      logger.info('[OK] Limpeza de dados concluída', result);
     } catch (error) {
-      logger.error('❌ Erro na limpeza de dados', { erro: error.message });
+      logger.error('[ERROR] Erro na limpeza de dados', { erro: error.message });
     }
   }
 
@@ -107,14 +107,14 @@ class ScraperScheduler {
 ║  PIPELINE DE SCRAPERS - RELATÓRIO         ║
 ╚════════════════════════════════════════════╝
 
-📊 Resumo da Execução:
-  ✅ Lojas Processadas: ${stats.processed}
-  ❌ Lojas com Erro: ${stats.failed}
+RESUMO DA EXECUÇÃO:
+  [OK] Lojas Processadas: ${stats.processed}
+  [ERROR] Lojas com Erro: ${stats.failed}
   
 📈 Dados Atualizados:
   ➕ Produtos Inseridos: ${stats.totalInserts}
-  🔄 Produtos Atualizados: ${stats.totalUpdates}
-  ⚠️  Erros: ${stats.totalErrors}
+  [UPDATE] Produtos Atualizados: ${stats.totalUpdates}
+  [WARN] Erros: ${stats.totalErrors}
 
 ⏱️  Tempo Total: ${stats.totalDuration}ms (${(stats.totalDuration / 1000).toFixed(2)}s)
 
@@ -134,7 +134,7 @@ class ScraperScheduler {
       logger.info(`⏸️ Job parado: ${name}`);
     });
     this.scheduledJobs = [];
-    logger.info('✅ Todas as tarefas foram paradas');
+    logger.info('[OK] Todas as tarefas foram paradas');
   }
 
   /**

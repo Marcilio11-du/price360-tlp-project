@@ -86,10 +86,10 @@ class Logger {
 
     const color = colors[level] || colors.INFO;
     const icon = {
-      INFO: 'ℹ️',
-      WARN: '⚠️',
-      ERROR: '❌',
-      DEBUG: '🔍'
+      INFO: '[ℹ]',
+      WARN: '[!]',
+      ERROR: '[✗]',
+      DEBUG: '[?]'
     }[level] || '•';
 
     const metadataStr = Object.keys(metadata).length > 0

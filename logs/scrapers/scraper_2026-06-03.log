@@ -1,0 +1,2 @@
+{"timestamp":"2026-06-03T07:52:07.394Z","level":"INFO","message":"🕐 Iniciando ScraperScheduler"}
+{"timestamp":"2026-06-03T07:52:07.447Z","level":"INFO","message":"[OK] ScraperScheduler iniciado com sucesso","jobs_agendadas":3,"tarefas":["Main Pipeline","Clean Old Logs","Clean Old Data"]}

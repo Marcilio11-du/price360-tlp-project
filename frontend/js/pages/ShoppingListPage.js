@@ -89,7 +89,7 @@ export default class ShoppingListPage {
     const activeList = this.lists.find(l => l.id === this.activeListId);
 
     modal.open({
-      title: "✅ Lista criada com sucesso!",
+      title: "<i class='icon-check'></i> Lista criada com sucesso!",
       body: `
         <div class="pending-product-modal">
           <div class="pending-product-modal__product">

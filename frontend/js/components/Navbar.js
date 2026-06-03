@@ -79,7 +79,7 @@ export class Navbar {
               type="text"
               id="navbar-search-input"
               class="navbar__search-input"
-              placeholder="Pesquise por produtos ou marca ..."
+              placeholder="Pesquise..."
               autocomplete="off"
               aria-label="Pesquisar produtos"
             />
@@ -92,8 +92,8 @@ export class Navbar {
             </button>
           </div>
 
-          <!-- Links principais -->
-          <nav class="navbar__nav" aria-label="Navegação principal">
+          <!-- Links principais (desktop) -->
+          <nav class="navbar__nav navbar__nav--desktop" aria-label="Navegação principal">
             <a href="#/">Home</a>
             <a href="#/produtos">Produtos</a>
           </nav>
@@ -112,6 +112,21 @@ export class Navbar {
             </button>
           </div>
 
+          <!-- Hamburger menu (mobile) -->
+          <button class="navbar__hamburger" id="navbar-hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+
+        </div>
+
+        <!-- Menu mobile -->
+        <div class="navbar__mobile-menu" id="navbar-mobile-menu">
+          <nav class="navbar__nav navbar__nav--mobile" aria-label="Navegação mobile">
+            <a href="#/">Home</a>
+            <a href="#/produtos">Produtos</a>
+          </nav>
         </div>
       </nav>
     `;
@@ -184,6 +199,33 @@ export class Navbar {
       } else {
         toast.info("Faz login para aceder à tua lista de compras.");
         router.navigate("/login");
+      }
+    });
+
+    // --- Hamburger menu (mobile) ---
+    const hamburger = container.querySelector("#navbar-hamburger");
+    const mobileMenu = container.querySelector("#navbar-mobile-menu");
+    const mobileLinks = container.querySelectorAll(".navbar__nav--mobile a");
+
+    hamburger?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      hamburger.classList.toggle("active");
+      mobileMenu?.classList.toggle("active");
+    });
+
+    // Fecha menu ao clicar em link
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        hamburger?.classList.remove("active");
+        mobileMenu?.classList.remove("active");
+      });
+    });
+
+    // Fecha menu ao clicar fora
+    document.addEventListener("click", (e) => {
+      if (!container.contains(e.target)) {
+        hamburger?.classList.remove("active");
+        mobileMenu?.classList.remove("active");
       }
     });
   }

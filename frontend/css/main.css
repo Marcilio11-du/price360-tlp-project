@@ -433,3 +433,117 @@ a:focus-visible {
     border-top: 1px solid var(--color-gray-200);
     margin: var(--space-4) 0;
 }
+
+/* ─── 9. Responsive Design ────────────────────────────────── */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+    :root {
+        --font-size-3xl: 2rem;
+        --font-size-4xl: 2.5rem;
+    }
+
+    .container {
+        padding: 0 20px;
+    }
+}
+
+/* Mobile landscape (≤768px) */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px;
+    }
+
+    :root {
+        --font-size-2xl: 1.75rem;
+        --font-size-3xl: 1.5rem;
+        --font-size-4xl: 2rem;
+        --space-16: 3rem;
+    }
+
+    .container {
+        padding: 0 16px;
+    }
+
+    h1, .h1 {
+        font-size: var(--font-size-2xl);
+    }
+
+    h2, .h2 {
+        font-size: var(--font-size-xl);
+    }
+
+    /* Ocultar elementos grandes em mobile */
+    .hide-mobile {
+        display: none !important;
+    }
+}
+
+/* Mobile pequeno (≤480px) */
+@media (max-width: 480px) {
+    body {
+        padding-top: 60px;
+    }
+
+    :root {
+        --font-size-lg: 1rem;
+        --font-size-xl: 1.25rem;
+        --font-size-2xl: 1.5rem;
+        --font-size-3xl: 1.25rem;
+        --space-8: 1.5rem;
+        --space-12: 2rem;
+        --space-16: 2.5rem;
+    }
+
+    .container {
+        padding: 0 12px;
+    }
+
+    h1, .h1 {
+        font-size: 1.5rem;
+        line-height: 1.3;
+    }
+
+    h2, .h2 {
+        font-size: 1.25rem;
+    }
+
+    h3, .h3 {
+        font-size: 1.1rem;
+    }
+
+    p, .text {
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .btn--lg {
+        padding: 0.5rem 1rem;
+    }
+
+    /* Grids em mobile */
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .grid--2 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid--3 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid--4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .gap-4 { gap: 12px; }
+    .gap-6 { gap: 16px; }
+    .gap-8 { gap: 16px; }
+}
