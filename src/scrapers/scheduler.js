@@ -175,26 +175,32 @@ RESUMO DA EXECUÇÃO:
   }
 
   /**
-   * Verifica se a BD está (quase) vazia e, se estiver, dispara o pipeline
-   * em segundo plano. Garante que quem corre `npm run dev` num clone novo
-   * vê produtos aparecerem sem esperar pelo cron das 03:00.
+   * Verifica se o catálogo VENDÁVEL (ofertas Produto_Loja) está vazio e,
+   * se estiver, dispara o pipeline em segundo plano. Contar apenas Produto
+   * não chega: podem existir produtos órfãos sem nenhuma oferta, que nunca
+   * aparecem no site (listagem usa INNER JOIN em Produto_Loja).
    */
   bootstrapIfEmpty() {
     setImmediate(async () => {
       try {
         const [rows] = await db.query(
-          'SELECT COUNT(*) AS total FROM Produto WHERE deleted_at IS NULL'
+          'SELECT COUNT(*) AS total FROM Produto_Loja WHERE deleted_at IS NULL'
         );
         const total = Number(rows?.[0]?.total || 0);
 
+        const [produtos] = await db.query(
+          'SELECT COUNT(*) AS total FROM Produto WHERE deleted_at IS NULL'
+        );
+        const totalProdutos = Number(produtos?.[0]?.total || 0);
+
         if (total < MIN_PRODUCTS_ON_BOOT) {
-          logger.info(`🌱 BD com apenas ${total} produto(s) — execução inicial para popular (pode levar alguns minutos).`);
+          logger.info(`🌱 Catálogo com ${total} oferta(s) (${totalProdutos} produto(s)) — execução inicial para popular (pode levar alguns minutos).`);
           this.triggerAsync();
         } else {
-          logger.info(`✔ BD já tem ${total} produtos — execução inicial desnecessária.`);
+          logger.info(`✔ BD já tem ${total} ofertas — execução inicial desnecessária.`);
         }
       } catch (error) {
-        logger.warn('Não foi possível verificar produtos no arranque:', { erro: error.message });
+        logger.warn('Não foi possível verificar o catálogo no arranque:', { erro: error.message });
       }
     });
   }

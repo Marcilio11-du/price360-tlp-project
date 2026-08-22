@@ -69,7 +69,9 @@ const normalizeProduct = (item) => {
 };
 
 async function getCurrentProductCount() {
-  const [rows] = await db.query('SELECT COUNT(*) AS total FROM Produto WHERE deleted_at IS NULL');
+  // Catálogo vendável = ofertas em Produto_Loja (produtos sem oferta não
+  // aparecem no site; a listagem usa INNER JOIN).
+  const [rows] = await db.query('SELECT COUNT(*) AS total FROM Produto_Loja WHERE deleted_at IS NULL');
   return Number(rows[0]?.total || 0);
 }
 
