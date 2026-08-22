@@ -1,21 +1,21 @@
 /**
  * @file MultiTekScraper.js
  * @description Scraper para MultiTek Angola.
- * Site WooCommerce — usa axios + cheerio (Puppeteer não disponível em produção).
- * Portado do scraper externo em scraper/scraping/scrapers/multitek.js.
+ * Tenta primeiro a Store API do WooCommerce (wp-json); se indisponível,
+ * cai para parsing HTML com cheerio (Puppeteer não disponível em produção).
  */
 
-const BaseScraper = require('../base/BaseScraper');
+const WooCommerceRestScraper = require('../base/WooCommerceRestScraper');
 const cheerio    = require('cheerio');
 
-class MultiTekScraper extends BaseScraper {
+class MultiTekScraper extends WooCommerceRestScraper {
   constructor() {
     super(
       'MultiTek',
       'multitek',
       'https://www.multitek.ao',
       {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept': 'text/html,application/json;q=0.9,*/*;q=0.8',
         'Accept-Language': 'pt-PT,pt;q=0.9,en-US;q=0.8',
         'Cache-Control': 'no-cache',
       }
@@ -23,15 +23,15 @@ class MultiTekScraper extends BaseScraper {
   }
 
   /**
-   * Busca produtos na MultiTek (WooCommerce) via axios + cheerio.
+   * Busca HTML (fallback) na MultiTek (WooCommerce) via axios + cheerio.
    * @param {string} query
    * @returns {Promise<Array>}
    */
-  async searchProduct(query) {
+  async searchProductHtml(query) {
     if (!query?.trim()) { this.log('warn', 'Query vazia'); return []; }
 
     const url = `${this.storeUrl}/?s=${encodeURIComponent(query)}&post_type=product`;
-    this.log('info', `Buscando: "${query}"`, { url });
+    this.log('info', `Fallback HTML: "${query}"`, { url });
 
     try {
       const html = await this.fetchWithRetry(url, { responseType: 'text' });
@@ -84,9 +84,26 @@ class MultiTekScraper extends BaseScraper {
       this.log('info', `Busca completa`, { query, total: products.length });
       return products;
     } catch (error) {
-      this.log('error', 'Erro na busca', { query, error: error.message });
+      const blockReason = this.detectBlock(error);
+      if (blockReason) {
+        this.log('warn', 'Acesso bloqueado no fallback HTML', { motivo: blockReason });
+      } else {
+        this.log('error', 'Erro na busca', { query, error: error.message });
+      }
       return [];
     }
+  }
+
+  /**
+   * REST primeiro, HTML como fallback.
+   * @param {string} query
+   * @returns {Promise<Array>}
+   */
+  async searchProduct(query) {
+    if (!query?.trim()) { this.log('warn', 'Query vazia'); return []; }
+    const viaApi = await super.searchProduct(query);
+    if (viaApi.length > 0) return viaApi;
+    return this.searchProductHtml(query);
   }
 }
 

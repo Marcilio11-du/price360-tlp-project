@@ -69,7 +69,8 @@ class ScraperScheduler {
       
       const stats = await this.pipeline.execute([
         'Laptop', 'iPhone', 'Samsung Galaxy', 'iPad', 'Monitor',
-        'Teclado', 'Mouse', 'Headset', 'Tablet', 'Smartwatch'
+        'Teclado', 'Mouse', 'Headset', 'Tablet', 'Smartwatch',
+        'Arroz', 'Leite', 'Óleo', 'Coca-Cola', 'Água Mineral'
       ]);
 
       this.lastExecutionStats = stats;

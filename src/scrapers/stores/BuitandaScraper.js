@@ -1,15 +1,12 @@
 /**
  * @file BuitandaScraper.js
- * @description Scraper para Buitanda (HTML scraping com cheerio).
- * Portado do scraper externo em scraper/scraping/scrapers/buitanda.js.
+ * @description Scraper para Buitanda via API JSON oficial (api-production.buitanda.com).
+ * A loja é um frontend Next.js; os dados vêm da API REST interna descoberta via Chrome headless.
  */
 
 const BaseScraper = require('../base/BaseScraper');
-const cheerio    = require('cheerio');
-const dns        = require('dns');
 
-// Prioridade IPv4 para mitigar latências de rede locais
-dns.setDefaultResultOrder('ipv4first');
+const BUITANDA_API = 'https://api-production.buitanda.com/api';
 
 class BuitandaScraper extends BaseScraper {
   constructor() {
@@ -18,95 +15,89 @@ class BuitandaScraper extends BaseScraper {
       'buitanda',
       'https://www.buitanda.com',
       {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept': 'application/json',
         'Accept-Language': 'pt-PT,pt;q=0.9,en-US;q=0.8',
-        'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
       }
     );
   }
 
   /**
-   * Busca produtos na Buitanda via HTML scraping com cheerio.
+   * Busca produtos na API da Buitanda.
+   * GET /api/products?search={query}&limit=N
    * @param {string} query
    * @returns {Promise<Array>}
    */
   async searchProduct(query) {
     if (!query?.trim()) { this.log('warn', 'Query vazia'); return []; }
 
-    const url = `${this.storeUrl}/search?search=${encodeURIComponent(query)}`;
+    const url = `${BUITANDA_API}/products?search=${encodeURIComponent(query)}&limit=40&page=1`;
     this.log('info', `Buscando: "${query}"`, { url });
 
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: { ...this.headers },
-        signal: AbortSignal.timeout(this.timeout),
-      });
+      const data = await this.fetchWithRetry(url);
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const items = data?.data?.data;
+      if (!Array.isArray(items)) {
+        this.log('warn', 'Resposta inesperada da API Buitanda', { tipo: typeof items });
+        return [];
+      }
 
-      const html = await response.text();
-      const $    = cheerio.load(html);
       const products = [];
       const seen = new Set();
 
-      // Seletor flexível: qualquer âncora com "/product/" no href
-      $('a[href*="/product/"]').each((_, el) => {
-        const $card = $(el);
+      for (const p of items) {
+        try {
+          const name = String(p.name || '').trim();
+          const slug = p.slug || p.SEOUrl;
+          if (!name || name.length < 3 || !slug) continue;
 
-        let name = $card.find('h3').text().trim()
-                || $card.find('h4').text().trim()
-                || $card.find('img').attr('alt')?.trim()
-                || '';
+          const productUrl = `${this.storeUrl}/product/${slug}`;
 
-        if (!name || name.length < 3) return;
+          // Evitar duplicados por URL
+          if (seen.has(productUrl)) continue;
+          seen.add(productUrl);
 
-        const href       = $card.attr('href') || '';
-        const productUrl = href.startsWith('http') ? href : `${this.storeUrl}${href}`;
+          // Preço: variante default → finalPrice (com imposto e desconto aplicados)
+          const variant = Array.isArray(p.ProductVariant)
+            ? (p.ProductVariant.find(v => v.isDefault) || p.ProductVariant[0])
+            : null;
 
-        // Evitar duplicados por URL
-        if (seen.has(productUrl)) return;
-        seen.add(productUrl);
+          const rawPrice = variant?.finalPrice
+            ?? variant?.priceWithTaxWithDiscount
+            ?? variant?.priceWithTaxWithoutDiscount
+            ?? null;
+          const price = this.normalizePrice(rawPrice);
 
-        const image = $card.find('img').first().attr('src') || null;
+          const quantity = Number(variant?.quantity ?? 0);
+          if (quantity <= 0) continue; // esgotado
 
-        // Tentar extrair preço: elemento com "Kz" no texto
-        let priceText = '';
-        $card.find('*').each((_, node) => {
-          const t = $(node).text().trim();
-          if (t.includes('Kz') && t.length < 30) { priceText = t; }
-        });
+          const image = p.mainImage || variant?.images?.[0]?.url || null;
+          const categoria = p.productCategories?.[0]?.name || null;
 
-        if (!priceText) {
-          priceText = $card.find('.font-bold, .text-gray-900').last().text().trim();
-        }
-
-        // Ignorar esgotados
-        const cardText = $card.text().toLowerCase();
-        if (cardText.includes('esgotado') || cardText.includes('indisponível')) return;
-
-        // Limpar e converter preço
-        const cleanPrice = priceText.replace(/Kz/gi, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
-        const price = parseFloat(cleanPrice) || 0;
-
-        if (this.isValidProduct({ name, price })) {
-          products.push({
-            store:     this.storeName,
+          const productData = {
+            store: this.storeName,
             storeCode: this.storeCode,
             name,
             price,
             priceFormatted: this.formatPrice(price),
             currency: 'AKZ',
-            url:      productUrl,
+            url: productUrl,
             image,
-            source:   'HTML/cheerio',
+            categoria,
+            quantidade: quantity,
+            source: 'Buitanda API',
             fetchedAt: new Date().toISOString(),
-          });
-        }
-      });
+          };
 
-      this.log('info', `Busca completa`, { query, total: products.length });
+          if (this.isValidProduct(productData)) {
+            products.push(productData);
+          }
+        } catch (err) {
+          this.log('warn', 'Erro ao processar produto', { erro: err.message });
+        }
+      }
+
+      this.log('info', 'Busca completa', { query, total: products.length });
       return products;
     } catch (error) {
       this.log('error', 'Erro na busca', { query, error: error.message });

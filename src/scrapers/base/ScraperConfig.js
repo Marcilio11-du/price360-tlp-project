@@ -58,7 +58,7 @@ const SCRAPER_CONFIG = {
   multitek: {
     nome: 'MultiTek',
     codigo: 'multitek',
-    url: 'https://www.multitek.co.ao',
+    url: 'https://www.multitek.ao',
     scraperClass: MultiTekScraper,
     ativo: true,
     categoria_principal: 'Tecnologia',

@@ -1,0 +1,177 @@
+/**
+ * Alerts Page — Alertas de preço
+ */
+
+.alerts-page {
+  max-width: 860px;
+}
+
+.alerts-page__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: var(--space-5);
+}
+
+.alerts-page__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+.alerts-page__subtitle {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  margin-top: 0.35rem;
+}
+
+.alerts-page__count {
+  background: var(--color-surface-2, #f4f1ec);
+  border-radius: var(--radius-full);
+  padding: 0.4rem 0.9rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.alert-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 1rem;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #ece7e0);
+  border-radius: var(--radius-lg, 18px);
+  padding: 1.05rem 1.25rem;
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.alert-card:hover {
+  box-shadow: 0 10px 24px rgba(33, 26, 23, 0.07);
+  transform: translateY(-1px);
+}
+
+.alert-card__info {
+  min-width: 0;
+}
+
+.alert-card__name {
+  font-weight: 700;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+
+.alert-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.9rem;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  margin-top: 0.3rem;
+}
+
+.alert-card__progress {
+  height: 5px;
+  border-radius: var(--radius-full);
+  background: #f1ebe4;
+  margin-top: 0.55rem;
+  overflow: hidden;
+}
+
+.alert-card__progress-bar {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ff5a36, #ff8a65);
+  transition: width 0.4s ease;
+}
+
+.alert-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: var(--radius-full);
+  padding: 0.35rem 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.alert-badge--hit {
+  background: rgba(16, 185, 129, 0.12);
+  color: #0b9e66;
+}
+
+.alert-badge--wait {
+  background: rgba(255, 90, 54, 0.1);
+  color: var(--color-primary, #ff5a36);
+}
+
+.alert-card__remove {
+  border: 1px solid var(--color-border, #ece7e0);
+  background: transparent;
+  color: var(--color-danger, #ed4956);
+  border-radius: var(--radius-full);
+  padding: 0.45rem 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.alert-card__remove:hover {
+  background: rgba(237, 73, 86, 0.08);
+  border-color: currentColor;
+}
+
+/* Estado vazio */
+.alerts-empty {
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+  background: var(--color-surface, #fff);
+  border: 1px dashed var(--color-border, #e5ddd3);
+  border-radius: var(--radius-lg, 20px);
+}
+
+.alerts-empty svg {
+  color: var(--color-primary, #ff5a36);
+  opacity: 0.75;
+}
+
+.alerts-empty h2 {
+  font-size: 1.15rem;
+  margin: 1rem 0 0.4rem;
+  color: var(--color-text);
+}
+
+.alerts-empty p {
+  color: var(--color-text-muted);
+  max-width: 40ch;
+  margin: 0 auto 1.4rem;
+}
+
+@media (max-width: 640px) {
+  .alerts-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .alert-card {
+    grid-template-columns: minmax(0, 1fr) auto;
+    row-gap: 0.75rem;
+  }
+
+  .alert-card .alert-badge {
+    order: 3;
+    justify-self: start;
+  }
+}

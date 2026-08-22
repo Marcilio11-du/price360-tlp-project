@@ -26,7 +26,7 @@
   width: 100%;
   min-height: 100vh;
   background: linear-gradient(180deg, #fffaf6 0%, #fff 55%);
-  padding: 6rem 0 2.5rem;
+  padding: 3rem 0 4rem;
 }
 
 .profile-header {
@@ -36,7 +36,7 @@
 .profile-container {
   max-width: 1040px;
   margin: 0 auto;
-  padding: 0 1rem 2rem;
+  padding: 0 2rem 2rem;
 }
 
 .profile-section,
@@ -50,7 +50,7 @@
 .profile-data-section,
 .profile-preferences-section,
 .profile-actions-section {
-  padding: 1.75rem 1.5rem;
+  padding: 1.75rem 1.75rem;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
@@ -243,7 +243,7 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 .profile-data-section {
-  padding: 2rem 0;
+  padding: 2rem 1.75rem;
   border-bottom: 1px solid var(--profile-border-color);
   background: transparent !important;
 }
@@ -335,7 +335,7 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 .profile-preferences-section {
-  padding: 2rem 0;
+  padding: 2rem 1.75rem;
   border-bottom: 1px solid var(--profile-border-color);
   background: transparent !important;
 }
@@ -356,7 +356,7 @@
 
 .profile-actions-section {
   background: transparent !important;
-  padding: 2rem 0 !important;
+  padding: 2rem 1.75rem !important;
   border-bottom: none !important;
   display: flex;
   justify-content: flex-start;
@@ -417,13 +417,18 @@
 /* ─────────────────────────────────────────────────────────────────────────── */
 
 @media (max-width: 768px) {
+  .profile-page {
+    padding: 2rem 0 3rem;
+  }
+
   .profile-container {
-    padding: 0 1rem;
+    padding: 0 1.25rem;
   }
 
   .profile-avatar-section {
     grid-template-columns: 1fr;
     gap: 2rem;
+    padding: 2rem 1.5rem !important;
   }
 
   .profile-info-section {
@@ -438,6 +443,13 @@
     grid-template-columns: 1fr;
   }
 
+  .profile-data-section,
+  .profile-preferences-section,
+  .profile-actions-section {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+
   .profile-stats {
     flex-direction: row;
     gap: 1.5rem;
@@ -450,7 +462,11 @@
 
 @media (max-width: 480px) {
   .profile-page {
-    padding: 1rem 0;
+    padding: 1.5rem 0 2.5rem;
+  }
+
+  .profile-container {
+    padding: 0 1rem;
   }
 
   .profile-avatar-preview {
@@ -486,7 +502,14 @@
   .profile-form-group input,
   .profile-form-group select {
     font-size: 16px; /* Evita zoom automático em iOS */
-    padding: 0.75rem 0.75rem;
+    padding: 0.75rem 0.9rem;
+  }
+
+  .profile-data-section,
+  .profile-preferences-section,
+  .profile-actions-section {
+    padding-left: 1.25rem !important;
+    padding-right: 1.25rem !important;
   }
 
   .profile-btn {

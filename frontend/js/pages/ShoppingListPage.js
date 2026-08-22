@@ -9,8 +9,8 @@ import { observeNewElements } from "../animations.js";
 // ─── Estado pendente de produto (persistido via sessionStorage) ───────────────
 const PENDING_KEY = "price360_pending_product";
 
-export const setPendingProduct = (productId, productName) => {
-  sessionStorage.setItem(PENDING_KEY, JSON.stringify({ id: productId, name: productName }));
+export const setPendingProduct = (productId, productName, opts = {}) => {
+  sessionStorage.setItem(PENDING_KEY, JSON.stringify({ id: productId, name: productName, ...opts }));
 };
 
 const getPendingProduct = () => {
@@ -85,54 +85,55 @@ export default class ShoppingListPage {
     }
   }
 
-  // ─── Produto pendente: perguntar ao utilizador se quer adicionar ──────────
+  // ─── Produto pendente: retomar o contexto do produto que o utilizador ─────
+  // ─── tentava adicionar quando foi obrigado a criar lista primeiro ─────────
   _handlePendingProduct(pending) {
-    if (this.lists.length === 0) return; // ainda sem listas — não faz nada aqui
+    // Utilizador pediu explicitamente uma lista nova (ou ainda não tem nenhuma):
+    // abrir criação imediatamente; após criar, o produto entra automaticamente.
+    const wantsNewList = pending.preferNewList || !this.lists.length;
 
+    if (wantsNewList) {
+      toast.info(pending.preferNewList
+        ? `Cria a nova lista e "${pending.name}" entra automaticamente!`
+        : `Vamos criar a tua primeira lista para guardar "${pending.name}"`);
+      this.openCreateModal(() => this._addPendingToActiveList(pending));
+
+      // Se o utilizador cancelar, limpar o pendente para não ressuscitar depois
+      setTimeout(() => {
+        document.getElementById("modal-cancel")
+          ?.addEventListener("click", () => clearPendingProduct(), { once: true });
+        document.getElementById("modal-close")
+          ?.addEventListener("click", () => clearPendingProduct(), { once: true });
+      }, 50);
+      return;
+    }
+
+    // Caso geral: adicionar directamente à lista activa e avisar
     clearPendingProduct();
+    this._addPendingToActiveList(pending);
+  }
 
-    // Mostrar modal a perguntar se quer adicionar à lista activa
-    const activeList = this.lists.find(l => l.id === this.activeListId);
+  /**
+   * Adiciona um produto pendente à lista activa sem passos extra.
+   * @param {{id: string|number, name: string}} pending
+   */
+  async _addPendingToActiveList(pending) {
+    if (!this.activeListId || !pending?.id) return;
 
-    modal.open({
-      title: "<i class='icon-check'></i> Lista criada com sucesso!",
-      body: `
-        <div class="pending-product-modal">
-          <div class="pending-product-modal__product">
-            <div class="pending-product-modal__icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="3"/>
-                <path d="M9 12h6M12 9v6"/>
-              </svg>
-            </div>
-            <div>
-              <div class="pending-product-modal__name">${pending.name}</div>
-              <div class="pending-product-modal__hint">Deseja adicionar este produto à lista <strong>"${activeList?.nome || 'actual'}"</strong>?</div>
-            </div>
-          </div>
-        </div>
-      `,
-      confirmText: "Sim, adicionar!",
-      cancelText: "Agora não",
-      onConfirm: async () => {
-        try {
-          await api.post("/product-shopping-lists", {
-            id_lista: this.activeListId,
-            id_produto: Number(pending.id),
-          });
-          toast.success(`${pending.name} adicionado à lista!`);
-          modal.close();
-          await this.loadListItems(this.activeListId);
-        } catch (err) {
-          if (err.status === 409) {
-            toast.info("Este produto já está na lista!");
-            modal.close();
-          } else {
-            toast.error(err.message || "Erro ao adicionar produto.");
-          }
-        }
-      },
-    });
+    try {
+      await api.post("/product-shopping-lists", {
+        id_lista: this.activeListId,
+        id_produto: Number(pending.id),
+      });
+      toast.success(`${pending.name} adicionado à lista!`);
+      await this.loadListItems(this.activeListId);
+    } catch (err) {
+      if (err.status === 409) {
+        toast.info("Este produto já está na lista!");
+      } else {
+        toast.error(err.message || "Erro ao adicionar produto.");
+      }
+    }
   }
 
   async loadLists() {
@@ -520,7 +521,7 @@ export default class ShoppingListPage {
     `;
     const pending = getPendingProduct();
     content.querySelector("#create-first-list")?.addEventListener("click", () => {
-      this.openCreateModal(pending ? () => this._handlePendingProduct(pending) : null);
+      this.openCreateModal(pending ? () => this._addPendingToActiveList(pending) : null);
     });
   }
 
@@ -644,11 +645,11 @@ export const openAddToListModal = async (productId, productName = "Produto") => 
         });
       });
 
-      // Criar nova lista inline
+      // Criar nova lista inline — preservar o produto e sinalizar intenção
       document.getElementById("modal-new-list-btn")?.addEventListener("click", () => {
         modal.close();
         setTimeout(() => {
-          setPendingProduct(productId, productName);
+          setPendingProduct(productId, productName, { preferNewList: true });
           router.navigate("/lista");
         }, 300);
       });

@@ -145,13 +145,30 @@ class ScraperPipeline {
 
       const produtosColetados = [];
       let errosCount = 0;
+      const termosSemResultados = [];
+      const MAX_TERMOS_VAZIOS_SEGUIDOS = 4;
 
       // Buscar cada termo
       for (const termo of termosBusca) {
         try {
           const produtos = await scraper.searchProduct(termo);
-          
+
           if (Array.isArray(produtos)) {
+            if (produtos.length === 0) {
+              termosSemResultados.push(termo);
+              // Circuit breaker: se os primeiros termos não devolvem nada
+              // (ex.: site bloqueado por Cloudflare), abortar tentativas restantes.
+              if (
+                produtosColetados.length === 0 &&
+                termosSemResultados.length >= MAX_TERMOS_VAZIOS_SEGUIDOS
+              ) {
+                logger.warn(
+                  `${config.nome}: ${termosSemResultados.length} termos seguidos sem resultados — a saltar termos restantes (loja provavelmente bloqueada ou sem catálogo compatível).`,
+                  { termos_testados: termosSemResultados }
+                );
+                break;
+              }
+            }
             produtosColetados.push(...produtos.slice(0, this.maxProductsPerScraper));
           }
 
@@ -163,13 +180,27 @@ class ScraperPipeline {
         }
       }
 
+      // Deduplicar produtos repetidos (mesmo produto sai em vários termos)
+      const unicos = new Map();
+      for (const p of produtosColetados) {
+        const chave = `${p.storeCode || ''}::${(p.name || '').toLowerCase()}`;
+        if (!unicos.has(chave)) unicos.set(chave, p);
+      }
+      const finais = [...unicos.values()];
+
+      logger.info(`${config.nome}: extração concluída`, {
+        termos_com_resultados: termosBusca.length - termosSemResultados.length,
+        termos_vazios: termosSemResultados,
+        produtos_unicos: finais.length,
+      });
+
       // Fazer upsert em batch
-      const upsertStats = await DatabaseUpsert.upsertBatch(produtosColetados);
+      const upsertStats = await DatabaseUpsert.upsertBatch(finais);
 
       return {
         success: true,
         scraper: config.codigo,
-        produtosColetados: produtosColetados.length,
+        produtosColetados: finais.length,
         errosExtracao: errosCount,
         upsertStats
       };

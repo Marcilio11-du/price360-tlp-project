@@ -69,7 +69,20 @@ class DatabaseUpsert {
     );
 
     if (rows.length === 0) {
-      throw new Error(`Loja com código "${codigo}" não encontrada. Corre o script SQL de setup.`);
+      // Auto-criar a loja se o setup SQL ainda não a tiver registado —
+      // evita perder TODOS os produtos de uma loja por falta de linha na Loja.
+      try {
+        const nomeLoja = codigo.charAt(0).toUpperCase() + codigo.slice(1);
+        const [ins] = await db.query(
+          "INSERT INTO Loja (codigo, nome, municipio, endereco) VALUES (?, ?, 'Luanda', 'Luanda, Angola')",
+          [codigo, nomeLoja]
+        );
+        _cache.lojas[codigo] = ins.insertId;
+        console.warn(`[DatabaseUpsert] Loja "${codigo}" não existia e foi criada automaticamente (id ${ins.insertId}).`);
+        return ins.insertId;
+      } catch (err) {
+        throw new Error(`Loja com código "${codigo}" não encontrada e falha ao criar: ${err.message}`);
+      }
     }
 
     _cache.lojas[codigo] = rows[0].id;

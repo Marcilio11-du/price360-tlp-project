@@ -552,17 +552,40 @@ const initializeDatabaseSchema = async () => {
 
     await connection.commit();
     
-  // Garantir lojas de scraping com codigo
-  const lojasScraper = [
+  // Garantir índice único em Loja.codigo (evita lojas duplicadas em cada arranque)
+  try {
+    await connection.query("ALTER TABLE Loja ADD UNIQUE INDEX uq_loja_codigo (codigo)");
+  } catch (error) {
+    if (!["ER_DUP_KEYNAME", "ER_DUP_ENTRY"].includes(error.code)) {
+      // Se falhar por entradas duplicadas, deduplicar (mantém menor id) e tentar de novo
+      if (error.code === "ER_DUP_ENTRY") {
+        try {
+          await db.query("DELETE l1 FROM Loja l1 JOIN Loja l2 ON l1.codigo = l2.codigo AND l1.id > l2.id");
+          await db.query("ALTER TABLE Loja ADD UNIQUE INDEX uq_loja_codigo (codigo)");
+        } catch (_) { /* ambiente já tratado */ }
+      }
+    }
+  }
+
+  // Garantir lojas de scraping com codigo — derivadas do ScraperConfig (fonte única)
+  let lojasScraper = [
     ['ncr',      'NCR Angola'],
     ['buitanda', 'Buitanda'],
     ['multitek', 'MultiTek'],
     ['itec',     'iTec'],
   ];
+  try {
+    const { SCRAPER_CONFIG } = require('../scrapers/base/ScraperConfig');
+    if (SCRAPER_CONFIG && typeof SCRAPER_CONFIG === 'object') {
+      lojasScraper = Object.values(SCRAPER_CONFIG)
+        .filter((s) => s?.codigo && s?.nome)
+        .map((s) => [s.codigo, s.nome]);
+    }
+  } catch (_) { /* fallback estático acima */ }
   for (const [codigo, nome] of lojasScraper) {
     try {
       await db.query(
-        'INSERT INTO Loja (codigo, nome, municipio) VALUES (?, ?, \'Luanda\') ON DUPLICATE KEY UPDATE codigo = VALUES(codigo)',
+        "INSERT INTO Loja (codigo, nome, municipio, endereco) VALUES (?, ?, 'Luanda', 'Luanda, Angola') ON DUPLICATE KEY UPDATE nome = VALUES(nome)",
         [codigo, nome]
       );
     } catch (_) {
