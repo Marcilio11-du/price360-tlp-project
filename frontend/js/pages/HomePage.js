@@ -12,6 +12,7 @@ import { ProductCard }       from '../components/ProductCard.js';
 import { Footer }            from '../components/Footer.js';
 import { Loader }            from '../components/Loader.js';
 import { modal }             from '../components/Modal.js';
+import { PRODUCT_PLACEHOLDER_IMG } from '../utils.js';
 import { observeNewElements } from '../animations.js';
 
 export default class HomePage {
@@ -366,23 +367,8 @@ export default class HomePage {
     if (typeof rawImage === 'string' && /^https?:\/\//i.test(rawImage.trim())) {
       return rawImage.trim();
     }
-
-    const label = String(product?.nome || product?.produto_nome || 'produto');
-    const baseLibrary = [
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=900&q=80'
-    ];
-
-    let hash = 0;
-    for (let i = 0; i < label.length; i += 1) {
-      hash = (hash * 31 + label.charCodeAt(i)) >>> 0;
-    }
-
-    return baseLibrary[hash % baseLibrary.length];
+    // Sem imagem real → placeholder neutro (nada de fotos de stock inventadas)
+    return PRODUCT_PLACEHOLDER_IMG;
   }
 
   _updateHeroFromProducts(products = []) {
@@ -520,7 +506,7 @@ export function openProductModal(sp) {
   const available = Number(sp.quantidade ?? 0) > 0;
   const productImage = (typeof sp?.imagem === 'string' && /^https?:\/\//i.test(sp.imagem))
     ? sp.imagem
-    : 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80';
+    : PRODUCT_PLACEHOLDER_IMG;
 
   const body = `
     <div class="product-modal">
@@ -528,7 +514,7 @@ export function openProductModal(sp) {
         <img
           src="${productImage}"
           alt="${sp.produto_nome}"
-          onerror="this.src='https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80'"
+          onerror="this.onerror=null;this.src='${PRODUCT_PLACEHOLDER_IMG}'"
           class="product-modal__image"
         />
       </div>

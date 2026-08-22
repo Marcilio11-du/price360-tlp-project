@@ -10,7 +10,7 @@
  *   container.innerHTML += card.render();
  */
 
-import { formatPrice } from '../utils.js';
+import { formatPrice, productImgHtml } from '../utils.js';
 
 export class ProductCard {
   /**
@@ -34,26 +34,8 @@ export class ProductCard {
     if (typeof rawImage === 'string' && /^https?:\/\//i.test(rawImage.trim())) {
       return rawImage.trim();
     }
-
-    const label = String(this.data?.nome || this.data?.produto_nome || 'produto');
-    const baseLibrary = [
-      'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1550009158-9ebf69173e03?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=900&q=80',
-      'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80',
-    ];
-
-    let hash = 0;
-    for (let i = 0; i < label.length; i += 1) {
-      hash = (hash * 31 + label.charCodeAt(i)) >>> 0;
-    }
-    return baseLibrary[hash % baseLibrary.length];
+    // Sem imagem real → placeholder neutro (nada de fotos de stock inventadas)
+    return null;
   }
 
   /**
@@ -72,13 +54,7 @@ export class ProductCard {
 
         <!-- Imagem + badge -->
         <div class="product-card__image-wrapper">
-          <img
-            src="${imageUrl}"
-            alt="${nome}"
-            onerror="this.src='https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80'"
-            class="product-card__image"
-            loading="lazy"
-          />
+          ${productImgHtml(imageUrl, nome, 'product-card__image')}
           ${this.isBestPrice
             ? `<div class="product-card__badge">BEST<br>PRICE</div>`
             : ''}

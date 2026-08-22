@@ -3,7 +3,7 @@ import { auth } from '../auth.js';
 import { router } from '../router.js';
 import { toast } from '../components/Toast.js';
 import { PriceSparkline } from '../components/PriceSparkline.js';
-import { formatPrice } from '../utils.js';
+import { formatPrice, productImgHtml } from '../utils.js';
 
 const BEST_BADGE = `
   <span class="best-price-badge">
@@ -46,22 +46,32 @@ export default class ProductDetailPage {
       ]);
       const { produto, ofertas, estatisticas } = comparison.data;
 
+      // Imagem principal: da melhor oferta (lista já vem ordenada por preço),
+      // senão a primeira oferta que tenha imagem.
+      const heroImage =
+        ofertas.find(o => o.melhor_preco && o.imagem)?.imagem ||
+        ofertas.find(o => o.imagem)?.imagem ||
+        null;
+
       this.container.innerHTML = `
         <main class="product-detail page-wrapper container">
           <a href="#/produtos">← Produtos</a>
-          <header>
-            <p>${produto.categoria_nome || ''}</p>
-            <h1>${produto.nome}</h1>
-            <p>${produto.marca || ''}</p>
-            <p>${produto.descricao || ''}</p>
-          </header>
 
-          ${estatisticas ? `
-            <section class="detail-stats">
-              <div><small>Melhor preço</small><strong>${formatPrice(estatisticas.preco_min)}</strong></div>
-              <div><small>Poupança máxima</small><strong>${formatPrice(estatisticas.poupanca_absoluta)} (${estatisticas.poupanca_percentual.toFixed(1)}%)</strong></div>
-              <div><small>Lojas</small><strong>${estatisticas.total_lojas}</strong></div>
-            </section>` : '<p>Ainda não há ofertas.</p>'}
+          <section class="detail-hero">
+            <figure class="detail-hero__image">${productImgHtml(heroImage, produto.nome, 'detail-hero__img')}</figure>
+            <header class="detail-hero__info">
+              <p>${produto.categoria_nome || ''}</p>
+              <h1>${produto.nome}</h1>
+              <p>${produto.marca || ''}</p>
+              ${produto.descricao ? `<p class="detail-hero__desc">${produto.descricao}</p>` : ''}
+              ${estatisticas ? `
+                <div class="detail-hero__stats">
+                  <div><small>Melhor preço</small><strong>${formatPrice(estatisticas.preco_min)}</strong></div>
+                  <div><small>Poupança máxima</small><strong>${formatPrice(estatisticas.poupanca_absoluta)}</strong></div>
+                  <div><small>Lojas</small><strong>${estatisticas.total_lojas}</strong></div>
+                </div>` : '<p>Ainda não há ofertas.</p>'}
+            </header>
+          </section>
 
           <section>
             <h2>Ofertas disponíveis</h2>
@@ -97,9 +107,12 @@ export default class ProductDetailPage {
 
     return `
       <article class="offer ${o.melhor_preco ? 'offer--best' : ''}">
-        <div>
-          <strong>${o.loja_nome}</strong>
-          <span>${o.municipio || ''}</span>
+        <div class="offer__store">
+          <figure class="offer__thumb">${productImgHtml(o.imagem, o.loja_nome, 'offer__thumb-img')}</figure>
+          <div>
+            <strong>${o.loja_nome}</strong>
+            <span>${o.municipio || ''}</span>
+          </div>
         </div>
         <div class="offer__price-zone">
           ${o.melhor_preco ? BEST_BADGE : ''}

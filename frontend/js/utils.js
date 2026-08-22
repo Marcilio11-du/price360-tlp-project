@@ -80,3 +80,34 @@ export const getInitials = (firstName, lastName) => {
   const last  = (lastName?.[0]  || '').toUpperCase();
   return `${first}${last}`;
 };
+
+/**
+ * Placeholder neutro para produtos sem imagem real.
+ * Data-URI SVG (caixa/embalagem estilizada) — nada de fotos de stock inventadas.
+ */
+export const PRODUCT_PLACEHOLDER_IMG = `data:image/svg+xml;utf8,${encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+    <rect width="120" height="120" rx="16" fill="#eef1f5"/>
+    <path d="M60 28l26 13v30L60 84 34 71V41z" fill="none" stroke="#b8c2cf" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M34 41l26 13 26-13M60 54v30" fill="none" stroke="#b8c2cf" stroke-width="3.5" stroke-linejoin="round"/>
+    <circle cx="86" cy="36" r="9" fill="#22c55e"/>
+    <path d="M82.4 36l2.6 2.6 4.6-5.2" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`
+)}`;
+
+/**
+ * Devolve a tag <img> do produto: usa a imagem real quando existe URL
+ * válido; caso contrário (ou se falhar ao carregar) mostra o placeholder.
+ *
+ * @param {string} [url]      - URL da imagem (Produto_Loja.imagem)
+ * @param {string} alt        - Texto alternativo
+ * @param {string} [cls='']   - Classes CSS extra
+ * @returns {string} HTML
+ */
+export const productImgHtml = (url, alt, cls = '') => {
+  const safeAlt = String(alt || 'Imagem do produto').replace(/"/g, '&quot;');
+  const valid = typeof url === 'string' && /^https?:\/\//i.test(url.trim());
+  const src = valid ? url.trim() : PRODUCT_PLACEHOLDER_IMG;
+  return `<img src="${src}" alt="${safeAlt}" class="${cls}" loading="lazy"
+    onerror="this.onerror=null;this.src='${PRODUCT_PLACEHOLDER_IMG}'">`;
+};
