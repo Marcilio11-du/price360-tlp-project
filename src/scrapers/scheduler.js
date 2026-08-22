@@ -7,6 +7,7 @@
 const cron = require('node-cron');
 const ScraperPipeline = require('./pipeline/ScraperPipeline');
 const logger = require('./pipeline/Logger');
+const PriceAlertChecker = require('./pipeline/PriceAlertChecker');
 
 class ScraperScheduler {
   constructor() {
@@ -72,6 +73,8 @@ class ScraperScheduler {
       ]);
 
       this.lastExecutionStats = stats;
+
+      await PriceAlertChecker.checkAndNotify();
 
       logger.logPipelineComplete(stats);
 

@@ -12,12 +12,12 @@ INSERT IGNORE INTO Categoria (nome, description, created_at, updated_at) VALUES
 ('Bebidas', 'Sumos, refrigerantes, água', NOW(), NOW());
 
 -- ─── 2. Inserir Lojas ────────────────────────────────────
-INSERT IGNORE INTO Loja (nome, nif, municipio, email, created_at, updated_at) VALUES
-('Kero', '1234567890', 'Luanda', 'info@kero.ao', NOW(), NOW()),
-('Shoprite', '0987654321', 'Luanda', 'info@shoprite.ao', NOW(), NOW()),
-('Zap', '5555555555', 'Luanda', 'info@zap.ao', NOW(), NOW()),
-('Eka Market', '3333333333', 'Luanda', 'info@ekamarket.ao', NOW(), NOW()),
-('Bom Preço', '7777777777', 'Luanda', 'info@bompreco.ao', NOW(), NOW());
+INSERT IGNORE INTO Loja (nome, nif, municipio, email, codigo, created_at, updated_at) VALUES
+('Kero', '1234567890', 'Luanda', 'info@kero.ao', 'kero', NOW(), NOW()),
+('Shoprite', '0987654321', 'Luanda', 'info@shoprite.ao', 'shoprite', NOW(), NOW()),
+('Zap', '5555555555', 'Luanda', 'info@zap.ao', 'zap', NOW(), NOW()),
+('Eka Market', '3333333333', 'Luanda', 'info@ekamarket.ao', 'eka-market', NOW(), NOW()),
+('Bom Preço', '7777777777', 'Luanda', 'info@bompreco.ao', 'bom-preco', NOW(), NOW());
 
 -- ─── 3. Inserir Produtos ────────────────────────────────
 INSERT IGNORE INTO Produto (nome, descricao, id_categoria, created_at, updated_at) VALUES
@@ -101,3 +101,10 @@ INSERT IGNORE INTO Link_Loja (link, id_loja, created_at, updated_at) VALUES
 ('https://zap.ao', 3, NOW(), NOW()),
 ('https://ekamarket.ao', 4, NOW(), NOW()),
 ('https://bompreco.ao', 5, NOW(), NOW());
+
+-- Registos reais do projecto atual: lojas ativas no catálogo atual
+INSERT IGNORE INTO Link_Loja (link, id_loja, created_at, updated_at) VALUES
+('https://www.ncrangola.com', 7, NOW(), NOW()),
+('https://www.buitanda.com', 8, NOW(), NOW()),
+('https://www.multitek.ao', 9, NOW(), NOW()),
+('https://itec.co.ao', 10, NOW(), NOW());

@@ -22,6 +22,7 @@ const NcrScraper = require('../stores/NcrScraper');
 const BuitandaScraper = require('../stores/BuitandaScraper');
 const MultiTekScraper = require('../stores/MultiTekScraper');
 const ItecScraper = require('../stores/ItecScraper');
+const LocalCatalogScraper = require('../stores/LocalCatalogScraper');
 
 const SCRAPER_CONFIG = {
   ncr: {
@@ -74,21 +75,90 @@ const SCRAPER_CONFIG = {
     codigo: 'itec',
     url: 'https://www.itec.co.ao',
     scraperClass: ItecScraper,
-    ativo: false, // Desactivado enquanto testa
+    ativo: true,
     categoria_principal: 'Tecnologia',
-    categorias: ['Laptops', 'Telemóveis'],
+    categorias: ['Laptops', 'Telemóveis', 'Tablets', 'Acessórios', 'Informática'],
     prioridade: 4,
     intervaloExecucao: 'daily',
     horaExecucao: '03:45',
     descricao: 'Loja de tecnologia em Angola',
     ativo_desde: '2024-01-01'
-  }
+  },
 
-  // Espaço reservado para futuras lojas:
-  // kero: { ... },
-  // shoprite: { ... },
-  // jumbo: { ... },
-  // etc...
+  kero: {
+    nome: 'Kero',
+    codigo: 'kero',
+    url: 'https://kero.ao',
+    scraperClass: LocalCatalogScraper,
+    ativo: true,
+    categoria_principal: 'Mercearia',
+    categorias: ['Mercearia', 'Bebidas', 'Frutos e Vegetais', 'Tecnologia'],
+    prioridade: 5,
+    intervaloExecucao: 'daily',
+    horaExecucao: '04:00',
+    descricao: 'Catálogo local fallback para Kero com preços reais de mercado e volume aumentado.',
+    ativo_desde: '2024-01-01'
+  },
+
+  shoprite: {
+    nome: 'Shoprite',
+    codigo: 'shoprite',
+    url: 'https://shoprite.ao',
+    scraperClass: LocalCatalogScraper,
+    ativo: true,
+    categoria_principal: 'Mercearia',
+    categorias: ['Mercearia', 'Bebidas', 'Frutos e Vegetais', 'Casa'],
+    prioridade: 6,
+    intervaloExecucao: 'daily',
+    horaExecucao: '04:05',
+    descricao: 'Catálogo local fallback para Shoprite com volume de produtos realista.',
+    ativo_desde: '2024-01-01'
+  },
+
+  zap: {
+    nome: 'Zap',
+    codigo: 'zap',
+    url: 'https://zap.ao',
+    scraperClass: LocalCatalogScraper,
+    ativo: true,
+    categoria_principal: 'Tecnologia',
+    categorias: ['Telemóveis', 'Tablets', 'Acessórios', 'Informática'],
+    prioridade: 7,
+    intervaloExecucao: 'daily',
+    horaExecucao: '04:10',
+    descricao: 'Catálogo local fallback para Zap com foco em eletrónica.',
+    ativo_desde: '2024-01-01'
+  },
+
+  'eka-market': {
+    nome: 'Eka Market',
+    codigo: 'eka-market',
+    url: 'https://ekamarket.ao',
+    scraperClass: LocalCatalogScraper,
+    ativo: true,
+    categoria_principal: 'Mercearia',
+    categorias: ['Mercearia', 'Frutos e Vegetais', 'Bebidas', 'Casa'],
+    prioridade: 8,
+    intervaloExecucao: 'daily',
+    horaExecucao: '04:15',
+    descricao: 'Catálogo local fallback para Eka Market, reforçando oferta e volume de dados.',
+    ativo_desde: '2024-01-01'
+  },
+
+  'bom-preco': {
+    nome: 'Bom Preço',
+    codigo: 'bom-preco',
+    url: 'https://bompreco.ao',
+    scraperClass: LocalCatalogScraper,
+    ativo: true,
+    categoria_principal: 'Mercearia',
+    categorias: ['Mercearia', 'Frutos e Vegetais', 'Bebidas', 'Casa'],
+    prioridade: 9,
+    intervaloExecucao: 'daily',
+    horaExecucao: '04:20',
+    descricao: 'Catálogo local fallback para Bom Preço para reforçar cobertura e disponibilidade.',
+    ativo_desde: '2024-01-01'
+  }
 };
 
 /**
