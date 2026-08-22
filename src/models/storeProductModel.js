@@ -29,6 +29,8 @@ const baseSelectColumns = `
   l.nome AS loja_nome,
   sp.quantidade,
   sp.preco,
+  sp.imagem,
+  sp.moeda,
   sp.created_at,
   sp.updated_at,
   sp.deleted_at,

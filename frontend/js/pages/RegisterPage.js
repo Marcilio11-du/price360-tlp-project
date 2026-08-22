@@ -20,7 +20,7 @@ export default class RegisterPage {
         <div class="auth-card animate-scroll" style="max-width:540px">
           <div class="auth-card__logo">
             <div class="navbar__logo-text" style="font-size:1.5rem;text-align:center">
-              PRICE<span style="color:var(--color-secondary)">360</span>
+              XÉ <span style="color:var(--color-secondary)">PREÇO</span>
             </div>
           </div>
           <h2 class="auth-card__title">Criar <span>conta</span></h2>
@@ -129,7 +129,7 @@ export default class RegisterPage {
       submitBtn.textContent = "A criar conta...";
 
       try {
-        await api.post("/users", {
+        const res = await api.post("/auth/register", {
           p_nome,
           u_nome,
           email,
@@ -139,8 +139,17 @@ export default class RegisterPage {
           rua,
           municipio,
         });
-        toast.success("Conta criada com sucesso! Podes fazer login agora.");
-        setTimeout(() => router.navigate("/login"), 1500);
+
+        if (!res.data.verification_required) {
+          auth.setAuth(res.data.token, res.data.user);
+        }
+
+        toast.success(
+          res.data.verification_required
+            ? "Conta criada. Confirma o teu email para ativar a conta."
+            : "Conta criada com sucesso!",
+        );
+        setTimeout(() => router.navigate(res.data.verification_required ? "/login" : "/"), 1200);
       } catch (err) {
         const msg = err.details?.[0] || err.message || "Erro ao criar conta.";
         toast.error(msg);

@@ -20,6 +20,8 @@ router.get("/", productController.getProducts);
 router.get("/search", productController.searchProducts);
 router.get("/all", productController.getAllProducts);
 router.get("/deleted", productController.getDeletedProducts);
+router.get("/:id/compare", validateProductIdParam, productController.getPriceComparison);
+router.get("/:id/historico-precos", validateProductIdParam, productController.getPriceHistory);
 router.get("/:id", validateProductIdParam, productController.getProductById);
 router.post("/", validateCreateProduct, productController.createProduct);
 router.put(

@@ -49,18 +49,18 @@ export class Navbar {
           <div class="navbar__user-dropdown" id="user-dropdown" style="display:none">
             ${
               auth.isAdmin()
-                ? `<div class="dropdown-item" data-nav="/admin">Dashboard Admin</div>`
+                ? `<div class="dropdown-item" data-nav="/admin">Dashboard</div>`
                 : ""
             }
             <div class="dropdown-item" data-nav="/profile">Perfil</div>
             <div class="dropdown-item" data-nav="/lista">Listas de Compras</div>
+            <div class="dropdown-item" data-nav="/alertas">Alertas de preço</div>
             <div class="dropdown-item dropdown-item--danger" id="logout-btn">Terminar Sessão</div>
           </div>
         </div>
       `
       : `
-        <a href="#/login"   class="btn btn--outline">Login</a>
-        <a href="#/onboarding" class="btn btn--primary">Sign in</a>
+        <a href="#/login" class="navbar__cta navbar__cta--primary">Entrar</a>
       `;
 
     return `
@@ -68,9 +68,9 @@ export class Navbar {
         <div class="navbar__inner container">
 
           <!-- Logo -->
-          <a href="#/" class="navbar__logo">
-            <img src="./assets/logo.png" alt="Price360" onerror="this.style.display='none'">
-            <span class="navbar__logo-text"></span>
+          <a href="#/" class="navbar__logo" aria-label="Página inicial Xé Preço">
+            <span class="navbar__logo-mark">X</span>
+            <span class="navbar__logo-text">Xé Preço</span>
           </a>
 
           <!-- Pesquisa -->

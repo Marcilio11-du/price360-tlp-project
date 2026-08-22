@@ -151,31 +151,40 @@ class DatabaseUpsert {
 
       // 2. Verificar se relação já existe
       const [existing] = await db.query(
-        'SELECT id FROM Produto_Loja WHERE id_produto = ? AND id_loja = ? LIMIT 1',
+        'SELECT id, preco FROM Produto_Loja WHERE id_produto = ? AND id_loja = ? LIMIT 1',
         [idProduto, idLoja]
       );
 
       let action;
       let idProdutoLoja;
 
+      const quantidadeSegura = (() => {
+        const qty = Number(produtoLoja.quantidade ?? produtoLoja.stock ?? 1);
+        return Number.isFinite(qty) && qty > 0 ? qty : 1;
+      })();
+
       if (existing.length === 0) {
         // INSERT
         const [ins] = await db.query(
           `INSERT INTO Produto_Loja
-             (id_produto, id_loja, preco, quantidade, link, imagem, moeda, data_atualizacao)
-           VALUES (?, ?, ?, 0, ?, ?, ?, NOW())`,
-          [idProduto, idLoja, precoNumerico, url, image, currency]
+            (id_produto, id_loja, preco, quantidade, link, imagem, moeda, data_atualizacao)
+           VALUES (?, ?, ?, ?, ?, ?, ?, NOW())`,
+          [idProduto, idLoja, precoNumerico, quantidadeSegura, url, image, currency]
         );
         action = 'insert';
         idProdutoLoja = ins.insertId;
+        await db.query('INSERT INTO Historico_Preco (id_produto_loja, preco) VALUES (?, ?)', [idProdutoLoja, precoNumerico]);
       } else {
-        // UPDATE — só actualiza preço, link, imagem e timestamp
+        // UPDATE — só actualiza preço, link, imagem, quantidade e timestamp
         idProdutoLoja = existing[0].id;
+        if (Number(existing[0].preco) !== precoNumerico) {
+          await db.query('INSERT INTO Historico_Preco (id_produto_loja, preco) VALUES (?, ?)', [idProdutoLoja, precoNumerico]);
+        }
         await db.query(
           `UPDATE Produto_Loja
-              SET preco = ?, link = ?, imagem = ?, moeda = ?, data_atualizacao = NOW()
-            WHERE id = ?`,
-          [precoNumerico, url, image, currency, idProdutoLoja]
+             SET preco = ?, quantidade = ?, link = ?, imagem = ?, moeda = ?, data_atualizacao = NOW()
+           WHERE id = ?`,
+          [precoNumerico, quantidadeSegura, url, image, currency, idProdutoLoja]
         );
         action = 'update';
       }

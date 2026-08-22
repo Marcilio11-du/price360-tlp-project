@@ -98,11 +98,11 @@ class ProfilePage {
               <div class="profile-info-header">
                 <h1 class="profile-username">${this.currentUser.p_nome} ${this.currentUser.u_nome || ''}</h1>
                 <p class="profile-email">${this.currentUser.email}</p>
-                <p class="profile-bio">${this.currentUser.municipio || 'Utilizador Price360'}</p>
+                <p class="profile-bio">${this.currentUser.municipio || 'Utilizador Xé Preço'}</p>
               </div>
               <div class="profile-stats">
                 <div class="profile-stat">
-                  <span class="profile-stat__value">Price360</span>
+                  <span class="profile-stat__value">Xé Preço</span>
                   <span class="profile-stat__label">Membro</span>
                 </div>
               </div>

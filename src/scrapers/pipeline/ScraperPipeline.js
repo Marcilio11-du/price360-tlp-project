@@ -204,7 +204,15 @@ class ScraperPipeline {
       'Webcam',
       'Smartwatch',
       'Carregador',
-      'Cabo USB'
+      'Cabo USB',
+      'Arroz',
+      'Feijão',
+      'Óleo de Palma',
+      'Banana',
+      'Leite',
+      'Coca-Cola',
+      'Água Mineral',
+      'Açúcar'
     ];
   }
 

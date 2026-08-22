@@ -20,6 +20,7 @@ const router = express.Router();
 router.get("/", storeProductController.getStoreProducts);
 router.get("/all", storeProductController.getAllStoreProducts);
 router.get("/deleted", storeProductController.getDeletedStoreProducts);
+router.get("/grouped", storeProductController.getGroupedSummary);
 router.get(
   "/:id",
   validateStoreProductIdParam,

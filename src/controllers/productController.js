@@ -6,6 +6,7 @@
  */
 
 const productModel = require("../models/productModel");
+const priceComparisonModel = require("../models/priceComparisonModel");
 
 // --- Utilitários internos ---
 
@@ -210,6 +211,22 @@ const getProductById = async (req, res) => {
     console.error("Erro ao obter produto por id:", error);
     return sendError(res, 500, "Falha interna ao obter produto.");
   }
+};
+
+const getPriceComparison = async (req, res) => {
+  try {
+    const comparison = await priceComparisonModel.getComparison(Number(req.params.id));
+    if (!comparison.produto) return sendError(res, 404, "Produto nao encontrado.");
+    return sendSuccess(res, 200, comparison, "Comparação de preços obtida com sucesso.");
+  } catch (error) { console.error("Erro ao comparar preços:", error); return sendError(res, 500, "Falha interna ao obter comparação."); }
+};
+
+const getPriceHistory = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const points = await priceComparisonModel.getPriceHistory(id, req.query.dias);
+    return sendSuccess(res, 200, { produto_id: id, pontos: points }, "Histórico de preços obtido com sucesso.");
+  } catch (error) { console.error("Erro ao obter histórico:", error); return sendError(res, 500, "Falha interna ao obter histórico."); }
 };
 
 // --- Handlers de escrita ---
@@ -417,6 +434,8 @@ module.exports = {
   getAllProducts,
   getDeletedProducts,
   getProductById,
+  getPriceComparison,
+  getPriceHistory,
   createProduct,
   updateProduct,
   softDeleteProduct,

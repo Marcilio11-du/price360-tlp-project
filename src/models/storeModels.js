@@ -148,12 +148,12 @@ const findActiveByNif = async (nif, ignoreId = null) => {
  * @param {string} payload.email     - E-mail de contacto.
  * @returns {Promise<number>} insertId do registo criado.
  */
-const create = async ({ nif, nome, endereco, municipio, email }) => {
+const create = async ({ nif, nome, endereco, municipio, email, codigo = null }) => {
   const sql = `
     INSERT INTO ${TABLE}
-      (nif, nome, endereco, municipio, email, created_at, updated_at)
+      (nif, nome, endereco, municipio, email, codigo, created_at, updated_at)
     VALUES
-      (?, ?, ?, ?, ?, NOW(), NOW())
+      (?, ?, ?, ?, ?, ?, NOW(), NOW())
   `;
 
   const [result] = await db.execute(sql, [
@@ -162,6 +162,7 @@ const create = async ({ nif, nome, endereco, municipio, email }) => {
     endereco,
     municipio,
     email,
+    codigo,
   ]);
   return result.insertId;
 };
@@ -176,7 +177,7 @@ const create = async ({ nif, nome, endereco, municipio, email }) => {
  * @returns {Promise<number>} Número de linhas afectadas (0 se nenhum campo válido).
  */
 const update = async (id, payload) => {
-  const allowedFields = ["nif", "nome", "endereco", "municipio", "email"];
+  const allowedFields = ["nif", "nome", "endereco", "municipio", "email", "codigo"];
   const updates = [];
   const params = [];
 

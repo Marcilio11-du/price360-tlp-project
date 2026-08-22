@@ -4,7 +4,6 @@ import { router }            from '../router.js';
 import { toast }             from '../components/Toast.js';
 import { ProductCard }       from '../components/ProductCard.js';
 import { Loader }            from '../components/Loader.js';
-import { openProductModal }  from './HomePage.js';
 import { observeNewElements } from '../animations.js';
 
 export default class ProductsPage {
@@ -75,20 +74,11 @@ export default class ProductsPage {
     if (grid) grid.innerHTML = Loader.renderSkeleton(8);
 
     try {
-      if (this.searchQuery) {
-        const productsRes = await api.get(`/products?q=${encodeURIComponent(this.searchQuery)}`);
-        const productIds  = (productsRes.data || []).map(p => p.id);
-        const storeRes    = await api.get('/store-products');
-        this.allProducts  = (storeRes.data || []).filter(sp => productIds.includes(sp.id_produto));
-      } else if (this.activeCategory) {
-        const productsRes = await api.get(`/products?categoria=${this.activeCategory}`);
-        const productIds  = (productsRes.data || []).map(p => p.id);
-        const storeRes    = await api.get('/store-products');
-        this.allProducts  = (storeRes.data || []).filter(sp => productIds.includes(sp.id_produto));
-      } else {
-        const res        = await api.get('/store-products');
-        this.allProducts = res.data || [];
-      }
+      const params = new URLSearchParams();
+      if (this.searchQuery) params.set('q', this.searchQuery);
+      if (this.activeCategory) params.set('categoria', this.activeCategory);
+      const res = await api.get(`/store-products/grouped?${params}`);
+      this.allProducts = res.data || [];
       this.renderProducts();
     } catch {
       if (grid)
@@ -125,40 +115,13 @@ export default class ProductsPage {
       .map((sp, i) => new ProductCard(sp, i === 0).render())
       .join('');
 
-    // Clique no card → modal de detalhes
+    // Clique no card → comparação detalhada
     grid.querySelectorAll('.product-card').forEach(card => {
       card.style.cursor = 'pointer';
       card.addEventListener('click', (e) => {
-        if (e.target.closest('.btn-add') || e.target.closest('.btn-visit-store')) return;
+        if (e.target.closest('.btn-add')) return;
         const id = Number(card.dataset.id);
-        const sp = this.allProducts.find(p => p.id === id);
-        if (sp) openProductModal(sp);
-      });
-    });
-
-    // Botão "Visitar Loja" → abre o site da loja em nova aba
-    grid.querySelectorAll('.btn-visit-store').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const lojaId = btn.dataset.lojaId;
-        const storeName = btn.dataset.store;
-        if (!lojaId) return;
-        try {
-          btn.disabled = true;
-          btn.textContent = '…';
-          const res = await api.get(`/store-links/store/${lojaId}`);
-          const links = res.data || [];
-          if (links.length === 0) {
-            toast.error(`Sem website registado para ${storeName}.`);
-          } else {
-            window.open(links[0].link, '_blank', 'noopener,noreferrer');
-          }
-        } catch {
-          toast.error('Não foi possível obter o link da loja.');
-        } finally {
-          btn.disabled = false;
-          btn.textContent = 'Visitar loja';
-        }
+        router.navigate(`/produto?id=${id}`);
       });
     });
 
@@ -167,8 +130,8 @@ export default class ProductsPage {
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!auth.isAuthenticated()) { router.navigate('/login'); return; }
-        const sp = this.allProducts.find(p => String(p.id_produto) === btn.dataset.produto);
-        const name = sp?.produto_nome || 'Produto';
+        const sp = this.allProducts.find(p => String(p.id) === btn.dataset.produto);
+        const name = sp?.nome || 'Produto';
         import('./ShoppingListPage.js').then(m => m.openAddToListModal(btn.dataset.produto, name));
       });
     });

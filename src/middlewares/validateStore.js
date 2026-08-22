@@ -94,6 +94,7 @@ const validateCreateStore = (req, res, next) => {
   req.body.endereco = String(req.body.endereco).trim();
   req.body.municipio = String(req.body.municipio).trim();
   req.body.email    = String(req.body.email).trim();
+  if (req.body.codigo !== undefined) req.body.codigo = String(req.body.codigo).trim() || null;
 
   return next();
 };
@@ -108,7 +109,7 @@ const validateCreateStore = (req, res, next) => {
  * - Normaliza os campos presentes com .trim().
  */
 const validateUpdateStore = (req, res, next) => {
-  const allowedFields = ['nif', 'nome', 'endereco', 'municipio', 'email'];
+  const allowedFields = ['nif', 'nome', 'endereco', 'municipio', 'email', 'codigo'];
   const keys = Object.keys(req.body);
   const errors = [];
 
@@ -165,6 +166,7 @@ const validateUpdateStore = (req, res, next) => {
   if (req.body.endereco !== undefined) req.body.endereco = String(req.body.endereco).trim();
   if (req.body.municipio !== undefined) req.body.municipio = String(req.body.municipio).trim();
   if (req.body.email    !== undefined) req.body.email    = String(req.body.email).trim();
+  if (req.body.codigo   !== undefined) req.body.codigo   = String(req.body.codigo).trim() || null;
 
   return next();
 };

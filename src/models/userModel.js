@@ -28,6 +28,9 @@ const baseSelectColumns = `
   genero,
   role,
   avatar_path,
+  email_verificado,
+  email_verificacao_token,
+  email_verificado_em,
   created_at,
   updated_at,
   deleted_at,
@@ -166,6 +169,18 @@ const getUserByEmailExcludingId = async (email, id) => {
   return rows[0] || null;
 };
 
+const getUserByVerificationToken = async (token) => {
+  const sql = `
+    SELECT ${baseSelectColumns}
+    FROM ${USER_TABLE}
+    WHERE email_verificacao_token = ?
+    LIMIT 1
+  `;
+
+  const [rows] = await db.execute(sql, [token]);
+  return rows[0] || null;
+};
+
 // --- Escrita ---
 
 /**
@@ -195,10 +210,13 @@ const createUser = async (userData) => {
         data_nascimento,
         palavra_passe,
         genero,
-        role
+        role,
+        email_verificado,
+        email_verificacao_token,
+        email_verificado_em
       )
     VALUES
-      (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const params = [
@@ -211,6 +229,9 @@ const createUser = async (userData) => {
     userData.palavra_passe,
     userData.genero,
     userData.role,
+    userData.email_verificado ?? 0,
+    userData.email_verificacao_token ?? null,
+    userData.email_verificado_em ?? null,
   ];
 
   const [result] = await db.execute(sql, params);
@@ -239,6 +260,9 @@ const updateUser = async (id, userData) => {
     "genero",
     "role",
     "avatar_path",
+    "email_verificado",
+    "email_verificacao_token",
+    "email_verificado_em",
   ];
 
   const updates = [];

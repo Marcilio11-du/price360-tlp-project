@@ -1,6 +1,6 @@
 /**
  * @file api.js
- * @description Cliente HTTP para a API REST do Price360.
+ * @description Cliente HTTP para a API REST do Xé Preço.
  * Anexa automaticamente o Bearer token e normaliza respostas de erro.
  *
  * Todos os métodos devolvem uma Promise que resolve com o corpo JSON

@@ -5,21 +5,35 @@
 
 /* ─── 1. CSS Custom Properties (Design System) ─────────────── */
 :root {
-    /* Paleta de Cores */
-    --color-primary: #1565c0;
-    --color-primary-dark: #0d47a1;
-    --color-primary-light: #42a5f5;
-    --color-secondary: #f5a623;
-    --color-secondary-dark: #e8960a;
+    /* Identidade Xé Preço */
+    --color-bg-dark: #120d0b;
+    --color-bg-dark-elevated: #1c1512;
+    --color-bg-light: #f8f3ec;
+    --color-bg-light-elevated: #ffffff;
+    --color-text-on-dark: #f5efe8;
+    --color-text-on-dark-muted: rgba(245, 239, 232, 0.62);
+    --color-text-on-light: #201510;
+    --color-text-on-light-muted: #6b5f55;
+    --color-accent: #f5a623;
+    --color-accent-dark: #e8960a;
+    --color-accent-light: #ffd166;
+    --color-savings: #17c971;
+    --color-savings-dark: #0ea05a;
+    /* Aliases de compatibilidade para os componentes existentes. */
+    --color-primary: var(--color-accent);
+    --color-primary-dark: var(--color-accent-dark);
+    --color-primary-light: var(--color-accent-light);
+    --color-secondary: var(--color-accent);
+    --color-secondary-dark: var(--color-accent-dark);
     --color-white: #ffffff;
-    --color-gray-50: #fafafa;
+    --color-gray-50: var(--color-bg-light);
     --color-gray-100: #f5f5f5;
     --color-gray-200: #eeeeee;
     --color-gray-400: #bdbdbd;
     --color-gray-600: #757575;
     --color-gray-800: #424242;
-    --color-text: #212121;
-    --color-success: #4caf50;
+    --color-text: var(--color-text-on-light);
+    --color-success: var(--color-savings);
     --color-error: #f44336;
 
     /* Tipografia */
@@ -31,8 +45,9 @@
     --font-size-lg: 1.125rem;
     --font-size-xl: 1.5rem;
     --font-size-2xl: 2rem;
-    --font-size-3xl: 2.5rem;
-    --font-size-4xl: 3rem;
+    --font-size-3xl: 2.75rem;
+    --font-size-4xl: clamp(2.5rem, 5vw, 4rem);
+    --font-size-5xl: clamp(3rem, 7vw, 5.5rem);
 
     /* Espaçamentos */
     --space-1: 0.25rem;
@@ -43,11 +58,13 @@
     --space-8: 2rem;
     --space-12: 3rem;
     --space-16: 4rem;
+    --space-24: 6rem;
 
     /* Border Radius */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 20px;
+    --radius-xl: 32px;
     --radius-full: 9999px;
 
     /* Sombras */
@@ -56,7 +73,7 @@
     --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
 
     /* Transição padrão */
-    --transition: 0.3s ease;
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ─── 2. Reset ──────────────────────────────────────────────── */
@@ -77,10 +94,7 @@ body {
     font-family: var(--font-family);
     font-size: var(--font-size-base);
     color: var(--color-text);
-    background:
-        radial-gradient(circle at 10% 0%, rgba(66, 165, 245, 0.12), transparent 42%),
-        radial-gradient(circle at 90% 20%, rgba(245, 166, 35, 0.1), transparent 40%),
-        var(--color-gray-50);
+    background: var(--color-bg-light);
     line-height: 1.6;
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;

@@ -25,8 +25,10 @@ const storePhoneRoutes = require("./routes/storePhoneRoutes");
 const storeLinkRoutes = require("./routes/storeLinkRoutes");
 const authRoutes  = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const priceAlertRoutes = require("./routes/priceAlertRoutes");
 const { initializeDatabaseSchema } = require("./config/initDatabase");
 const { initScheduler } = require("./scrapers/scheduler");
+const { ensureRealCatalogBootstrap } = require("./services/realCatalogBootstrap");
 
 const app = express();
 
@@ -69,6 +71,7 @@ app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/store-products", storeProductRoutes);
 app.use("/api/v1/shopping-lists", shoppingListRoutes);
 app.use("/api/v1/product-shopping-lists", productShoppingListRoutes);
+app.use("/api/v1/price-alerts", priceAlertRoutes);
 
 // Informação de contacto de lojas
 app.use("/api/v1/store-phones", storePhoneRoutes);
@@ -133,6 +136,13 @@ const startServer = async () => {
   try {
     // Garante que todas as tabelas e constraints estão criadas antes de aceitar pedidos
     await initializeDatabaseSchema();
+
+    const catalogBootstrap = await ensureRealCatalogBootstrap({ minProducts: 120, maxProducts: 200 });
+    if (catalogBootstrap.bootstrapped) {
+      console.log("Catálogo real enriquecido com dados da NCR:", catalogBootstrap);
+    } else {
+      console.log("Catálogo real já suficiente ou não foi necessário recriar:", catalogBootstrap.reason || catalogBootstrap);
+    }
 
     // Inicia o scheduler de scrapers (agendador automático de atualização de preços)
     if (process.env.ENABLE_SCRAPERS !== 'false') {

@@ -41,11 +41,34 @@
 
 /* ── Logo ──────────────────────────────────────────────────── */
 .navbar__logo {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   text-decoration: none;
   flex-shrink: 0;
+  color: var(--color-text);
+  min-width: 0;
+}
+
+.navbar__logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1d73d6 100%);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  box-shadow: 0 8px 20px rgba(21, 101, 192, 0.22);
+}
+
+.navbar__logo-text {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
 }
 
 .navbar__logo img {
@@ -143,50 +166,32 @@
   flex-shrink: 0;
 }
 
-/* Login — outlined, azul */
-.navbar__actions .btn--outline {
-  border: 1.5px solid var(--color-primary);
-  color: var(--color-primary);
-  background: transparent;
-  padding: 0.45rem 1.1rem;
-  border-radius: 50px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-  text-decoration: none;
-  font-family: inherit;
-  line-height: 1;
+.navbar__cta {
   display: inline-flex;
   align-items: center;
-}
-
-.navbar__actions .btn--outline:hover {
-  background: rgba(21, 101, 192, 0.07);
-}
-
-/* Sign in — laranja sólido */
-.navbar__actions .btn--primary {
-  background: var(--color-secondary);
-  color: #fff;
-  border: none;
-  padding: 0.48rem 1.2rem;
-  border-radius: 50px;
+  justify-content: center;
+  padding: 0.52rem 1.1rem;
+  border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
   text-decoration: none;
-  font-family: inherit;
   line-height: 1;
-  display: inline-flex;
-  align-items: center;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
 }
 
-.navbar__actions .btn--primary:hover {
-  background: var(--color-secondary-dark);
+.navbar__cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 166, 35, 0.35);
+}
+
+.navbar__cta--primary {
+  background: linear-gradient(135deg, var(--color-secondary) 0%, #f59f1a 100%);
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(245, 166, 35, 0.22);
+}
+
+.navbar__cta--primary:hover {
+  box-shadow: 0 10px 20px rgba(245, 166, 35, 0.28);
 }
 
 /* ── Cart icon ─────────────────────────────────────────────── */
@@ -471,8 +476,7 @@
     flex-shrink: 0;
   }
 
-  .navbar__actions .btn--outline,
-  .navbar__actions .btn--primary {
+  .navbar__cta {
     display: none;
   }
 

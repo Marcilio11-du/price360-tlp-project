@@ -14,8 +14,12 @@ export const auth = {
    * @param {{ id: number, email: string, role: string, p_nome?: string }} user
    */
   setAuth(token, user) {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
+   if (!token || !user || !user.id) {
+     this.logout();
+     return;
+   }
+   localStorage.setItem(TOKEN_KEY, token);
+   localStorage.setItem(USER_KEY, JSON.stringify(user));
   },
 
   /**
@@ -23,7 +27,7 @@ export const auth = {
    * @returns {string|null}
    */
   getToken() {
-    return localStorage.getItem(TOKEN_KEY);
+   return localStorage.getItem(TOKEN_KEY);
   },
 
   /**
@@ -31,19 +35,31 @@ export const auth = {
    * @returns {{ id: number, email: string, role: string, p_nome?: string }|null}
    */
   getUser() {
-    try {
-      return JSON.parse(localStorage.getItem(USER_KEY));
-    } catch {
-      return null;
-    }
+   try {
+     const raw = localStorage.getItem(USER_KEY);
+     if (!raw) return null;
+     const parsed = JSON.parse(raw);
+     return parsed && typeof parsed === 'object' && parsed.id ? parsed : null;
+   } catch {
+     return null;
+   }
   },
 
   /**
-   * Indica se existe sessão activa (token presente).
+   * Indica se existe sessão activa (token presente e user válido).
    * @returns {boolean}
    */
   isAuthenticated() {
-    return Boolean(this.getToken());
+   const token = this.getToken();
+   const user = this.getUser();
+
+   if (!token && !user) return false;
+   if (!token || !user) {
+     this.logout({ redirect: false, silent: true });
+     return false;
+   }
+
+   return true;
   },
 
   /**
@@ -58,10 +74,15 @@ export const auth = {
   /**
    * Termina a sessão: limpa localStorage e redireciona para /.
    */
-  logout() {
+  logout({ redirect = true, silent = false } = {}) {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
-    window.location.hash = '#/';
-    window.location.reload();
+
+    if (redirect && !silent) {
+      const currentHash = window.location.hash || '#/';
+      if (currentHash !== '#/') {
+        window.location.hash = '#/';
+      }
+    }
   }
 };

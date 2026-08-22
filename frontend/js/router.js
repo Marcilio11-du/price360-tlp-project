@@ -1,6 +1,6 @@
 /**
  * @file router.js
- * @description Router hash-based para a SPA Price360.
+ * @description Router hash-based para a SPA Xé Preço.
  * Suporta rotas protegidas (requerem auth) e rotas de admin.
  *
  * Rotas registadas em app.js:
@@ -18,7 +18,7 @@ import { auth } from './auth.js';
 const routes = {};
 
 /** Rotas que requerem utilizador autenticado */
-const protectedRoutes = ['/lista', '/profile'];
+const protectedRoutes = ['/lista', '/profile', '/alertas'];
 
 /** Rotas que requerem role 'admin' */
 const adminRoutes = ['/admin'];
