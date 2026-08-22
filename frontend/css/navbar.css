@@ -320,24 +320,28 @@
 .navbar__hamburger {
   display: none;
   flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px;
-  margin-left: 8px;
+  padding: 10px;
+  margin-left: 4px;
+  flex-shrink: 0;
 }
 
 .navbar__hamburger span {
-  width: 24px;
+  display: block;
+  width: 22px;
   height: 2.5px;
   background: var(--color-text);
   border-radius: 2px;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .navbar__hamburger.active span:nth-child(1) {
-  transform: rotate(45deg) translate(10px, 10px);
+  transform: translateY(7.5px) rotate(45deg);
 }
 
 .navbar__hamburger.active span:nth-child(2) {
@@ -345,7 +349,7 @@
 }
 
 .navbar__hamburger.active span:nth-child(3) {
-  transform: rotate(-45deg) translate(7px, -7px);
+  transform: translateY(-7.5px) rotate(-45deg);
 }
 
 /* ── Mobile Menu ───────────────────────────────────────────── */
@@ -362,8 +366,11 @@
     0 8px 32px rgba(0, 0, 0, 0.12),
     0 2px 8px rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  padding: 12px 16px;
+  padding: 12px 14px;
   z-index: 999;
+  max-height: calc(100dvh - 90px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   animation: slideDown 0.3s ease;
 }
 
@@ -389,7 +396,7 @@
 
 .navbar__nav--mobile a {
   display: block;
-  padding: 10px 12px;
+  padding: 12px 12px;
   text-align: left;
   border-radius: 10px;
   font-size: 0.9rem;
@@ -398,6 +405,31 @@
 .navbar__nav--mobile a:hover {
   background: rgba(21, 101, 192, 0.06);
   color: var(--color-primary);
+}
+
+/* ── Auth no menu mobile ───────────────────────────────────── */
+.navbar__mobile-auth {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-gray-200);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.navbar__mobile-cta,
+.navbar__mobile-logout {
+  width: 100%;
+  justify-content: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+}
+
+/* Trava o scroll da página enquanto o menu mobile está aberto */
+@media (max-width: 768px) {
+  body.nav-open {
+    overflow: hidden;
+  }
 }
 
 /* ── Responsive Design ─────────────────────────────────────── */
@@ -435,6 +467,7 @@
     width: calc(100% - 20px);
     height: 56px;
     top: 8px;
+    border-radius: 44px;
   }
 
   .navbar__inner {
@@ -446,18 +479,22 @@
     height: 30px;
   }
 
+  /* Pesquisa ocupa o espaço disponível sem transbordar */
   .navbar__search {
-    max-width: 160px;
+    max-width: none;
     flex: 1;
+    min-width: 0;
   }
 
   .navbar__search-input {
-    font-size: 0.75rem;
-    padding: 0.4rem 2.2rem 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    padding: 0.5rem 2.4rem 0.5rem 0.9rem;
   }
 
   .navbar__search-btn {
     right: 6px;
+    width: 32px;
+    height: 32px;
   }
 
   /* Esconder nav desktop */
@@ -481,8 +518,8 @@
   }
 
   .navbar__cart {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
   }
 
   .navbar__user {
@@ -511,55 +548,78 @@
     flex-shrink: 0;
   }
 
-  .navbar__logo img {
-    height: 26px;
+  /* Liberta espaço para a pesquisa em ecrãs estreitos */
+  .navbar__logo-text {
+    display: none;
+  }
+
+  .navbar__logo img,
+  .navbar__logo-mark {
+    height: 28px;
+    width: 28px;
+  }
+
+  .navbar__logo-mark {
+    border-radius: 9px;
+    font-size: 0.8rem;
   }
 
   .navbar__search {
-    max-width: 120px;
+    max-width: none;
     flex: 1;
     min-width: 0;
   }
 
   .navbar__search-input {
-    font-size: 0.7rem;
-    padding: 0.35rem 2rem 0.35rem 0.7rem;
+    font-size: 0.8rem;
+    padding: 0.45rem 2.2rem 0.45rem 0.8rem;
   }
 
   .navbar__search-btn {
-    width: 22px;
-    height: 22px;
-    right: 4px;
+    width: 28px;
+    height: 28px;
+    right: 5px;
   }
 
   .navbar__search-btn svg {
-    width: 14px !important;
-    height: 14px !important;
+    width: 15px !important;
+    height: 15px !important;
   }
 
   .navbar__hamburger {
-    padding: 2px;
-    gap: 4px;
-    margin-left: 4px;
+    margin-left: 0;
   }
 
   .navbar__hamburger span {
-    width: 18px;
+    width: 20px;
     height: 2px;
   }
 
+  .navbar__hamburger.active span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .navbar__hamburger.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
   .navbar__actions {
-    gap: 4px;
+    gap: 5px;
   }
 
   .navbar__cart {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
 
   .navbar__cart svg {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .navbar__user-avatar {
+    width: 30px;
+    height: 30px;
   }
 
   .navbar__cart-count {
@@ -574,6 +634,8 @@
     left: 10px;
     right: 10px;
     top: calc(100% + 8px);
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
   }
 
   .navbar__nav--mobile {
@@ -581,7 +643,7 @@
   }
 
   .navbar__nav--mobile a {
-    padding: 8px 10px;
-    font-size: 0.8rem;
+    padding: 11px 10px;
+    font-size: 0.88rem;
   }
 }

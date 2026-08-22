@@ -90,6 +90,12 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
+/* Evita scroll horizontal acidental em ecrãs estreitos */
+html,
+body {
+    overflow-x: clip;
+}
+
 body {
     font-family: var(--font-family);
     font-size: var(--font-size-base);
@@ -144,6 +150,19 @@ ol {
     /* navbar 70px + 12px top offset + 14px extra de respiro */
     padding-top: 96px;
     min-height: 100vh;
+}
+
+/* Navbar é mais baixa em mobile — menos respiro no topo */
+@media (max-width: 768px) {
+    .page-wrapper {
+        padding-top: 84px;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-wrapper {
+        padding-top: 72px;
+    }
 }
 
 /* ─── 4. Botões ─────────────────────────────────────────────── */
@@ -464,10 +483,6 @@ a:focus-visible {
 
 /* Mobile landscape (≤768px) */
 @media (max-width: 768px) {
-    body {
-        padding-top: 70px;
-    }
-
     :root {
         --font-size-2xl: 1.75rem;
         --font-size-3xl: 1.5rem;
@@ -495,10 +510,6 @@ a:focus-visible {
 
 /* Mobile pequeno (≤480px) */
 @media (max-width: 480px) {
-    body {
-        padding-top: 60px;
-    }
-
     :root {
         --font-size-lg: 1rem;
         --font-size-xl: 1.25rem;

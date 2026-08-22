@@ -266,6 +266,10 @@
 }
 
 @media (max-width: 640px) {
+  .categories-section { padding: 44px 0 40px; }
+  .products-section { padding: 44px 0 52px; }
+  .about-section { padding: 52px 0 60px; }
+  .section-header { margin-bottom: 20px; }
   .categories-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .products-grid { grid-template-columns: 1fr; }
   .products-section__header { flex-direction: column; align-items: flex-start; }

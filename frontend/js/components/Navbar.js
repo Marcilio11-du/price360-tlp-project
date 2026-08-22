@@ -40,7 +40,7 @@ export class Navbar {
       ? `<img src="${user.avatar_path}" alt="${fullName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
       : `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:600;font-size:0.85rem">${initials}</span>`;
 
-    // --- Bloco de autenticação ---
+    // --- Bloco de autenticação (desktop) ---
     const authButtons = isAuth
       ? `
         <div class="navbar__user" id="navbar-user-menu">
@@ -55,12 +55,33 @@ export class Navbar {
             <div class="dropdown-item" data-nav="/profile">Perfil</div>
             <div class="dropdown-item" data-nav="/lista">Listas de Compras</div>
             <div class="dropdown-item" data-nav="/alertas">Alertas de preço</div>
-            <div class="dropdown-item dropdown-item--danger" id="logout-btn">Terminar Sessão</div>
+            <div class="dropdown-item dropdown-item--danger js-logout">Terminar Sessão</div>
           </div>
         </div>
       `
       : `
         <a href="#/login" class="navbar__cta navbar__cta--primary">Entrar</a>
+      `;
+
+    // --- Bloco de autenticação (mobile menu) ---
+    const mobileUserLinks = isAuth
+      ? `
+        ${auth.isAdmin() ? `<a href="#/admin">Dashboard</a>` : ""}
+        <a href="#/profile">Perfil</a>
+        <a href="#/lista">Listas de Compras</a>
+        <a href="#/alertas">Alertas de preço</a>
+      `
+      : "";
+
+    const mobileAuthFooter = isAuth
+      ? `
+        <button type="button" class="btn btn--danger navbar__mobile-logout js-logout">
+          Terminar Sessão
+        </button>
+      `
+      : `
+        <a href="#/login" class="btn btn--primary navbar__mobile-cta">Entrar</a>
+        <a href="#/cadastro" class="btn btn--outline navbar__mobile-cta">Criar conta</a>
       `;
 
     return `
@@ -126,7 +147,11 @@ export class Navbar {
           <nav class="navbar__nav navbar__nav--mobile" aria-label="Navegação mobile">
             <a href="#/">Home</a>
             <a href="#/produtos">Produtos</a>
+            ${mobileUserLinks}
           </nav>
+          <div class="navbar__mobile-auth">
+            ${mobileAuthFooter}
+          </div>
         </div>
       </nav>
     `;
@@ -187,9 +212,9 @@ export class Navbar {
       }
     });
 
-    // --- Logout ---
-    container.querySelector("#logout-btn")?.addEventListener("click", () => {
-      auth.logout();
+    // --- Logout (desktop dropdown + menu mobile) ---
+    container.querySelectorAll(".js-logout").forEach((btn) => {
+      btn.addEventListener("click", () => auth.logout());
     });
 
     // --- Ícone de carrinho ---
@@ -207,25 +232,28 @@ export class Navbar {
     const mobileMenu = container.querySelector("#navbar-mobile-menu");
     const mobileLinks = container.querySelectorAll(".navbar__nav--mobile a");
 
+    const closeMobileMenu = () => {
+      hamburger?.classList.remove("active");
+      mobileMenu?.classList.remove("active");
+      document.body.classList.remove("nav-open");
+    };
+
     hamburger?.addEventListener("click", (e) => {
       e.stopPropagation();
-      hamburger.classList.toggle("active");
-      mobileMenu?.classList.toggle("active");
+      const isOpen = hamburger.classList.toggle("active");
+      mobileMenu?.classList.toggle("active", isOpen);
+      document.body.classList.toggle("nav-open", isOpen);
     });
 
     // Fecha menu ao clicar em link
     mobileLinks.forEach((link) => {
-      link.addEventListener("click", () => {
-        hamburger?.classList.remove("active");
-        mobileMenu?.classList.remove("active");
-      });
+      link.addEventListener("click", closeMobileMenu);
     });
 
     // Fecha menu ao clicar fora
     document.addEventListener("click", (e) => {
       if (!container.contains(e.target)) {
-        hamburger?.classList.remove("active");
-        mobileMenu?.classList.remove("active");
+        closeMobileMenu();
       }
     });
   }
@@ -251,6 +279,7 @@ export class Navbar {
     window.addEventListener("hashchange", () => {
       const currentPath = router.getCurrentPath();
       const hideNavbarRoutes = ["/login", "/cadastro", "/onboarding"];
+      document.body.classList.remove("nav-open");
       if (hideNavbarRoutes.includes(currentPath)) {
         container.style.display = "none";
       } else {
