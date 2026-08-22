@@ -17,8 +17,11 @@ router.post("/login", authController.login);
 // GET /api/v1/auth/verify-email — valida um token de confirmação de email
 router.get("/verify-email", authController.verifyEmail);
 
-// POST /api/v1/auth/register — cria conta e autentica imediatamente (onboarding)
+// POST /api/v1/auth/register — cria conta e envia email de verificação
 const { validateCreateUser } = require('../middlewares/validateUser');
 router.post("/register", validateCreateUser, authController.register);
+
+// POST /api/v1/auth/resend-verification — reenvia o link de confirmação
+router.post("/resend-verification", authController.resendVerification);
 
 module.exports = router;

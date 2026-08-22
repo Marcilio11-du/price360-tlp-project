@@ -3,6 +3,7 @@ import { auth } from "../auth.js";
 import { router } from "../router.js";
 import { toast } from "../components/Toast.js";
 import { Navbar } from "../components/Navbar.js";
+import { requestResend } from "../components/EmailVerificationUI.js";
 import { observeNewElements } from "../animations.js";
 
 export default class LoginPage {
@@ -71,6 +72,59 @@ export default class LoginPage {
     observeNewElements();
   }
 
+  /**
+   * Mostra um banner no cartão de login com o botão de reenvio do
+   * email de verificação (aparece quando o login falha por 403).
+   */
+  _showResendVerification() {
+    const card = this.container.querySelector(".auth-card");
+    if (!card || card.querySelector("#resend-verification-banner")) return;
+
+    const banner = document.createElement("div");
+    banner.id = "resend-verification-banner";
+    banner.className = "resend-verification";
+    banner.innerHTML = `
+      <p class="resend-verification__title">📧 A tua conta ainda não está activa</p>
+      <p class="resend-verification__text">
+        Enviámos um link de confirmação quando criaste a conta.
+        Não chegou nada? Reenvia para o email indicado acima.
+      </p>
+      <button type="button" id="resend-verification-btn" class="resend-verification__btn">
+        Reenviar email de verificação
+      </button>
+      <p id="resend-verification-status" class="resend-verification__status" style="display:none"></p>
+    `;
+    card.querySelector(".auth-card__footer")?.before(banner);
+    this._bindResendEvent();
+  }
+
+  /** Liga o botão de reenvio (chamado após injectar o banner). */
+  _bindResendEvent() {
+    const btn = this.container.querySelector("#resend-verification-btn");
+    const status = this.container.querySelector("#resend-verification-status");
+    const form = this.container.querySelector("#login-form");
+
+    btn?.addEventListener("click", async () => {
+      const email = form?.querySelector("#login-email")?.value.trim();
+      if (!email) {
+        toast.error("Escreve o teu email no campo acima e tenta de novo.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "A reenviar...";
+
+      const result = await requestResend(email);
+      status.style.display = "block";
+      status.textContent = result.message;
+      status.className = `resend-verification__status ${result.ok ? "is-ok" : "is-err"}`;
+      toast[result.ok ? "success" : "error"](result.message);
+
+      btn.disabled = false;
+      btn.textContent = "Reenviar email de verificação";
+    });
+  }
+
   bindEvents() {
     const form = this.container.querySelector("#login-form");
     const submitBtn = this.container.querySelector("#login-submit");
@@ -107,11 +161,18 @@ export default class LoginPage {
         // Navega para admin se for admin, senão para home
         router.navigate(res.data.user.role === "admin" ? "/admin" : "/");
       } catch (err) {
+        const isVerificationBlocked =
+          err.status === 403 && /confirm|verific/i.test(err.message || "");
+
+        if (isVerificationBlocked) {
+          this._showResendVerification(email);
+        }
+
         const message =
           err.status === 404
             ? "Endpoint de login não encontrado. Confirma se o backend está ativo em /api/v1/auth/login."
-            : err.status === 403
-              ? (err.message || "Confirme o teu email antes de entrar.")
+            : isVerificationBlocked
+              ? (err.message || "Confirma o teu email antes de entrar.")
               : err.message || "Email ou palavra-passe incorrectos.";
         toast.error(message);
         submitBtn.disabled = false;

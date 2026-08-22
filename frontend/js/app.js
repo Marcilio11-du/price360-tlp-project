@@ -27,6 +27,7 @@ import ProfilePage         from './pages/ProfilePage.js';
 import AdminDashboardPage  from './pages/AdminDashboardPage.js';
 import ProductDetailPage   from './pages/ProductDetailPage.js';
 import PriceAlertsPage     from './pages/PriceAlertsPage.js';
+import EmailVerificationPage from './pages/EmailVerificationPage.js';
 
 // ─── 1. Navbar persistente ────────────────────────────────────────────────────
 const navbarRoot = document.getElementById('navbar-root');
@@ -41,6 +42,7 @@ router.register('/produtos', (container) => new ProductsPage(container).render()
 router.register('/produto',  (container) => new ProductDetailPage(container).render());
 router.register('/login',    (container) => new LoginPage(container).render());
 router.register('/cadastro', (container) => new RegisterPage(container).render());
+router.register('/verificar-email', (container) => new EmailVerificationPage(container).render());
 router.register('/onboarding', (container) => new OnboardingPage(container).render());
 router.register('/lista',    (container) => new ShoppingListPage(container).render());
 router.register('/profile',  (container) => new ProfilePage(container).render());

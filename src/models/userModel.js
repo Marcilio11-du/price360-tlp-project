@@ -174,6 +174,7 @@ const getUserByVerificationToken = async (token) => {
     SELECT ${baseSelectColumns}
     FROM ${USER_TABLE}
     WHERE email_verificacao_token = ?
+      AND (email_verificacao_expira_em IS NULL OR email_verificacao_expira_em > NOW())
     LIMIT 1
   `;
 
@@ -213,10 +214,11 @@ const createUser = async (userData) => {
         role,
         email_verificado,
         email_verificacao_token,
-        email_verificado_em
+        email_verificado_em,
+        email_verificacao_expira_em
       )
     VALUES
-      (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const params = [
@@ -232,6 +234,7 @@ const createUser = async (userData) => {
     userData.email_verificado ?? 0,
     userData.email_verificacao_token ?? null,
     userData.email_verificado_em ?? null,
+    userData.email_verificacao_expira_em ?? null,
   ];
 
   const [result] = await db.execute(sql, params);
@@ -263,6 +266,7 @@ const updateUser = async (id, userData) => {
     "email_verificado",
     "email_verificacao_token",
     "email_verificado_em",
+    "email_verificacao_expira_em",
   ];
 
   const updates = [];
@@ -384,6 +388,7 @@ module.exports = {
   getUserByIdIncludingDeleted,
   getUserByEmail,
   getUserByEmailExcludingId,
+  getUserByVerificationToken,
   createUser,
   updateUser,
   softDeleteUser,

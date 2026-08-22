@@ -314,6 +314,11 @@ const initializeDatabaseSchema = async () => {
       "Utilizador",
       "email_verificado_em DATETIME NULL",
     );
+    await ensureColumnExists(
+      connection,
+      "Utilizador",
+      "email_verificacao_expira_em DATETIME NULL",
+    );
     await connection.query(
       "UPDATE Utilizador SET email_verificado = 1 WHERE email_verificado = 0 AND email_verificacao_token IS NULL",
     );

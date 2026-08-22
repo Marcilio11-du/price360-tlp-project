@@ -2,6 +2,7 @@ import { api } from "../api.js";
 import { auth } from "../auth.js";
 import { router } from "../router.js";
 import { toast } from "../components/Toast.js";
+import { renderCheckEmailPanel } from "../components/EmailVerificationUI.js";
 import { observeNewElements } from "../animations.js";
 
 export default class RegisterPage {
@@ -142,14 +143,16 @@ export default class RegisterPage {
 
         if (!res.data.verification_required) {
           auth.setAuth(res.data.token, res.data.user);
+          toast.success("Conta criada com sucesso!");
+          setTimeout(() => router.navigate("/"), 900);
+          return;
         }
 
-        toast.success(
-          res.data.verification_required
-            ? "Conta criada. Confirma o teu email para ativar a conta."
-            : "Conta criada com sucesso!",
-        );
-        setTimeout(() => router.navigate(res.data.verification_required ? "/login" : "/"), 1200);
+        // Conta criada mas pendente de verificação: painel claro
+        // com instruções e opção de reenviar o email.
+        const card = this.container.querySelector(".auth-card");
+        renderCheckEmailPanel(card, { email });
+        toast.success("Conta criada! Confirma o teu email para a activar.");
       } catch (err) {
         const msg = err.details?.[0] || err.message || "Erro ao criar conta.";
         toast.error(msg);

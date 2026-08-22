@@ -15,23 +15,39 @@ const sendError = (res, statusCode, message, details = null) =>
 
 const createVerificationToken = () => crypto.randomBytes(32).toString('hex');
 
+// Validade do link de verificação (horas)
+const VERIFICATION_TOKEN_TTL_HOURS = Number(process.env.EMAIL_VERIFICATION_TTL_HOURS || 24);
+
+const buildVerificationExpiry = () =>
+  new Date(Date.now() + VERIFICATION_TOKEN_TTL_HOURS * 60 * 60 * 1000);
+
+const getFrontendUrl = () =>
+  (process.env.FRONTEND_URL || process.env.APP_URL || process.env.CLIENT_URL || 'http://localhost:8931')
+    .replace(/\/$/, '');
+
 const sendVerificationEmail = async (user, token) => {
-  const appUrl = (process.env.APP_URL || process.env.CLIENT_URL || 'http://localhost:3000').replace(/\/$/, '');
-  const verificationLink = `${appUrl}/api/v1/auth/verify-email?token=${encodeURIComponent(token)}`;
+  // O link abre a página de verificação no FRONTEND, que chama a API
+  // e apresenta o resultado ao utilizador.
+  const verificationLink = `${getFrontendUrl()}/#/verificar-email?token=${encodeURIComponent(token)}`;
+  const firstName = String(user.p_nome || '').trim();
 
   return sendMail({
     to: user.email,
     subject: 'Confirma o teu email no Xé Preço',
     html: `
-      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937;padding:24px;">
-        <h2 style="margin:0 0 12px;color:#0f172a;">Bem-vindo ao Xé Preço</h2>
-        <p>Para concluir a tua conta, confirma o teu email clicando no botão abaixo.</p>
-        <p style="margin:24px 0;">
-          <a href="${verificationLink}" style="display:inline-block;background:#1d4ed8;color:#fff;text-decoration:none;padding:12px 20px;border-radius:999px;font-weight:700;">
-            Confirmar email
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937;padding:24px;max-width:520px;margin:0 auto;">
+        <h2 style="margin:0 0 12px;color:#0f172a;">Olá${firstName ? `, ${firstName}` : ''}! Falta só um passo 👋</h2>
+        <p>Obrigado por criares conta no <strong>Xé Preço</strong>. Para a activar, confirma que este email é teu:</p>
+        <p style="margin:24px 0;text-align:center;">
+          <a href="${verificationLink}" style="display:inline-block;background:#16a34a;color:#fff;text-decoration:none;padding:13px 28px;border-radius:999px;font-weight:700;">
+            Confirmar o meu email
           </a>
         </p>
-        <p style="font-size:12px;color:#6b7280;">Se o botão não funcionar, usa este link:<br>${verificationLink}</p>
+        <p style="font-size:13px;color:#374151;">Este link é válido por <strong>${VERIFICATION_TOKEN_TTL_HOURS} horas</strong>.</p>
+        <p style="font-size:12px;color:#6b7280;">Se o botão não funcionar, copia e cola este endereço no navegador:<br>
+          <a href="${verificationLink}" style="color:#16a34a;word-break:break-all;">${verificationLink}</a>
+        </p>
+        <p style="font-size:12px;color:#6b7280;">Não criaste esta conta? Podes ignorar este email.</p>
       </div>
     `,
   });
@@ -115,11 +131,14 @@ const register = async (req, res) => {
 
     const userId = await userModel.createUser({
       ...payload,
+      // Email normalizado em minúsculas — login e reenvio usam o mesmo formato
+      email: String(payload.email || '').trim().toLowerCase(),
       palavra_passe: hashedPassword,
       role: 'user',
       email_verificado: 0,
       email_verificacao_token: verificationToken,
       email_verificado_em: null,
+      email_verificacao_expira_em: buildVerificationExpiry(),
     });
 
     let createdUser = await userModel.getUserByIdIncludingDeleted(userId);
@@ -174,20 +193,64 @@ const verifyEmail = async (req, res) => {
     const user = await userModel.getUserByVerificationToken(token);
 
     if (!user) {
-      return sendError(res, 404, 'Token de verificação inválido ou expirado.');
+      return sendError(res, 410, 'Link de verificação inválido ou expirado. Pede um novo email de verificação.');
     }
 
     await userModel.updateUser(user.id, {
       email_verificado: 1,
       email_verificacao_token: null,
       email_verificado_em: new Date(),
+      email_verificacao_expira_em: null,
     });
 
-    return sendSuccess(res, 200, { verified: true }, 'Email verificado com sucesso.');
+    return sendSuccess(res, 200, { verified: true }, 'Email verificado com sucesso. Já podes entrar na tua conta.');
   } catch (error) {
     console.error('Erro ao verificar email:', error);
     return sendError(res, 500, 'Falha interna ao verificar o email.');
   }
 };
 
-module.exports = { login, register, verifyEmail };
+/**
+ * Reenvia o email de verificação para uma conta ainda não verificada.
+ * Responde sempre com sucesso genérico (sem revelar se o email existe),
+ * excepto quando a conta já está verificada.
+ */
+const resendVerification = async (req, res) => {
+  try {
+    const email = String(req.body?.email || '').trim().toLowerCase();
+    if (!email) {
+      return sendError(res, 400, 'Indica o teu email para reenviar a verificação.');
+    }
+
+    const userModel = require('../models/userModel');
+    const user = await userModel.getUserByEmail(email);
+
+    if (!user || user.deleted_at) {
+      // Não revela existência da conta
+      return sendSuccess(res, 200, { reenviado: true }, 'Se este email tiver conta connosco, enviámos um novo link.');
+    }
+
+    if (Number(user.email_verificado) === 1) {
+      return sendSuccess(res, 200, { reenviado: false }, 'Este email já está verificado. Podes entrar normalmente.');
+    }
+
+    const verificationToken = createVerificationToken();
+    await userModel.updateUser(user.id, {
+      email_verificacao_token: verificationToken,
+      email_verificacao_expira_em: buildVerificationExpiry(),
+    });
+
+    const emailResult = await sendVerificationEmail(user, verificationToken);
+    if (!emailResult.sent) {
+      console.warn('[auth] Reenvio de verificação não enviado:', emailResult.reason);
+      return sendError(res, 503, 'Não foi possível enviar o email agora. Tenta novamente em instantes.');
+    }
+
+    return sendSuccess(res, 200, { reenviado: true }, 'Enviámos um novo link de verificação para o teu email.');
+  } catch (error) {
+    console.error('Erro ao reenviar verificação:', error);
+    return sendError(res, 500, 'Falha interna ao reenviar a verificação.');
+  }
+};
+
+module.exports = { login, register, verifyEmail, resendVerification };
