@@ -11,7 +11,7 @@ const getComparison = async (idProduto) => {
   if (!produto) return { produto: null, ofertas: [], estatisticas: null };
   const [rows] = await db.execute(`
     SELECT pl.id AS id_produto_loja, pl.id_loja, l.nome AS loja_nome, l.municipio,
-      pl.preco, pl.quantidade, pl.updated_at
+      pl.preco, pl.quantidade, pl.link AS produto_url, pl.imagem, pl.updated_at
     FROM ${STORE_PRODUCT_TABLE} pl INNER JOIN ${STORE_TABLE} l ON l.id = pl.id_loja
     WHERE pl.id_produto = ? AND pl.deleted_at IS NULL AND l.deleted_at IS NULL
     ORDER BY pl.preco ASC`, [idProduto]);

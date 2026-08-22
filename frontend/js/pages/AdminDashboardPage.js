@@ -349,7 +349,7 @@ export default class AdminDashboardPage {
         <div class="form-grid">
           <div class="form-group">
             <label>Nome *</label>
-            <input id="lf-nome" type="text" value="${isEdit ? loja.nome : ''}" placeholder="Ex: Kero Viana" />
+            <input id="lf-nome" type="text" value="${isEdit ? loja.nome : ''}" placeholder="Ex: NCR Angola" />
           </div>
           <div class="form-group">
             <label>NIF *</label>
@@ -365,12 +365,12 @@ export default class AdminDashboardPage {
           </div>
           <div class="form-group">
             <label>Email</label>
-            <input id="lf-email" type="email" value="${isEdit ? (loja.email||'') : ''}" placeholder="Ex: geral@kero.ao" />
-            <input id="lf-codigo" type="text" value="${isEdit ? (loja.codigo||'') : ''}" placeholder="Código opcional: kero" />
+            <input id="lf-email" type="email" value="${isEdit ? (loja.email||'') : ''}" placeholder="Ex: geral@ncrangola.com" />
+            <input id="lf-codigo" type="text" value="${isEdit ? (loja.codigo||'') : ''}" placeholder="Código opcional: ncr" />
           </div>
           <div class="form-group">
             <label>Website (URL)</label>
-            <input id="lf-link" type="url" value="${lojaLink}" placeholder="Ex: https://kero.ao" />
+            <input id="lf-link" type="url" value="${lojaLink}" placeholder="Ex: https://www.ncrangola.com" />
           </div>
         </div>
         <div class="form-actions">

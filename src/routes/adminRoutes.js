@@ -9,8 +9,44 @@ const router  = express.Router();
 const fs      = require('fs');
 const path    = require('path');
 const { isAdmin } = require('../middlewares/authenticate');
+const { getScheduler } = require('../scrapers/scheduler');
 
 const LOGS_DIR = path.resolve(__dirname, '../../logs/scrapers');
+
+/**
+ * POST /admin/scraping/run
+ * Dispara o pipeline de scraping de forma ASSÍNCRONA (fire-and-forget).
+ * Responde imediatamente com 202; o resultado pode ser acompanhado em
+ * GET /admin/scraping/status. Ideal para um cron externo em produção
+ * (ex.: cron-job.org a chamar este endpoint diariamente).
+ */
+router.post('/scraping/run', isAdmin, (req, res) => {
+  const scheduler = getScheduler();
+  if (!scheduler) {
+    return res.status(503).json({ status: 'error', data: null, message: 'Scheduler não inicializado.' });
+  }
+  const resultado = scheduler.triggerAsync();
+  if (!resultado.iniciado) {
+    return res.status(409).json({ status: 'error', data: resultado, message: resultado.motivo });
+  }
+  return res.status(202).json({
+    status: 'success',
+    data: { iniciadoEm: new Date().toISOString() },
+    message: 'Pipeline de scraping iniciado em segundo plano.',
+  });
+});
+
+/**
+ * GET /admin/scraping/status
+ * Estado actual do agendador e da última execução do pipeline.
+ */
+router.get('/scraping/status', isAdmin, (req, res) => {
+  const scheduler = getScheduler();
+  if (!scheduler) {
+    return res.status(503).json({ status: 'error', data: null, message: 'Scheduler não inicializado.' });
+  }
+  return res.json({ status: 'success', data: scheduler.getStatus(), message: 'Estado do scraper obtido.' });
+});
 
 /**
  * GET /admin/logs

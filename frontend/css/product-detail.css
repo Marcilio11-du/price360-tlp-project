@@ -6,11 +6,64 @@
 .detail-stats small, .offer span { display:block; color:var(--color-text-on-light-muted); }
 .detail-stats strong { font-size:1.25rem; }
 .offers { display:grid; gap:.75rem; margin:1rem 0 2rem; }
-.offer { display:flex; align-items:center; justify-content:space-between; gap:1rem; }
-.offer--best { border:2px solid var(--color-savings); }
-.best-price-badge, .status-pill { display:inline-flex; align-items:center; justify-content:center; border-radius:var(--radius-full); padding:.24rem .7rem; font-size:.74rem; font-weight:800; letter-spacing:.02em; }
-.best-price-badge { background:var(--color-savings); color:#083a22 !important; }
+.offer { display:flex; align-items:center; justify-content:space-between; gap:1rem; position:relative; }
+.offer--best { border:2px solid var(--color-savings); background:linear-gradient(135deg, rgba(34,197,94,.06), rgba(34,197,94,0) 55%), var(--color-bg-light-elevated); }
+
+/* ─── Badge "Melhor Preço" ─────────────────────────────────────────────── */
+.best-price-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:.3rem;
+  border-radius:var(--radius-full);
+  padding:.32rem .8rem .32rem .6rem;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+  color:#fff !important;
+  background:linear-gradient(120deg, #16a34a, #22c55e 55%, #4ade80);
+  box-shadow:0 4px 14px rgba(34,197,94,.35), inset 0 1px 0 rgba(255,255,255,.25);
+  position:relative;
+  overflow:hidden;
+}
+.best-price-badge svg { width:12px; height:12px; fill:rgba(255,255,255,.9); stroke:none; flex-shrink:0; }
+/* Brilho que atravessa o badge */
+.best-price-badge::after {
+  content:'';
+  position:absolute;
+  top:-40%;
+  left:-70%;
+  width:45%;
+  height:180%;
+  background:linear-gradient(105deg, transparent, rgba(255,255,255,.55), transparent);
+  transform:rotate(18deg);
+  animation:badge-shine 3.2s ease-in-out infinite;
+}
+@keyframes badge-shine {
+  0%, 55% { left:-70%; }
+  75%, 100% { left:130%; }
+}
+
+/* Cartão da melhor oferta ganha coroa discreta */
+.offer--best::before {
+  content:'★';
+  position:absolute;
+  top:-9px;
+  left:14px;
+  font-size:.72rem;
+  line-height:1;
+  color:#16a34a;
+  background:#fff;
+  border-radius:999px;
+  padding:2px 5px;
+  box-shadow:0 2px 6px rgba(22,163,74,.35);
+}
+
+.status-pill { display:inline-flex; align-items:center; justify-content:center; border-radius:var(--radius-full); padding:.24rem .7rem; font-size:.74rem; font-weight:800; letter-spacing:.02em; }
 .status-pill { background:rgba(15, 23, 42, 0.06); color:var(--color-text-on-light); border:1px solid rgba(15, 23, 42, 0.08); }
+.offer__price-zone { display:flex; align-items:center; gap:.65rem; }
+.offer__price-zone strong { font-size:1.05rem; }
+@media (prefers-reduced-motion: reduce) { .best-price-badge::after { animation:none; } }
 .price-sparkline { width:100%; height:140px; margin-top:1rem; }
 .price-alert-form { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-top:2rem; }
 .price-alert-form input { padding:.65rem; border-radius:var(--radius-sm); border:1px solid #ddd; }

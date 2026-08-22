@@ -231,7 +231,7 @@ export default class HomePage {
                 </svg>
               </div>
               <h3>Melhor preço sempre</h3>
-              <p>Comparamos preços do Kero, Shoprite e muito mais para que tu faças sempre o melhor negócio.</p>
+              <p>Comparamos preços da NCR Angola, Buitanda e muito mais para que tu faças sempre o melhor negócio.</p>
             </div>
 
             <div class="about-card animate-scroll">

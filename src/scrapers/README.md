@@ -226,7 +226,7 @@ Cada linha é um JSON estruturado:
 ## 📈 Próximas Melhorias
 
 - [ ] Implementação completa de Buitanda, MultiTek, iTec
-- [ ] Suporte a Kero, Shoprite, Jumbo
+- [ ] Novas lojas reais (validar acesso à API antes de adicionar)
 - [ ] Scraping de avaliações e disponibilidade
 - [ ] Webhook para notificações de mudanças de preço
 - [ ] Dashboard de monitoramento

@@ -19,6 +19,8 @@ class ScraperScheduler {
     this.scheduledJobs = [];
     this.lastExecutionTime = null;
     this.lastExecutionStats = null;
+    this.isRunning = false;
+    this.runStartedAt = null;
   }
 
   /**
@@ -62,11 +64,17 @@ class ScraperScheduler {
    * Executa o pipeline principal.
    */
   async executeMainPipeline() {
+    if (this.isRunning) {
+      logger.warn('Pipeline já em execução — execução ignorada.');
+      return null;
+    }
+    this.isRunning = true;
+    this.runStartedAt = new Date();
     this.lastExecutionTime = new Date();
-    
+
     try {
       logger.info('▶️ Iniciando execução do pipeline...');
-      
+
       const stats = await this.pipeline.execute([
         'Laptop', 'iPhone', 'Samsung Galaxy', 'iPad', 'Monitor',
         'Teclado', 'Mouse', 'Headset', 'Tablet', 'Smartwatch',
@@ -81,12 +89,32 @@ class ScraperScheduler {
 
       // Notificar sobre status
       this.notifyExecutionComplete(stats);
+      return stats;
     } catch (error) {
       logger.error('[ERROR] Erro crítico na execução do pipeline', {
         erro: error.message,
         stack: error.stack?.split('\n').slice(0, 2).join(' | ')
       });
+      return null;
+    } finally {
+      this.isRunning = false;
+      this.runStartedAt = null;
     }
+  }
+
+  /**
+   * Dispara o pipeline de forma ASSÍNCRONA (fire-and-forget).
+   * Ideal para produção: um cron externo (cron-job.org, GitHub Actions, etc.)
+   * ou o próprio agendador interno chama este método sem bloquear a resposta HTTP.
+   * @returns {{ iniciado: boolean, motivo?: string }}
+   */
+  triggerAsync() {
+    if (this.isRunning) {
+      return { iniciado: false, motivo: 'Já existe uma execução em curso.' };
+    }
+    // Executa em background; erros são tratados dentro de executeMainPipeline
+    setImmediate(() => { this.executeMainPipeline(); });
+    return { iniciado: true };
   }
 
   /**
@@ -148,6 +176,8 @@ RESUMO DA EXECUÇÃO:
     return {
       ativo: this.scheduledJobs.length > 0,
       jobsAgendadas: this.scheduledJobs.length,
+      emExecucao: this.isRunning,
+      inicioExecucaoActual: this.runStartedAt,
       ultimaExecucao: this.lastExecutionTime,
       ultimasEstatisticas: this.lastExecutionStats
     };
