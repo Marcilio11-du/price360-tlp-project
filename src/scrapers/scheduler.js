@@ -8,6 +8,11 @@ const cron = require('node-cron');
 const ScraperPipeline = require('./pipeline/ScraperPipeline');
 const logger = require('./pipeline/Logger');
 const PriceAlertChecker = require('./pipeline/PriceAlertChecker');
+const db = require('../config/db');
+
+// Se a BD tiver menos produtos que isto no arranque, dispara uma
+// execução inicial para popular (experiência de primeiro `npm run dev`).
+const MIN_PRODUCTS_ON_BOOT = Number(process.env.SCRAPER_MIN_PRODUCTS_ON_BOOT || 20);
 
 class ScraperScheduler {
   constructor() {
@@ -170,6 +175,31 @@ RESUMO DA EXECUÇÃO:
   }
 
   /**
+   * Verifica se a BD está (quase) vazia e, se estiver, dispara o pipeline
+   * em segundo plano. Garante que quem corre `npm run dev` num clone novo
+   * vê produtos aparecerem sem esperar pelo cron das 03:00.
+   */
+  bootstrapIfEmpty() {
+    setImmediate(async () => {
+      try {
+        const [rows] = await db.query(
+          'SELECT COUNT(*) AS total FROM Produto WHERE deleted_at IS NULL'
+        );
+        const total = Number(rows?.[0]?.total || 0);
+
+        if (total < MIN_PRODUCTS_ON_BOOT) {
+          logger.info(`🌱 BD com apenas ${total} produto(s) — execução inicial para popular (pode levar alguns minutos).`);
+          this.triggerAsync();
+        } else {
+          logger.info(`✔ BD já tem ${total} produtos — execução inicial desnecessária.`);
+        }
+      } catch (error) {
+        logger.warn('Não foi possível verificar produtos no arranque:', { erro: error.message });
+      }
+    });
+  }
+
+  /**
    * Retorna status atual do scheduler.
    */
   getStatus() {
@@ -207,6 +237,7 @@ function initScheduler() {
 
   scheduler = new ScraperScheduler();
   scheduler.start();
+  scheduler.bootstrapIfEmpty();
   return scheduler;
 }
 
