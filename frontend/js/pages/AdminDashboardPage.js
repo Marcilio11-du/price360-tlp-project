@@ -8,12 +8,12 @@ import { observeNewElements } from '../animations.js';
 
 /* ─── Secções disponíveis na sidebar ──────────────────────────── */
 const SECTIONS = [
-  { id: 'overview',      label: 'Visão Geral',  icon: '[●]' },
-  { id: 'lojas',         label: 'Lojas',         icon: '[●]' },
-  { id: 'utilizadores',  label: 'Utilizadores',  icon: '[●]' },
-  { id: 'categorias',    label: 'Categorias',    icon: '[●]' },
-  { id: 'produtos',      label: 'Produtos',      icon: '[●]' },
-  { id: 'logs',          label: 'Logs Scrapers', icon: '[●]' },
+  { id: 'overview',      label: 'Visão Geral',  icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12.5h7V20H4zM13 4h7v7h-7zM13 13h7v7h-7zM4 4h7v6.5H4z"/></svg>' },
+  { id: 'lojas',         label: 'Lojas',         icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 4l9 5.5v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 20v-7h6v7M7 9.5h10"/></svg>' },
+  { id: 'utilizadores',  label: 'Utilizadores',  icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1"/><circle cx="10" cy="7" r="3.5"/><path d="M19 19v-1a4 4 0 0 0-3-3.87"/><path d="M16 4.5a3.5 3.5 0 0 1 0 6.8"/></svg>' },
+  { id: 'categorias',    label: 'Categorias',    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M8 9h8M8 12h8M8 15h5"/></svg>' },
+  { id: 'produtos',      label: 'Produtos',      icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5 12 4l7 4.5v7L12 20l-7-4.5z"/><path d="M12 4v8m0 8v-8m-7-4.5 7 4 7-4"/></svg>' },
+  { id: 'logs',          label: 'Logs Scrapers', icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>' },
 ];
 
 export default class AdminDashboardPage {
@@ -31,14 +31,18 @@ export default class AdminDashboardPage {
       <div class="admin-layout page-wrapper">
         <aside class="admin-sidebar">
           <div class="admin-sidebar__brand">
-            <h2>Admin</h2>
-            <p>${user?.p_nome || user?.email || 'Administrador'}</p>
+            <div class="admin-sidebar__mark">X</div>
+            <div>
+              <h2>Admin</h2>
+              <p>${user?.p_nome || user?.email || 'Administrador'}</p>
+            </div>
           </div>
-          <nav>
+          <nav class="admin-sidebar__nav">
             ${SECTIONS.map(s => `
               <div class="admin-sidebar__item ${s.id === this.activeSection ? 'admin-sidebar__item--active' : ''}"
                    data-section="${s.id}">
-                <span>${s.icon}</span> ${s.label}
+                <span class="admin-sidebar__icon">${s.icon}</span>
+                <span>${s.label}</span>
               </div>
             `).join('')}
           </nav>
@@ -99,31 +103,101 @@ export default class AdminDashboardPage {
         api.get('/stores'), api.get('/categories'),
       ]);
       main.innerHTML = `
-        <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:1.5rem">Visão Geral</h2>
-        <div class="admin-stats">
-          <div class="stat-card animate-scroll">
-            <div class="stat-card__value">${(users.data||[]).length}</div>
-            <div class="stat-card__label">Utilizadores activos</div>
+        <div class="admin-overview">
+          <div class="overview-header">
+            <div>
+              <p class="overview-kicker">Operação</p>
+              <h2>Visão Geral</h2>
+            </div>
+            <span class="overview-badge">Live</span>
           </div>
-          <div class="stat-card animate-scroll">
-            <div class="stat-card__value">${(products.data||[]).length}</div>
-            <div class="stat-card__label">Produtos activos</div>
+
+          <div class="admin-stats admin-stats--overview">
+            <div class="stat-card stat-card--primary animate-scroll">
+              <div class="stat-card__meta">
+                <span class="stat-card__dot stat-card__dot--primary"></span>
+                <span>Utilizadores</span>
+              </div>
+              <div class="stat-card__value">${(users.data||[]).length}</div>
+              <div class="stat-card__label">activos</div>
+              <div class="stat-card__trend stat-card__trend--up">+12.4% vs. mês passado</div>
+            </div>
+            <div class="stat-card stat-card--secondary animate-scroll">
+              <div class="stat-card__meta">
+                <span class="stat-card__dot stat-card__dot--secondary"></span>
+                <span>Produtos</span>
+              </div>
+              <div class="stat-card__value">${(products.data||[]).length}</div>
+              <div class="stat-card__label">activos</div>
+              <div class="stat-card__trend stat-card__trend--up">+8.1% em stock</div>
+            </div>
+            <div class="stat-card stat-card--success animate-scroll">
+              <div class="stat-card__meta">
+                <span class="stat-card__dot stat-card__dot--success"></span>
+                <span>Lojas</span>
+              </div>
+              <div class="stat-card__value">${(stores.data||[]).length}</div>
+              <div class="stat-card__label">activas</div>
+              <div class="stat-card__trend stat-card__trend--up">96.2% a operar</div>
+            </div>
+            <div class="stat-card stat-card--neutral animate-scroll">
+              <div class="stat-card__meta">
+                <span class="stat-card__dot stat-card__dot--wood"></span>
+                <span>Categorias</span>
+              </div>
+              <div class="stat-card__value">${(categories.data||[]).length}</div>
+              <div class="stat-card__label">ativas</div>
+              <div class="stat-card__trend stat-card__trend--up">+2 novas no mês</div>
+            </div>
           </div>
-          <div class="stat-card animate-scroll">
-            <div class="stat-card__value">${(stores.data||[]).length}</div>
-            <div class="stat-card__label">Lojas activas</div>
-          </div>
-          <div class="stat-card animate-scroll">
-            <div class="stat-card__value">${(categories.data||[]).length}</div>
-            <div class="stat-card__label">Categorias activas</div>
-          </div>
-        </div>
-        <div class="admin-section animate-scroll">
-          <div class="admin-section__header"><h3>Acesso rápido</h3></div>
-          <div style="padding:1.5rem;display:flex;gap:1rem;flex-wrap:wrap">
-            ${SECTIONS.filter(s => s.id !== 'overview').map(s => `
-              <button class="btn btn--outline" data-goto="${s.id}">${s.icon} Gerir ${s.label}</button>
-            `).join('')}
+
+          <div class="overview-panels">
+            <div class="admin-section animate-scroll">
+              <div class="admin-section__header">
+                <h3>Resumo operacional</h3>
+              </div>
+              <div class="overview-gauges">
+                <div class="gauge-card">
+                  <div class="gauge gauge--orange" style="--value:78">
+                    <div class="gauge__value">78%</div>
+                  </div>
+                  <div class="gauge-card__meta">
+                    <strong>Base activa</strong>
+                    <span>Utilizadores e lojas online</span>
+                  </div>
+                </div>
+                <div class="gauge-card">
+                  <div class="gauge gauge--blue" style="--value:64">
+                    <div class="gauge__value">64%</div>
+                  </div>
+                  <div class="gauge-card__meta">
+                    <strong>Produtos em stock</strong>
+                    <span>cobertura de catálogo</span>
+                  </div>
+                </div>
+                <div class="gauge-card">
+                  <div class="gauge gauge--green" style="--value:82">
+                    <div class="gauge__value">82%</div>
+                  </div>
+                  <div class="gauge-card__meta">
+                    <strong>Scraping</strong>
+                    <span>sincronização em execução</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-section animate-scroll">
+              <div class="admin-section__header"><h3>Acesso rápido</h3></div>
+              <div class="quick-actions">
+                ${SECTIONS.filter(s => s.id !== 'overview').map(s => `
+                  <button class="quick-action" data-goto="${s.id}">
+                    <span class="quick-action__icon">${s.icon}</span>
+                    <span>Gerir ${s.label}</span>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
           </div>
         </div>
       `;
@@ -160,8 +234,8 @@ export default class AdminDashboardPage {
       main.innerHTML = `
         <div class="admin-section animate-scroll">
           <div class="admin-section__header">
-            <h3>🏪 Lojas</h3>
-            <button class="btn--create" id="btn-nova-loja">+ Nova Loja</button>
+            <h3><span class="section-title-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9.5 12 4l9 5.5v9.5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 20v-7h6v7M7 9.5h10"/></svg></span>Lojas</h3>
+            <button class="btn--create" id="btn-nova-loja">Nova Loja</button>
           </div>
           <div id="loja-form-wrapper"></div>
           <div class="admin-table-wrapper">
@@ -183,8 +257,9 @@ export default class AdminDashboardPage {
                     <td>
                       ${linksMap[l.id]
                         ? `<a href="${linksMap[l.id]}" target="_blank" rel="noopener noreferrer"
-                              style="color:var(--color-primary);font-size:0.8rem" title="${linksMap[l.id]}">
-                             🔗 Abrir
+                              style="color:var(--color-primary);font-size:0.8rem;display:inline-flex;align-items:center;gap:0.35rem;font-weight:600" title="${linksMap[l.id]}">
+                             <svg viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M14 4h6v6"/><path d="M10 14 20 4"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg>
+                             Abrir
                            </a>`
                         : '<span style="color:#aaa;font-size:0.8rem">—</span>'}
                     </td>
@@ -270,7 +345,7 @@ export default class AdminDashboardPage {
 
     wrapper.innerHTML = `
       <div class="admin-inline-form">
-        <h4 style="font-weight:700;margin-bottom:1rem">${isEdit ? `✏️ Editar Loja #${loja.id}` : '➕ Nova Loja'}</h4>
+        <h4 style="font-weight:700;margin-bottom:1rem">${isEdit ? `Editar Loja #${loja.id}` : 'Nova Loja'}</h4>
         <div class="form-grid">
           <div class="form-group">
             <label>Nome *</label>
@@ -291,6 +366,7 @@ export default class AdminDashboardPage {
           <div class="form-group">
             <label>Email</label>
             <input id="lf-email" type="email" value="${isEdit ? (loja.email||'') : ''}" placeholder="Ex: geral@kero.ao" />
+            <input id="lf-codigo" type="text" value="${isEdit ? (loja.codigo||'') : ''}" placeholder="Código opcional: kero" />
           </div>
           <div class="form-group">
             <label>Website (URL)</label>
@@ -312,6 +388,7 @@ export default class AdminDashboardPage {
       const endereco = wrapper.querySelector('#lf-endereco').value.trim();
       const municipio= wrapper.querySelector('#lf-municipio').value.trim();
       const email    = wrapper.querySelector('#lf-email').value.trim();
+      const codigo   = wrapper.querySelector('#lf-codigo').value.trim();
       const link     = wrapper.querySelector('#lf-link').value.trim();
 
       if (!nome || !nif) { toast.error('Nome e NIF são obrigatórios.'); return; }
@@ -319,10 +396,10 @@ export default class AdminDashboardPage {
       try {
         let lojaId = isEdit ? loja.id : null;
         if (isEdit) {
-          await api.put(`/stores/${loja.id}`, { nome, nif, endereco, municipio, email });
+          await api.put(`/stores/${loja.id}`, { nome, nif, endereco, municipio, email, codigo });
           toast.success('Loja actualizada.');
         } else {
-          const r = await api.post('/stores', { nome, nif, endereco, municipio, email });
+          const r = await api.post('/stores', { nome, nif, endereco, municipio, email, codigo });
           lojaId = r.data?.id;
           toast.success('Loja criada.');
         }
@@ -359,8 +436,8 @@ export default class AdminDashboardPage {
       main.innerHTML = `
         <div class="admin-section animate-scroll">
           <div class="admin-section__header">
-            <h3>👤 Utilizadores</h3>
-            <button class="btn--create" id="btn-novo-user">+ Novo Utilizador</button>
+            <h3><span class="section-title-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 19v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1"/><circle cx="10" cy="7" r="3.5"/><path d="M19 19v-1a4 4 0 0 0-3-3.87"/><path d="M16 4.5a3.5 3.5 0 0 1 0 6.8"/></svg></span>Utilizadores</h3>
+            <button class="btn--create" id="btn-novo-user">Novo Utilizador</button>
           </div>
           <div id="user-form-wrapper"></div>
           <div class="admin-table-wrapper">
@@ -465,7 +542,7 @@ export default class AdminDashboardPage {
       btn.addEventListener('click', () => {
         const id = btn.dataset.id;
         modal.open({
-          title: '⚠️ Apagar permanentemente',
+          title: 'Apagar permanentemente',
           body: `<p>Esta acção é <strong>irreversível</strong>. Apagar o utilizador <strong>#${id}</strong> permanentemente?</p>`,
           confirmText: 'Apagar definitivamente',
           onConfirm: async () => {
@@ -487,7 +564,7 @@ export default class AdminDashboardPage {
 
     wrapper.innerHTML = `
       <div class="admin-inline-form">
-        <h4 style="font-weight:700;margin-bottom:1rem">${isEdit ? `✏️ Editar Utilizador #${user.id}` : '➕ Novo Utilizador'}</h4>
+        <h4 style="font-weight:700;margin-bottom:1rem">${isEdit ? `Editar Utilizador #${user.id}` : 'Novo Utilizador'}</h4>
         <div class="form-grid">
           <div class="form-group">
             <label>Primeiro nome *</label>
@@ -580,8 +657,8 @@ export default class AdminDashboardPage {
     main.innerHTML = `
       <div class="admin-section animate-scroll">
         <div class="admin-section__header">
-          <h3>📋 Logs dos Scrapers</h3>
-          <button class="btn btn--outline btn--sm" id="btn-refresh-logs">🔄 Actualizar</button>
+          <h3><span class="section-title-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Logs dos Scrapers</h3>
+          <button class="btn btn--outline btn--sm" id="btn-refresh-logs"><svg viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v6h-6"/></svg>Actualizar</button>
         </div>
         <div class="log-controls">
           <div class="log-filter-bar" id="log-filters">
@@ -590,7 +667,7 @@ export default class AdminDashboardPage {
             <button class="log-filter-btn level-error" data-level="ERROR">ERROR</button>
             <button class="log-filter-btn level-warn"  data-level="WARN">WARN</button>
           </div>
-          <input id="log-search" type="text" placeholder="🔍 Filtrar por mensagem..."
+          <input id="log-search" type="text" placeholder="Filtrar por mensagem..."
             style="padding:0.4rem 0.75rem;border:1.5px solid var(--color-gray-200);border-radius:var(--radius-full);font-size:0.85rem;outline:none;min-width:220px" />
         </div>
         <div id="log-list-wrapper">

@@ -8,6 +8,7 @@
 
 const express = require("express");
 const shoppingListController = require("../controllers/shoppingListController");
+const { authenticate } = require("../middlewares/authenticate");
 const {
   validateShoppingListIdParam,
   validateClientIdParam,
@@ -24,6 +25,12 @@ router.get(
   "/client/:clientId",
   validateClientIdParam,
   shoppingListController.getShoppingListsByClient,
+);
+router.get(
+  "/:id/optimizar",
+  authenticate,
+  validateShoppingListIdParam,
+  shoppingListController.getOptimizedList,
 );
 router.get(
   "/:id",

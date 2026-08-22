@@ -96,6 +96,9 @@ const schemaStatements = [
       genero ENUM('masculino', 'feminino', 'outro') NOT NULL,
       role ENUM('user', 'admin') NOT NULL DEFAULT 'user',
       avatar_path VARCHAR(500) NULL,
+      email_verificado TINYINT(1) NOT NULL DEFAULT 0,
+      email_verificacao_token VARCHAR(255) NULL,
+      email_verificado_em DATETIME NULL,
       created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       deleted_at DATETIME NULL,
@@ -166,6 +169,32 @@ const schemaStatements = [
         ON UPDATE CASCADE
         ON DELETE RESTRICT,
       CONSTRAINT uq_produtoloja_produto_loja UNIQUE (id_produto, id_loja)
+    ) ENGINE=InnoDB
+  `,
+  `
+    CREATE TABLE IF NOT EXISTS Historico_Preco (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_produto_loja INT NOT NULL,
+      preco DECIMAL(10,2) NOT NULL,
+      registado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_historicopreco_produtoloja FOREIGN KEY (id_produto_loja)
+        REFERENCES Produto_Loja(id) ON UPDATE CASCADE ON DELETE CASCADE
+    ) ENGINE=InnoDB
+  `,
+  `
+    CREATE TABLE IF NOT EXISTS Alerta_Preco (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_utilizador INT NOT NULL,
+      id_produto INT NOT NULL,
+      preco_alvo DECIMAL(10,2) NOT NULL,
+      ativo TINYINT(1) NOT NULL DEFAULT 1,
+      notificado_em DATETIME NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at DATETIME NULL,
+      CONSTRAINT fk_alertapreco_utilizador FOREIGN KEY (id_utilizador) REFERENCES Utilizador(id) ON UPDATE CASCADE ON DELETE CASCADE,
+      CONSTRAINT fk_alertapreco_produto FOREIGN KEY (id_produto) REFERENCES Produto(id) ON UPDATE CASCADE ON DELETE CASCADE,
+      CONSTRAINT uq_alerta_utilizador_produto UNIQUE (id_utilizador, id_produto)
     ) ENGINE=InnoDB
   `,
   `
@@ -270,16 +299,36 @@ const initializeDatabaseSchema = async () => {
       "Utilizador",
       "avatar_path VARCHAR(500) NULL",
     );
+    await ensureColumnExists(
+      connection,
+      "Utilizador",
+      "email_verificado TINYINT(1) NOT NULL DEFAULT 0",
+    );
+    await ensureColumnExists(
+      connection,
+      "Utilizador",
+      "email_verificacao_token VARCHAR(255) NULL",
+    );
+    await ensureColumnExists(
+      connection,
+      "Utilizador",
+      "email_verificado_em DATETIME NULL",
+    );
+    await connection.query(
+      "UPDATE Utilizador SET email_verificado = 1 WHERE email_verificado = 0 AND email_verificacao_token IS NULL",
+    );
 
     await ensureColumnExists(connection, "Loja", "nif VARCHAR(255) NULL");
     await ensureColumnExists(connection, "Loja", "municipio VARCHAR(255) NULL");
     await ensureColumnExists(connection, "Loja", "email VARCHAR(255) NULL");
+    await ensureColumnExists(connection, "Loja", "codigo VARCHAR(50) NULL");
     await ensureUniqueConstraint(
       connection,
       "Loja",
       "nif",
       "Não foi possível adicionar a constraint UNIQUE no campo nif devido a entradas duplicadas existentes.",
     );
+    await ensureUniqueConstraint(connection, "Loja", "codigo", "Não foi possível adicionar a constraint UNIQUE no campo codigo devido a entradas duplicadas existentes.");
 
     await ensureColumnExists(connection, "Produto", "data_validade DATE NULL");
     await ensureColumnExists(connection, "Produto", "descricao TEXT NULL");
@@ -311,6 +360,10 @@ const initializeDatabaseSchema = async () => {
       "Produto_Loja",
       "restored_at DATETIME NULL",
     );
+    await ensureColumnExists(connection, "Produto_Loja", "link VARCHAR(500) NULL");
+    await ensureColumnExists(connection, "Produto_Loja", "imagem VARCHAR(500) NULL");
+    await ensureColumnExists(connection, "Produto_Loja", "moeda VARCHAR(10) NOT NULL DEFAULT 'AKZ'");
+    await ensureColumnExists(connection, "Produto_Loja", "data_atualizacao DATETIME NULL");
 
     /*
      * Padrão try/catch para ALTER TABLE de FK:
@@ -499,22 +552,6 @@ const initializeDatabaseSchema = async () => {
 
     await connection.commit();
     
-  // ─── Migrations de colunas adicionais (scrapers) ────────────────────────
-  const migrations = [
-    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS link TEXT NULL",
-    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS imagem TEXT NULL",
-    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS moeda VARCHAR(10) NOT NULL DEFAULT 'AKZ'",
-    "ALTER TABLE Produto_Loja ADD COLUMN IF NOT EXISTS data_atualizacao DATETIME NULL",
-    "ALTER TABLE Loja ADD COLUMN IF NOT EXISTS codigo VARCHAR(50) NULL",
-  ];
-  for (const sql of migrations) {
-    try { await db.query(sql); }
-    catch (err) {
-      if (!err.message.includes('Duplicate column') && !err.message.includes('already exists'))
-        console.warn('[DB migration] ' + err.message);
-    }
-  }
-
   // Garantir lojas de scraping com codigo
   const lojasScraper = [
     ['ncr',      'NCR Angola'],

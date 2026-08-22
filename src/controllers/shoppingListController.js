@@ -7,6 +7,7 @@
 
 const shoppingListModel = require("../models/shoppingListModel");
 const userModel = require("../models/userModel");
+const shoppingListOptimizerModel = require("../models/shoppingListOptimizerModel");
 
 // --- Utilitários internos ---
 
@@ -68,6 +69,15 @@ const getShoppingLists = async (_req, res) => {
     console.error("Erro ao listar listas de compras:", error);
     return sendError(res, 500, "Falha interna ao listar listas de compras.");
   }
+};
+
+const getOptimizedList = async (req, res) => {
+  try {
+    const list = await shoppingListModel.getShoppingListById(Number(req.params.id));
+    if (!list) return sendError(res, 404, "Lista de compras nao encontrada.");
+    if (Number(req.user.id) !== Number(list.id_cliente)) return sendError(res, 403, "Não tem permissão para ver esta lista.");
+    return sendSuccess(res, 200, await shoppingListOptimizerModel.optimize(list.id), "Lista otimizada com sucesso.");
+  } catch (error) { console.error("Erro ao otimizar lista:", error); return sendError(res, 500, "Falha interna ao otimizar lista."); }
 };
 
 /**
@@ -398,6 +408,7 @@ const hardDeleteShoppingList = async (req, res) => {
 
 module.exports = {
   getShoppingLists,
+  getOptimizedList,
   getAllShoppingLists,
   getDeletedShoppingLists,
   getShoppingListById,

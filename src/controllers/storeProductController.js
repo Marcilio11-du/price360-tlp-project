@@ -7,6 +7,7 @@
  */
 
 const storeProductModel = require("../models/storeProductModel");
+const priceComparisonModel = require("../models/priceComparisonModel");
 
 // --- Utilitários internos ---
 
@@ -99,6 +100,13 @@ const getStoreProducts = async (_req, res) => {
     console.error("Erro ao listar produtos por loja:", error);
     return sendError(res, 500, "Falha interna ao listar produtos por loja.");
   }
+};
+
+const getGroupedSummary = async (req, res) => {
+  try {
+    const rows = await priceComparisonModel.listGroupedSummary({ q: req.query.q, categoriaId: req.query.categoria });
+    return sendSuccess(res, 200, rows, "Resumo de produtos agrupado com sucesso.");
+  } catch (error) { console.error("Erro ao listar produtos agrupados:", error); return sendError(res, 500, "Falha interna ao listar produtos agrupados."); }
 };
 
 /**
@@ -434,6 +442,7 @@ const hardDeleteStoreProduct = async (req, res) => {
 
 module.exports = {
   getStoreProducts,
+  getGroupedSummary,
   getAllStoreProducts,
   getDeletedStoreProducts,
   getStoreProductById,
