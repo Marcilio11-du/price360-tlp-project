@@ -1,4 +1,5 @@
 node_modules/
 .env
 .DS_Store
-frontend/assets/avatarslogs/
+logs/
+frontend/assets/avatars/
