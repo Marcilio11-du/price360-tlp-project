@@ -20,6 +20,17 @@ const API_BASE_CANDIDATES = [
 let activeApiBase = API_BASE_CANDIDATES[0];
 
 /**
+ * Verifica se a resposta tem a forma das nossas respostas de API
+ * ({ status, data, message }). Respostas HTML/lixo (ex.: Live Server,
+ * página de erro do navegador) são rejeitadas para tentar a base seguinte.
+ */
+const looksLikeApiResponse = (data) =>
+  data !== null &&
+  typeof data === 'object' &&
+  !Array.isArray(data) &&
+  ('status' in data || 'data' in data || 'message' in data);
+
+/**
  * Função interna que executa o pedido fetch.
  * @param {'GET'|'POST'|'PUT'|'DELETE'} method
  * @param {string} endpoint  - Caminho relativo, ex: '/produtos'
@@ -64,9 +75,18 @@ const request = async (method, endpoint, body = null) => {
         throw error;
       }
 
+      // Resposta OK mas não é a nossa API (ex.: base velha no localStorage
+      // a servir HTML) → tenta a próxima base em vez de aceitar lixo.
+      if (!looksLikeApiResponse(data)) {
+        const error = new TypeError(`Resposta de ${base} não é da API do Xé Preço.`);
+        error.name = 'TypeError';
+        throw error;
+      }
+
       if (activeApiBase !== base) {
         activeApiBase = base;
         window.localStorage.setItem('price360_api_base', base);
+        console.info('[Xé Preço] API ativa:', base);
       }
 
       return data;
@@ -80,6 +100,14 @@ const request = async (method, endpoint, body = null) => {
       if (!shouldTryNext) break;
     }
   }
+
+  // Nenhuma base respondeu com a nossa API — limpa base velha do localStorage
+  // para a próxima tentativa recomeçar do zero.
+  if (lastError && lastError.status === undefined) {
+    window.localStorage.removeItem('price360_api_base');
+    activeApiBase = API_BASE_CANDIDATES[0] || `${window.location.origin}/api/v1`;
+  }
+  console.warn('[Xé Preço] Falha ao contactar a API. Última base tentada:', lastError?.apiBase, '—', lastError?.message);
 
   throw lastError || new Error('Falha ao contactar a API.');
 };
