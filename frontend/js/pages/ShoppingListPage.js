@@ -33,8 +33,14 @@ export default class ShoppingListPage {
     this.quantities = {};
   }
 
+  _formatPrice(value) {
+    return new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA', minimumFractionDigits: 2 }).format(Number(value || 0));
+  }
+
   async render() {
-    if (!auth.isAuthenticated()) {
+    const user = auth.getUser();
+    if (!auth.isAuthenticated() || !user?.id) {
+      auth.logout();
       router.navigate("/login");
       return;
     }
@@ -132,6 +138,11 @@ export default class ShoppingListPage {
   async loadLists() {
     try {
       const user = auth.getUser();
+      if (!user?.id) {
+        auth.logout();
+        router.navigate("/login");
+        return;
+      }
       const res = await api.get(`/shopping-lists/client/${user.id}`);
       this.lists = res.data || [];
       this.renderTabs();
@@ -249,6 +260,7 @@ export default class ShoppingListPage {
     }
 
     content.innerHTML = `
+      <section class="list-card" id="optimizer-panel"><p style="padding:1rem">A calcular poupança inteligente…</p></section>
       <div class="list-card animate-scroll">
         <div class="list-card__header">
           <div class="list-card__header-left">
@@ -281,11 +293,22 @@ export default class ShoppingListPage {
       </div>
     `;
 
+    this.loadOptimization(listId);
+
     this._bindItemEvents(content, listId, items);
     this._updateStickyFooter(items);
     content.querySelector("#edit-list-btn")?.addEventListener("click", () => this.openEditModal(list));
     content.querySelector("#delete-list-btn")?.addEventListener("click", () => this.deleteList(listId));
     observeNewElements();
+  }
+
+  async loadOptimization(listId) {
+    const panel = this.container.querySelector('#optimizer-panel');
+    if (!panel) return;
+    try {
+      const data = (await api.get(`/shopping-lists/${listId}/optimizar`)).data;
+      panel.innerHTML = `<div class="list-card__header"><div><h3>Poupança Inteligente</h3><span class="list-card__meta">Total optimizado: <strong>${this._formatPrice(data.total_otimizado)}</strong></span></div></div>${data.total_por_loja_unica.length ? `<p style="padding:0 1.5rem">Tudo numa loja: <strong>${this._formatPrice(data.total_por_loja_unica[0].total)}</strong> · poupa <strong style="color:var(--color-savings)">${this._formatPrice(data.poupanca_estimativa)}</strong> ao dividir as compras.</p>` : '<p style="padding:0 1.5rem">Nenhuma loja tem todos os itens disponíveis; a melhor opção é dividir as compras.</p>'}<div class="list-card__items">${data.itens.map(item => `<div class="list-item"><span>${item.produto_nome}</span><span>${item.loja_mais_barata} · ${this._formatPrice(item.preco_mais_barato)}</span></div>`).join('')}</div>`;
+    } catch { panel.remove(); }
   }
 
   _renderItem(item) {

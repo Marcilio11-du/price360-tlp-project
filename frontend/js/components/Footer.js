@@ -1,6 +1,6 @@
 /**
  * @file components/Footer.js
- * @description Rodapé da aplicação Price360 — conforme protótipo.
+ * @description Rodapé da aplicação Xé Preço.
  * Colunas: logo + descrição | Categorias (3 sub-colunas) | Informações de contacto
  */
 
@@ -13,7 +13,7 @@ export class Footer {
           <!-- Branding -->
           <div class="footer__brand">
             <div class="footer__logo">
-              <img src="./assets/logo.png" alt="Price360" onerror="this.style.display='none'">
+              <span class="footer__logo-text">Xé Preço</span>
             </div>
             <p>Compare preços de produtos essenciais e encontre sempre a melhor oferta.</p>
           </div>
@@ -66,7 +66,7 @@ export class Footer {
         <!-- Linha inferior -->
         <div class="footer__bottom">
           <span class="footer__credits">Anselmo Gomes • Marcílio Domingos • Neil Dias</span>
-          <span class="footer__copyright">Price360 © ${new Date().getFullYear()}</span>
+          <span class="footer__copyright">Xé Preço © ${new Date().getFullYear()}</span>
         </div>
       </footer>
     `;

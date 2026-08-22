@@ -20,10 +20,10 @@ export default class LoginPage {
       <div class="auth-page">
         <div class="auth-card animate-scroll">
           <div class="auth-card__logo">
-            <img src="./assets/logo.png" alt="Price360"
+            <img src="./assets/logo.png" alt="Xé Preço"
               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
             <div class="navbar__logo-text" style="font-size:1.8rem;justify-content:center;display:none">
-              PRICE<span class="logo-360">360</span>
+              XÉ <span class="logo-360">PREÇO</span>
             </div>
           </div>
           <h2 class="auth-card__title">Bem-vindo de <span>volta</span></h2>
@@ -110,7 +110,9 @@ export default class LoginPage {
         const message =
           err.status === 404
             ? "Endpoint de login não encontrado. Confirma se o backend está ativo em /api/v1/auth/login."
-            : err.message || "Email ou palavra-passe incorrectos.";
+            : err.status === 403
+              ? (err.message || "Confirme o teu email antes de entrar.")
+              : err.message || "Email ou palavra-passe incorrectos.";
         toast.error(message);
         submitBtn.disabled = false;
         submitBtn.textContent = "Entrar";

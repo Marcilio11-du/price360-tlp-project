@@ -1,6 +1,6 @@
 /**
  * @file app.js
- * @description Entry point principal da SPA Price360.
+ * @description Entry point principal da SPA Xé Preço.
  *
  * Responsabilidades:
  *  1. Renderiza a Navbar persistente em #navbar-root
@@ -25,6 +25,8 @@ import OnboardingPage      from './pages/OnboardingPage.js';
 import ShoppingListPage    from './pages/ShoppingListPage.js';
 import ProfilePage         from './pages/ProfilePage.js';
 import AdminDashboardPage  from './pages/AdminDashboardPage.js';
+import ProductDetailPage   from './pages/ProductDetailPage.js';
+import PriceAlertsPage     from './pages/PriceAlertsPage.js';
 
 // ─── 1. Navbar persistente ────────────────────────────────────────────────────
 const navbarRoot = document.getElementById('navbar-root');
@@ -36,12 +38,14 @@ if (navbarRoot) {
 // ─── 2. Registo de rotas ──────────────────────────────────────────────────────
 router.register('/',         (container) => new HomePage(container).render());
 router.register('/produtos', (container) => new ProductsPage(container).render());
+router.register('/produto',  (container) => new ProductDetailPage(container).render());
 router.register('/login',    (container) => new LoginPage(container).render());
 router.register('/cadastro', (container) => new RegisterPage(container).render());
 router.register('/onboarding', (container) => new OnboardingPage(container).render());
 router.register('/lista',    (container) => new ShoppingListPage(container).render());
 router.register('/profile',  (container) => new ProfilePage(container).render());
 router.register('/admin',    (container) => new AdminDashboardPage(container).render());
+router.register('/alertas',  (container) => new PriceAlertsPage(container).render());
 
 /** Página 404 inline */
 router.register('/404', (container) => {

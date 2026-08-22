@@ -44,7 +44,7 @@ export default class OnboardingPage {
         <aside class="onboarding__aside" aria-hidden="true">
           <div class="onboarding__aside-content">
             <div class="onboarding__brand">
-              <span class="brand-price">PRICE</span><span class="brand-360">360</span>
+              <span class="brand-price">XÉ</span><span class="brand-360">PREÇO</span>
             </div>
             <p class="onboarding__tagline">Compara preços.<br>Poupa dinheiro.<br>Decide melhor.</p>
             <div class="onboarding__bubbles">
@@ -484,11 +484,10 @@ export default class OnboardingPage {
     try {
       const res = await api.post('/auth/register', payload);
 
-      // Auto-login: guardar token e user
-      auth.setAuth(res.data.token, res.data.user);
-
-      // Ecrã de boas-vindas animado
-      this._showSuccessScreen(res.data.user.p_nome);
+      if (!res.data.verification_required) {
+        auth.setAuth(res.data.token, res.data.user);
+      }
+      this._showSuccessScreen(res.data.user.p_nome, !!res.data.verification_required);
     } catch (err) {
       const msg = err.details?.[0] || err.message || 'Erro ao criar conta.';
       toast.error(msg);
@@ -497,7 +496,7 @@ export default class OnboardingPage {
     }
   }
 
-  _showSuccessScreen(nome) {
+  _showSuccessScreen(nome, verificationRequired = false) {
     const card = document.getElementById('onboarding-card');
     card.innerHTML = `
       <div class="ob-success">
@@ -508,10 +507,12 @@ export default class OnboardingPage {
           </svg>
         </div>
         <h2 class="ob-success__title">Bem-vindo, ${nome}!</h2>
-        <p class="ob-success__sub">A tua conta foi criada. Estás a entrar…</p>
+        <p class="ob-success__sub">${verificationRequired ? 'A tua conta foi criada. Confirma o email para ativar a sessão.' : 'A tua conta foi criada. Estás a entrar…'}</p>
       </div>
     `;
-    setTimeout(() => { window.location.hash = '#/'; window.location.reload(); }, 2000);
+    setTimeout(() => {
+      window.location.hash = verificationRequired ? '#/login' : '#/';
+    }, verificationRequired ? 2600 : 2000);
   }
 
   _updateProgress(step) {
