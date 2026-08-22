@@ -839,6 +839,12 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  /* Log dashboard: colunas fixas de 160px+60px não cabem em ecrãs estreitos */
+  .log-entry {
+    grid-template-columns: auto 48px 1fr;
+    padding-inline: var(--space-4);
+  }
 }
 
 /* ─── 14. Log Dashboard ─────────────────────────────────────── */

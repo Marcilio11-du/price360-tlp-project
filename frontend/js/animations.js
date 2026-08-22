@@ -25,6 +25,44 @@ const ANIMATION_CLASSES = [
 ];
 
 /**
+ * Auto-animacao site-wide: seletores comuns recebem uma classe de animação
+ * subtil se ainda não tiverem uma. Mantém o efeito consistente sem ter de
+ * editar página a página.
+ */
+const AUTO_ANIMATE_SELECTORS = [
+  ['.section-header', 'animate-fade'],
+  ['.products-section__header', 'animate-fade'],
+  ['.about-section__header', 'animate-fade'],
+  ['.products-page__header', 'animate-fade'],
+  ['.categories-grid > *', 'animate-scale'],
+  ['.products-grid > *', 'animate-scroll'],
+  ['.products-page__grid > *', 'animate-scroll'],
+  ['.detail-stats > *', 'animate-scale'],
+  ['.offers .offer', 'animate-scroll'],
+  ['.list-card', 'animate-scroll'],
+  ['.about-stats > *', 'animate-scroll'],
+  ['.about-steps > *', 'animate-scroll'],
+  ['.footer__inner > *', 'animate-fade']
+];
+
+/** Zonas onde NUNCA deve haver auto-animação (feedback, overlays, skeletons) */
+const AUTO_ANIMATE_EXCLUDE = '#toast-root, #modal-root, .navbar, [class*="skeleton"], [class*="loader"]';
+
+/**
+ * Aplica classes de animação automáticas a elementos que ainda não têm uma.
+ */
+const applyAutoAnimations = () => {
+  AUTO_ANIMATE_SELECTORS.forEach(([selector, cls]) => {
+    document.querySelectorAll(selector).forEach((el) => {
+      if (el.closest(AUTO_ANIMATE_EXCLUDE)) return;
+      const hasAnimationClass = [...el.classList].some((c) => c.startsWith('animate-'));
+      if (hasAnimationClass) return;
+      el.classList.add(cls);
+    });
+  });
+};
+
+/**
  * Cria e devolve um novo IntersectionObserver configurado para as animações.
  * @returns {IntersectionObserver}
  */
@@ -48,10 +86,18 @@ const createObserver = () =>
 /**
  * Inicializa o observer global e observa todos os elementos já presentes no DOM.
  * Deve ser chamado uma vez no arranque da aplicação (em app.js).
+ * Regista também um sweep automático após cada mudança de rota, para cobrir
+ * páginas que não invocam observeNewElements explicitamente.
  */
 export const initAnimations = () => {
   observer = createObserver();
   observeNewElements();
+
+  // Páginas renderizadas de forma síncrona/sem sweep próprio
+  window.addEventListener('hashchange', () => {
+    setTimeout(observeNewElements, 250);
+    setTimeout(observeNewElements, 900); // dados async chegam depois
+  });
 };
 
 /**
@@ -61,6 +107,9 @@ export const initAnimations = () => {
 export const observeNewElements = () => {
   // Cria observer se ainda não existir (chamada antes de initAnimations)
   if (!observer) observer = createObserver();
+
+  // Auto-tagging site-wide antes de observar
+  applyAutoAnimations();
 
   ANIMATION_CLASSES.forEach((cls) => {
     document.querySelectorAll(`.${cls}:not(.is-visible)`).forEach((el) => {

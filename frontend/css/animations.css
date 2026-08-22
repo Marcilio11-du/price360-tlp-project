@@ -58,6 +58,12 @@
   animation: siteReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+/* Stagger suave para fades em grupos (headers, footer, filtros) */
+.animate-fade:nth-child(2) { transition-delay: 0.06s; }
+.animate-fade:nth-child(3) { transition-delay: 0.12s; }
+.animate-fade:nth-child(4) { transition-delay: 0.18s; }
+.animate-fade:nth-child(5) { transition-delay: 0.24s; }
+
 .animate-left {
   opacity: 0;
   transform: translateX(-18px);
@@ -99,6 +105,15 @@
   transform: scale(1);
   animation: siteReveal 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+
+/* Stagger suave para cards em grid */
+.animate-scale:nth-child(2) { transition-delay: 0.05s; }
+.animate-scale:nth-child(3) { transition-delay: 0.10s; }
+.animate-scale:nth-child(4) { transition-delay: 0.15s; }
+.animate-scale:nth-child(5) { transition-delay: 0.20s; }
+.animate-scale:nth-child(6) { transition-delay: 0.25s; }
+.animate-scale:nth-child(7) { transition-delay: 0.30s; }
+.animate-scale:nth-child(8) { transition-delay: 0.35s; }
 
 .animate-hero {
   opacity: 0;

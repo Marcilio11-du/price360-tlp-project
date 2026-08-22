@@ -181,11 +181,13 @@
   align-items: center;
   justify-self: end;
   width: min(100%, 420px);
+  min-width: 0;
   gap: 1rem;
 }
 
 .hero__carousel {
   width: 100%;
+  max-width: 100%;
   overflow: hidden;
   border-radius: 28px;
   background: rgba(8, 27, 56, 0.42);
@@ -382,8 +384,10 @@
 }
 
 @media (max-width: 900px) {
+  /* minmax(0,1fr) — sem isto, o min-content dos 3 slides do carrossel
+     expande o track da grid e empurra/corta tudo para a direita */
   .hero__inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     text-align: center;
   }
 
@@ -392,6 +396,7 @@
     text-align: center;
     max-width: 100%;
     width: 100%;
+    min-width: 0;
   }
 
   .hero__title {
@@ -402,15 +407,23 @@
   .hero__subtitle,
   .hero__trust {
     max-width: 620px;
+    width: 100%;
   }
 
   .hero__actions {
     justify-content: center;
+    max-width: 100%;
   }
 
   .hero__showcase {
     justify-self: center;
     width: min(100%, 420px);
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .hero__carousel {
+    max-width: 100%;
   }
 
   /* Esconde metade das bolas em ecrãs menores (performance) */

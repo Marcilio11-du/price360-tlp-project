@@ -608,13 +608,13 @@
   }
 
   .navbar__cart {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
   .navbar__cart svg {
-    width: 17px;
-    height: 17px;
+    width: 19px;
+    height: 19px;
   }
 
   .navbar__user-avatar {
