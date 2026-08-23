@@ -49,6 +49,7 @@ export class ProductCard {
 
     return `
       <div class="product-card animate-scroll"
+          role="link" tabindex="0"
            data-id="${id}"
            data-produto="${id}">
 

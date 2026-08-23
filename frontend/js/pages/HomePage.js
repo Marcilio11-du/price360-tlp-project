@@ -373,7 +373,7 @@ export default class HomePage {
       }
 
       grid.innerHTML = displayed
-        .map((sp, i) => new ProductCard(sp, i === 0).render())
+        .map((sp, i) => new ProductCard(sp, i === 0 && sp.total_lojas > 1).render())
         .join('');
 
       this._updateHeroFromProducts(displayed);
@@ -484,6 +484,12 @@ export default class HomePage {
 
         const id = Number(card.dataset.id);
         router.navigate(`/produto?id=${id}`);
+      });
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          router.navigate(`/produto?id=${Number(card.dataset.id)}`);
+        }
       });
     });
 
