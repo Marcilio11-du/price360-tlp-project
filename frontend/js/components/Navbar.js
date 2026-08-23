@@ -8,6 +8,11 @@
 import { auth } from "../auth.js";
 import { router } from "../router.js";
 import { toast } from "./Toast.js";
+import { api } from "../api.js";
+import { openSearchModal } from "./SearchModal.js";
+
+/** Cache de categorias para o dropdown (partilhado entre re-renders) */
+let categoriesCache = null;
 
 export class Navbar {
   /**
@@ -43,6 +48,13 @@ export class Navbar {
     // --- Bloco de autenticação (desktop) ---
     const authButtons = isAuth
       ? `
+        <button class="navbar__cart btn btn--icon js-nav-alerts" aria-label="Alertas de preço" title="Alertas de preço">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h14s-3-2-3-9"/>
+            <path d="M13.7 21a2 2 0 01-3.4 0"/>
+          </svg>
+        </button>
         <div class="navbar__user" id="navbar-user-menu">
           <div class="navbar__user-avatar">${avatarImg}</div>
           <span class="navbar__user-name">${fullName}</span>
@@ -59,8 +71,9 @@ export class Navbar {
           </div>
         </div>
       `
-      : `
-        <a href="#/login" class="navbar__cta navbar__cta--primary">Entrar</a>
+      :       `
+        <a href="#/login" class="navbar__cta navbar__cta--ghost">Entrar</a>
+        <a href="#/cadastro" class="navbar__cta navbar__cta--primary">Criar conta</a>
       `;
 
     // --- Bloco de autenticação (mobile menu) ---
@@ -94,14 +107,15 @@ export class Navbar {
             <span class="navbar__logo-text">Xé Preço</span>
           </a>
 
-          <!-- Pesquisa -->
+          <!-- Pesquisa (abre modal de pesquisa) -->
           <div class="navbar__search">
             <input
               type="text"
               id="navbar-search-input"
               class="navbar__search-input"
-              placeholder="Pesquise..."
+              placeholder="Pesquisar produtos…"
               autocomplete="off"
+              readonly
               aria-label="Pesquisar produtos"
             />
             <button class="navbar__search-btn" id="navbar-search-btn" aria-label="Pesquisar">
@@ -117,6 +131,21 @@ export class Navbar {
           <nav class="navbar__nav navbar__nav--desktop" aria-label="Navegação principal">
             <a href="#/">Home</a>
             <a href="#/produtos">Produtos</a>
+            <div class="navbar__cats" id="navbar-cats">
+              <button type="button" class="navbar__cats-btn" id="navbar-cats-btn">
+                Categorias
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </button>
+              <div class="navbar__cats-panel" id="navbar-cats-panel">
+                <div class="navbar__cats-grid" id="navbar-cats-grid">
+                  <span class="navbar__cats-loading">A carregar categorias…</span>
+                </div>
+                <a href="#/produtos" class="navbar__cats-all">Ver todos os produtos →</a>
+              </div>
+            </div>
           </nav>
 
           <!-- Acções de auth + carrinho -->
@@ -147,6 +176,7 @@ export class Navbar {
           <nav class="navbar__nav navbar__nav--mobile" aria-label="Navegação mobile">
             <a href="#/">Home</a>
             <a href="#/produtos">Produtos</a>
+            <a href="#/produtos" class="js-nav-cats-mobile">Categorias</a>
             ${mobileUserLinks}
           </nav>
           <div class="navbar__mobile-auth">
@@ -162,23 +192,58 @@ export class Navbar {
    * @param {HTMLElement} container - Elemento onde a navbar foi injectada
    */
   bindEvents(container) {
-    // --- Pesquisa ---
+    // --- Pesquisa: abre o modal com sugestões ---
     const searchInput = container.querySelector("#navbar-search-input");
-    const searchBtn = container.querySelector("#navbar-search-btn");
 
-    const doSearch = () => {
-      const q = searchInput?.value.trim();
-      if (q) {
-        router.navigate(`/produtos?q=${encodeURIComponent(q)}`);
-      } else {
-        toast.info("Introduz um termo de pesquisa.");
+    const openSearch = (e) => {
+      e?.preventDefault();
+      openSearchModal(searchInput?.dataset.lastQuery || "");
+    };
+
+    searchInput?.addEventListener("click", openSearch);
+    searchInput?.addEventListener("focus", openSearch);
+    container.querySelector("#navbar-search-btn")?.addEventListener("click", openSearch);
+
+    // --- Dropdown de Categorias ---
+    const catsBtn = container.querySelector("#navbar-cats-btn");
+    const catsPanel = container.querySelector("#navbar-cats-panel");
+    const catsGrid = container.querySelector("#navbar-cats-grid");
+
+    const renderCats = (cats) => {
+      if (!catsGrid) return;
+      catsGrid.innerHTML = cats
+        .map(
+          (c) => `
+          <a href="#/produtos?categoria=${c.id}" class="navbar__cats-item">
+            ${c.nome}
+          </a>`,
+        )
+        .join("");
+    };
+
+    const loadCats = async () => {
+      if (categoriesCache) return renderCats(categoriesCache);
+      try {
+        const res = await api.get("/categories");
+        categoriesCache = res.data || [];
+        renderCats(categoriesCache);
+      } catch {
+        if (catsGrid)
+          catsGrid.innerHTML =
+            '<span class="navbar__cats-loading">Não foi possível carregar as categorias.</span>';
       }
     };
 
-    searchBtn?.addEventListener("click", doSearch);
-    searchInput?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") doSearch();
-      if (e.key === "Escape") searchInput.value = "";
+    catsBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      catsBtn.classList.toggle("open");
+      catsPanel?.classList.toggle("open", catsBtn.classList.contains("open"));
+      if (catsPanel?.classList.contains("open")) loadCats();
+    });
+
+    catsPanel?.addEventListener("click", () => {
+      catsBtn?.classList.remove("open");
+      catsPanel.classList.remove("open");
     });
 
     // --- Dropdown de utilizador ---
@@ -193,9 +258,13 @@ export class Navbar {
       }
     });
 
-    // Fecha dropdown ao clicar fora
-    document.addEventListener("click", () => {
+    // Fecha dropdown de utilizador e categorias ao clicar fora
+    document.addEventListener("click", (e) => {
       if (dropdown) dropdown.style.display = "none";
+      if (catsPanel && !e.target.closest("#navbar-cats")) {
+        catsBtn?.classList.remove("open");
+        catsPanel.classList.remove("open");
+      }
     });
 
     // --- Itens de navegação no dropdown ---
@@ -225,6 +294,11 @@ export class Navbar {
         toast.info("Faz login para aceder à tua lista de compras.");
         router.navigate("/login");
       }
+    });
+
+    // --- Ícone de alertas (autenticado) ---
+    container.querySelector(".js-nav-alerts")?.addEventListener("click", () => {
+      router.navigate("/alertas");
     });
 
     // --- Hamburger menu (mobile) ---

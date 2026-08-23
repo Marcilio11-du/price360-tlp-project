@@ -37,13 +37,13 @@ const looksLikeApiResponse = (data) =>
  * @param {Object|null} body - Corpo JSON opcional
  * @returns {Promise<Object>}
  */
-const request = async (method, endpoint, body = null) => {
+const request = async (method, endpoint, body = null, options = {}) => {
   const headers = { 'Content-Type': 'application/json' };
 
   const token = auth.getToken();
   if (token) headers['Authorization'] = `Bearer ${token}`;
 
-  const config = { method, headers };
+  const config = { method, headers, ...options };
   if (body) config.body = JSON.stringify(body);
 
   const tryBases = [
@@ -118,7 +118,7 @@ export const api = {
    * @param {string} endpoint
    * @returns {Promise<{status: string, data: any, message?: string}>}
    */
-  get: (endpoint) => request('GET', endpoint),
+  get: (endpoint, options = {}) => request('GET', endpoint, null, options),
 
   /**
    * POST /endpoint  com corpo JSON

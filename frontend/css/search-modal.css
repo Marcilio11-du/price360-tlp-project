@@ -1,0 +1,218 @@
+/* =============================================================
+   search-modal.css — Pesquisa global com sugestões | Xé Preço
+   ============================================================= */
+
+.search-overlay {
+  align-items: flex-start;
+  padding-top: clamp(3rem, 12vh, 7rem);
+}
+
+.search-modal {
+  width: min(640px, 100%);
+  background: var(--color-white, #fff);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(10, 50, 114, 0.28), 0 4px 16px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transform: translateY(-14px) scale(0.98);
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.26s ease;
+  opacity: 0;
+}
+
+.modal--open .search-modal {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* ── Barra de input ────────────────────────────────────────── */
+.search-modal__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-gray-100, #eef2f7);
+  color: var(--color-gray-400, #94a3b8);
+}
+
+.search-modal__input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--color-gray-800, #1e293b);
+  background: transparent;
+  min-width: 0;
+}
+
+.search-modal__input::placeholder {
+  color: var(--color-gray-400, #94a3b8);
+  font-weight: 400;
+}
+
+.search-modal__esc {
+  font-family: system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-gray-500, #64748b);
+  background: var(--color-gray-100, #eef2f7);
+  border-radius: 6px;
+  padding: 3px 7px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Resultados ────────────────────────────────────────────── */
+.search-modal__results {
+  max-height: min(52vh, 420px);
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.search-modal__item,
+.search-modal__all {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 9px 12px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  font-family: inherit;
+  transition: background 0.14s ease;
+}
+
+.search-modal__item:hover,
+.search-modal__all:hover,
+.search-modal__item.is-selected,
+.search-modal__all.is-selected {
+  background: rgba(21, 101, 192, 0.07);
+}
+
+.search-modal__thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--color-gray-100, #eef2f7);
+}
+
+.search-modal__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.search-modal__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.search-modal__name {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--color-gray-800, #1e293b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-modal__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: var(--color-gray-500, #64748b);
+}
+
+.search-modal__meta strong {
+  color: var(--color-primary, #1565c0);
+  font-size: 0.84rem;
+}
+
+.search-modal__dot { opacity: 0.5; }
+
+.search-modal__arrow {
+  color: var(--color-gray-300, #cbd5e1);
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.search-modal__item:hover .search-modal__arrow,
+.search-modal__item.is-selected .search-modal__arrow {
+  transform: translateX(2px);
+  color: var(--color-primary, #1565c0);
+}
+
+/* Link "ver todos" */
+.search-modal__all {
+  justify-content: center;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-primary, #1565c0) !important;
+  gap: 8px;
+}
+
+/* ── Estados vazios / loading ─────────────────────────────── */
+.search-modal__empty {
+  padding: 2.2rem 1.4rem;
+  text-align: center;
+  font-size: 0.92rem;
+  color: var(--color-gray-500, #64748b);
+  line-height: 1.55;
+}
+
+.search-modal__empty--hint { padding: 2.8rem 1.4rem; }
+
+.search-modal__hint-icon {
+  display: block;
+  font-size: 1.9rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.45;
+}
+
+.search-modal__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 2rem;
+  font-size: 0.88rem;
+  color: var(--color-gray-500, #64748b);
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(21, 101, 192, 0.18);
+  border-top-color: var(--color-primary, #1565c0);
+  border-radius: 50%;
+  animation: searchSpin 0.7s linear infinite;
+}
+
+@keyframes searchSpin { to { transform: rotate(360deg); } }
+
+/* ── Rodapé de atalhos ─────────────────────────────────────── */
+.search-modal__footer {
+  padding: 0.55rem 1.25rem;
+  border-top: 1px solid var(--color-gray-100, #eef2f7);
+  background: var(--color-gray-50, #f8fafc);
+  font-size: 0.72rem;
+  color: var(--color-gray-400, #94a3b8);
+  text-align: center;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 560px) {
+  .search-overlay { padding-top: 4.5rem; }
+  .search-modal__esc { display: none; }
+  .search-modal__footer { display: none; }
+}
