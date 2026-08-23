@@ -51,7 +51,7 @@ export class Footer {
       const res = await api.get('/categories');
       const cats = (res.data || []).slice().sort((a, b) =>
         String(a.nome).localeCompare(String(b.nome), 'pt'),
-      );
+      ).slice(0, 12);
 
       if (!cats.length) throw new Error('vazio');
 
@@ -73,7 +73,12 @@ export class Footer {
             </ul>
           </div>`,
         )
-        .join('');
+        .join('') +
+        `<div class="footer__cat-col">
+            <ul class="footer__links">
+              <li><a href="#/produtos">Ver todas →</a></li>
+            </ul>
+          </div>`;
     } catch {
       grid.innerHTML = `
         <div class="footer__cat-col">

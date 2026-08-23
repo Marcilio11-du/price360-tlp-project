@@ -56,7 +56,7 @@ export class ProductCard {
         <div class="product-card__image-wrapper">
           ${productImgHtml(imageUrl, nome, 'product-card__image')}
           ${this.isBestPrice
-            ? `<div class="product-card__badge">BEST<br>PRICE</div>`
+            ? `<div class="product-card__badge">Melhor preço</div>`
             : ''}
         </div>
 

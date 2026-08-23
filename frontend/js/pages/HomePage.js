@@ -10,6 +10,7 @@ import { router }            from '../router.js';
 import { CategoryCard }      from '../components/CategoryCard.js';
 import { ProductCard }       from '../components/ProductCard.js';
 import { Footer }            from '../components/Footer.js';
+import { openSearchModal }   from '../components/SearchModal.js';
 import { Loader }            from '../components/Loader.js';
 import { modal }             from '../components/Modal.js';
 import { PRODUCT_PLACEHOLDER_IMG } from '../utils.js';
@@ -77,6 +78,7 @@ export default class HomePage {
     this._bindEvents();
     this._bindHeroCarousel();
     await Promise.all([this._loadCategories(), this._loadProducts()]);
+    this._renderTopCategories();
     observeNewElements();
   }
 
@@ -130,7 +132,6 @@ export default class HomePage {
                   <article class="hero__slide hero__slide--loading" aria-hidden="true">
                     <div class="hero__slide-top">
                       <span class="hero__slide-tag">Destaques</span>
-                      <span class="hero__slide-status">Hoje</span>
                     </div>
                     <div class="hero__slide-main">
                       <div class="hero__product-icon hero__product-icon--skeleton"></div>
@@ -143,8 +144,7 @@ export default class HomePage {
                 ${slides.map(item => `
                   <article class="hero__slide">
                     <div class="hero__slide-top">
-                      <span class="hero__slide-tag">${item.tag}</span>
-                      <span class="hero__slide-status">Hoje</span>
+                      ${item.tag ? `<span class="hero__slide-tag">${item.tag}</span>` : ''}
                     </div>
                     <div class="hero__slide-main">
                       <div class="hero__product-icon" aria-hidden="true">
@@ -155,7 +155,7 @@ export default class HomePage {
                       </div>
                       <div>
                         <p class="hero__product-name">${item.name}</p>
-                        <small class="hero__product-meta">${item.store} · ${item.price}</small>
+                        <small class="hero__product-meta">${item.meta}</small>
                       </div>
                     </div>
                     <div class="hero__price-row">
@@ -170,11 +170,6 @@ export default class HomePage {
               </div>
             </div>
 
-            <div class="hero__mini-panel">
-              <div class="hero__mini-chip">+12% barato</div>
-              <p>NCR Angola</p>
-              <strong>1 118 086,92 Kz</strong>
-            </div>
           </div>
         </div>
 
@@ -315,26 +310,48 @@ export default class HomePage {
       }
 
       grid.innerHTML = this.categories
-        .slice(0, 10)
+        .slice(0, 8)
         .map(cat => new CategoryCard(cat).render())
         .join('');
 
-      grid.querySelectorAll('.category-card').forEach(card => {
-        card.addEventListener('click', () =>
-          router.navigate(`/produtos?categoria=${card.dataset.id}`)
-        );
-        card.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ')
-            router.navigate(`/produtos?categoria=${card.dataset.id}`);
-        });
-      });
+      this._bindCategoryCards(grid);
 
       observeNewElements();
     } catch {
       const grid = this.container.querySelector('#categories-grid');
       if (grid)
-        grid.innerHTML = '<p style="grid-column:1/-1;color:var(--color-gray-600)">Erro ao carregar categorias.</p>';
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:2rem 0"><p style="color:var(--color-gray-600);margin-bottom:0.75rem">Erro ao carregar categorias.</p><button type="button" class="btn btn--outline js-retry-cats">Tentar novamente</button></div>';
+      grid.querySelector('.js-retry-cats')?.addEventListener('click', () => this._loadCategories());
     }
+  }
+
+
+  /* ─── Top categorias por popularidade real ──────────────────── */
+  _renderTopCategories() {
+    const grid = this.container.querySelector('#categories-grid');
+    if (!grid || !this.categories?.length || !this.storeProducts?.length) return;
+    const counts = new Map();
+    for (const p of this.storeProducts) {
+      const id = String(p?.id_categoria ?? p?.categoria_id ?? '');
+      if (id) counts.set(id, (counts.get(id) || 0) + 1);
+    }
+    const top = [...this.categories]
+      .sort((a, b) => (counts.get(String(b.id)) || 0) - (counts.get(String(a.id)) || 0))
+      .slice(0, 8);
+    grid.innerHTML = top.map(cat => new CategoryCard(cat).render()).join('');
+    this._bindCategoryCards(grid);
+  }
+
+  _bindCategoryCards(grid) {
+    grid.querySelectorAll('.category-card').forEach(card => {
+      card.addEventListener('click', () =>
+        router.navigate(`/produtos?categoria=${card.dataset.id}`)
+      );
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ')
+          router.navigate(`/produtos?categoria=${card.dataset.id}`);
+      });
+    });
   }
 
   /* ─── Load Produtos ─────────────────────────────────────────── */
@@ -345,7 +362,10 @@ export default class HomePage {
       const grid = this.container.querySelector('#home-products-grid');
       if (!grid) return;
 
-      const displayed = this.storeProducts.slice(0, 8);
+      // Prioriza produtos comparáveis (presentes em várias lojas) nos destaques
+      const displayed = [...this.storeProducts]
+        .sort((a, b) => (b.total_lojas || 0) - (a.total_lojas || 0))
+        .slice(0, 8);
 
       if (displayed.length === 0) {
         grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-gray-600)"><p>Nenhum produto disponível ainda.</p></div>`;
@@ -363,7 +383,8 @@ export default class HomePage {
     } catch {
       const grid = this.container.querySelector('#home-products-grid');
       if (grid)
-        grid.innerHTML = '<p style="grid-column:1/-1;color:var(--color-gray-600)">Erro ao carregar produtos.</p>';
+        grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:24px"><p style="color:var(--color-gray-600);margin-bottom:12px">Erro ao carregar produtos.</p><button type="button" class="btn btn--primary js-retry-products">Tentar novamente</button></div>';
+      grid.querySelector('.js-retry-products')?.addEventListener('click', () => this._loadProducts());
     }
   }
 
@@ -400,13 +421,14 @@ export default class HomePage {
   _updateHeroFromProducts(products = []) {
     const slides = (products || []).slice(0, 3).map((product, index) => {
       const price = Number(product?.preco_min ?? product?.preco ?? 0);
+      const lojas = Number(product?.total_lojas ?? 0);
       return {
-        name: product?.nome || `Produto ${index + 1}`,
-        store: product?.loja_nome || product?.lojas?.[0]?.nome || 'Loja',
+        name: product?.nome || 'Produto',
+        meta: product?.categoria_nome || 'Catálogo',
         price: Number.isFinite(price) ? new Intl.NumberFormat('pt-AO', {
           style: 'currency', currency: 'AOA', minimumFractionDigits: 2, maximumFractionDigits: 2
         }).format(price) : 'Consulte',
-        tag: index === 0 ? 'Melhor preço' : index === 1 ? 'Mais barato' : 'Promoção',
+        tag: lojas > 1 ? `Em ${lojas} lojas` : '',
         image: this._resolveProductImage(product)
       };
     });
@@ -423,8 +445,7 @@ export default class HomePage {
     track.innerHTML = slides.map(item => `
       <article class="hero__slide">
         <div class="hero__slide-top">
-          <span class="hero__slide-tag">${item.tag}</span>
-          <span class="hero__slide-status">Hoje</span>
+          ${item.tag ? `<span class="hero__slide-tag">${item.tag}</span>` : ''}
         </div>
         <div class="hero__slide-main">
           <div class="hero__product-icon" aria-hidden="true">
@@ -432,7 +453,7 @@ export default class HomePage {
           </div>
           <div>
             <p class="hero__product-name">${item.name}</p>
-            <small class="hero__product-meta">${item.store} · ${item.price}</small>
+            <small class="hero__product-meta">${item.meta}</small>
           </div>
         </div>
         <div class="hero__price-row">
@@ -487,9 +508,7 @@ export default class HomePage {
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    this.container.querySelector('#hero-search-btn')?.addEventListener('click', () => {
-      document.querySelector('#navbar-search-input')?.focus();
-    });
+    this.container.querySelector('#hero-search-btn')?.addEventListener('click', () => openSearchModal());
 
     this.heroParticles = initHeroParticles(
       this.container.querySelector('#hero-canvas'),
@@ -501,6 +520,8 @@ export default class HomePage {
       clearInterval(this.heroInterval);
       this.heroInterval = null;
     }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const carousel = this.container.querySelector('.hero__carousel');
     const track = this.container.querySelector('.hero__slides');

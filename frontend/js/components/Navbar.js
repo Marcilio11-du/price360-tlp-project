@@ -143,7 +143,6 @@ export class Navbar {
                 <div class="navbar__cats-grid" id="navbar-cats-grid">
                   <span class="navbar__cats-loading">A carregar categorias…</span>
                 </div>
-                <a href="#/produtos" class="navbar__cats-all">Ver todos os produtos →</a>
               </div>
             </div>
           </nav>
@@ -176,7 +175,6 @@ export class Navbar {
           <nav class="navbar__nav navbar__nav--mobile" aria-label="Navegação mobile">
             <a href="#/">Home</a>
             <a href="#/produtos">Produtos</a>
-            <a href="#/produtos" class="js-nav-cats-mobile">Categorias</a>
             ${mobileUserLinks}
           </nav>
           <div class="navbar__mobile-auth">
