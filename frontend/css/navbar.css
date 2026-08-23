@@ -647,3 +647,121 @@
     font-size: 0.88rem;
   }
 }
+
+/* ── CTA fantasma (Entrar) + dropdown de Categorias ────────── */
+.navbar__cta--ghost {
+  color: var(--color-primary);
+  background: rgba(21, 101, 192, 0.06);
+  border: 1.5px solid transparent;
+}
+
+.navbar__cta--ghost:hover {
+  background: rgba(21, 101, 192, 0.11);
+}
+
+.navbar__cats {
+  position: relative;
+}
+
+.navbar__cats-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--color-gray-600);
+  font-weight: 500;
+  font-size: 0.875rem;
+  padding: 6px 14px;
+  border-radius: 50px;
+  transition: color 0.2s, background 0.2s;
+  white-space: nowrap;
+}
+
+.navbar__cats-btn:hover,
+.navbar__cats-btn.open {
+  color: var(--color-primary);
+  background: rgba(21, 101, 192, 0.06);
+}
+
+.navbar__cats-btn svg {
+  transition: transform 0.22s ease;
+}
+
+.navbar__cats-btn.open svg {
+  transform: rotate(180deg);
+}
+
+.navbar__cats-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  width: min(430px, 88vw);
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(10, 50, 114, 0.18), 0 3px 12px rgba(0, 0, 0, 0.07);
+  padding: 14px;
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 1200;
+}
+
+.navbar__cats-panel.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.navbar__cats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 4px;
+  max-height: min(46vh, 340px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.navbar__cats-item {
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  padding: 7px 10px;
+  border-radius: 9px;
+  transition: background 0.15s ease, color 0.15s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navbar__cats-item:hover {
+  background: rgba(245, 166, 35, 0.12);
+  color: #d97706;
+}
+
+.navbar__cats-loading {
+  display: block;
+  padding: 1rem;
+  font-size: 0.82rem;
+  color: var(--color-gray-400);
+  text-align: center;
+}
+
+.navbar__cats-all {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  padding-top: 11px;
+  border-top: 1px solid var(--color-gray-100);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.navbar__cats-all:hover { opacity: 0.8; }
