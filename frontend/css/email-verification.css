@@ -11,7 +11,7 @@
   justify-content: center;
   color: #16a34a;
   background: rgba(34, 197, 94, 0.12);
-  animation: check-email-pop .45s cubic-bezier(.34, 1.56, .64, 1);
+  animation: check-email-pop .45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes check-email-pop {
   from { transform: scale(.5); opacity: 0; }
@@ -44,7 +44,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  animation: check-email-pop .45s cubic-bezier(.34, 1.56, .64, 1);
+  animation: check-email-pop .45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .email-verify-page__state-icon--ok { color: #16a34a; background: rgba(34,197,94,.12); }
 .email-verify-page__state-icon--err { color: #dc2626; background: rgba(220,38,38,.10); }
