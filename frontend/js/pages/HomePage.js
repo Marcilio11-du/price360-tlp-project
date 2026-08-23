@@ -106,15 +106,18 @@ export default class HomePage {
               Crie as suas listas e encontre sempre a melhor oferta.
             </p>
             <div class="hero__actions animate-hero">
-              <button class="hero__btn-primary" id="hero-cta">
-                Conhecer o Xé Preço
-              </button>
-              <button class="hero__btn-search" id="hero-search-btn" aria-label="Pesquisar">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                     stroke="currentColor" stroke-width="2.5">
+              <button class="hero__search-bar" id="hero-search-btn" type="button"
+                      aria-label="Pesquisar produtos (abre a pesquisa)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"
+                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                   <circle cx="11" cy="11" r="8"/>
                   <path d="m21 21-4.35-4.35"/>
                 </svg>
+                <span>Pesquisar produtos…</span>
+                <small>iPhone, arroz, ventilador</small>
+              </button>
+              <button class="hero__link-how" id="hero-cta" type="button">
+                Como funciona?
               </button>
             </div>
 
