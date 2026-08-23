@@ -1,5 +1,5 @@
 /* =============================================================
-   hero.css — Hero com bolas animadas | Price360
+   hero.css — Hero com partículas temáticas | Xé Preço
    ============================================================= */
 
 .hero {
@@ -30,36 +30,17 @@
   gap: clamp(2rem, 4vw, 4rem);
 }
 
-.hero__balls {
+.hero__canvas {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 0;
-  overflow: hidden;
 }
 
-.hero__ball {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  animation: ballFall linear infinite;
-  top: -120px;
-}
-
-.hero__ball:nth-child(1)  { width: 18px;  height: 18px;  left:  8%;  animation-duration: 7s;   animation-delay: 0s;    background: rgba(255,255,255,0.10); }
-.hero__ball:nth-child(2)  { width: 28px;  height: 28px;  left: 18%;  animation-duration: 10s;  animation-delay: 1.5s;  background: rgba(255,255,255,0.08); }
-.hero__ball:nth-child(3)  { width: 14px;  height: 14px;  left: 30%;  animation-duration: 8s;   animation-delay: 3s;    background: rgba(255,255,255,0.14); }
-.hero__ball:nth-child(4)  { width: 36px;  height: 36px;  left: 44%;  animation-duration: 12s;  animation-delay: 0.8s;  background: rgba(255,255,255,0.07); }
-.hero__ball:nth-child(5)  { width: 22px;  height: 22px;  left: 58%;  animation-duration: 9s;   animation-delay: 2.2s;  background: rgba(255,255,255,0.11); }
-.hero__ball:nth-child(6)  { width: 12px;  height: 12px;  left: 70%;  animation-duration: 6.5s; animation-delay: 4s;    background: rgba(255,255,255,0.15); }
-.hero__ball:nth-child(7)  { width: 32px;  height: 32px;  left: 82%;  animation-duration: 11s;  animation-delay: 1s;    background: rgba(255,255,255,0.06); }
-.hero__ball:nth-child(8)  { width: 16px;  height: 16px;  left: 92%;  animation-duration: 7.5s; animation-delay: 3.5s;  background: rgba(255,255,255,0.13); }
-
-@keyframes ballFall {
-  0%   { transform: translateY(0) translateX(0); opacity: 0; }
-  5%   { opacity: 1; }
-  90%  { opacity: 0.6; }
-  100% { transform: translateY(calc(100vh + 140px)) translateX(20px); opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .hero__canvas { opacity: 0.55; }
 }
 
 .hero__content {

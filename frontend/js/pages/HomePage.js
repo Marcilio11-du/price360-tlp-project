@@ -14,6 +14,7 @@ import { Loader }            from '../components/Loader.js';
 import { modal }             from '../components/Modal.js';
 import { PRODUCT_PLACEHOLDER_IMG } from '../utils.js';
 import { observeNewElements } from '../animations.js';
+import { initHeroParticles } from '../components/HeroParticles.js';
 
 export default class HomePage {
   constructor(container) {
@@ -90,16 +91,7 @@ export default class HomePage {
     return `
       <section class="hero" id="hero-section">
 
-        <div class="hero__balls" aria-hidden="true">
-          <div class="hero__ball"></div>
-          <div class="hero__ball"></div>
-          <div class="hero__ball"></div>
-          <div class="hero__ball"></div>
-          <div class="hero__ball"></div>
-          <div class="hero__ball"></div>
-          <div class="hero__ball"></div>
-          <div class="hero__ball"></div>
-        </div>
+        <canvas class="hero__canvas" id="hero-canvas" aria-hidden="true"></canvas>
 
         <div class="hero__inner">
           <div class="hero__content">
@@ -464,6 +456,10 @@ export default class HomePage {
     this.container.querySelector('#hero-search-btn')?.addEventListener('click', () => {
       document.querySelector('#navbar-search-input')?.focus();
     });
+
+    this.heroParticles = initHeroParticles(
+      this.container.querySelector('#hero-canvas'),
+    );
   }
 
   _bindHeroCarousel() {
