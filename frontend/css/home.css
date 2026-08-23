@@ -34,7 +34,7 @@
 }
 
 .section-title em {
-  color: var(--color-secondary);
+  color: var(--color-price);
   font-style: italic;
 }
 

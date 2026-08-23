@@ -185,13 +185,14 @@
 }
 
 .navbar__cta--primary {
-  background: linear-gradient(135deg, var(--color-secondary) 0%, #f59f1a 100%);
+  background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 8px 18px rgba(245, 166, 35, 0.22);
+  box-shadow: 0 8px 18px rgba(21, 101, 192, 0.22);
 }
 
 .navbar__cta--primary:hover {
-  box-shadow: 0 10px 20px rgba(245, 166, 35, 0.28);
+  background: var(--color-primary-dark);
+  box-shadow: 0 10px 20px rgba(21, 101, 192, 0.28);
 }
 
 /* ── Cart icon ─────────────────────────────────────────────── */

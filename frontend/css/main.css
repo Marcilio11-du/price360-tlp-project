@@ -1,6 +1,6 @@
 /* =============================================================
    main.css — Reset, Design System Variables, Global Styles,
-              Utility Classes | Price360
+              Utility Classes | Xé Preço
    ============================================================= */
 
 /* ─── 1. CSS Custom Properties (Design System) ─────────────── */
@@ -19,8 +19,14 @@
     --color-accent-light: #ffd166;
     --color-savings: #17c971;
     --color-savings-dark: #0ea05a;
+    /* Papéis de cor: azul = estrutura/acção · âmbar = preço/poupança */
+    --color-brand-blue: #1565c0;
+    --color-brand-blue-dark: #0d47a1;
+    --color-price: #b45309;
+    --color-price-strong: #8a5200;
     /* Aliases de compatibilidade para os componentes existentes. */
-    --color-primary: var(--color-accent);
+    --color-primary: var(--color-brand-blue);
+    --color-primary-dark: var(--color-brand-blue-dark);
     --color-primary-dark: var(--color-accent-dark);
     --color-primary-light: var(--color-accent-light);
     --color-secondary: var(--color-accent);
@@ -206,13 +212,13 @@ a:focus-visible {
 
 /* Variantes de cor */
 .btn--primary {
-    background-color: var(--color-secondary);
+    background-color: var(--color-primary);
     color: var(--color-white);
     font-family: inherit;
     text-decoration: none;
 }
 .btn--primary:hover {
-    background-color: var(--color-secondary-dark);
+    background-color: var(--color-primary-dark);
 }
 
 .btn--outline {
