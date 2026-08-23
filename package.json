@@ -7,7 +7,8 @@
     "start": "node src/app.js",
     "dev": "node --watch src/app.js",
     "seed": "node src/sql/seed-database.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "merge:duplicates": "node scripts/mergeDuplicateProducts.js"
   },
   "repository": {
     "type": "git",

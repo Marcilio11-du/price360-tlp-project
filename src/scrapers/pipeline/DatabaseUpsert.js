@@ -18,12 +18,14 @@
  */
 
 const db = require('../../config/db');
+const { areSameProduct } = require('../../utils/productMatching');
 
 // Cache em memória para evitar queries repetidas na mesma execução
 const _cache = {
   categorias: {},   // nome → id
   lojas: {},        // codigo → id
   produtos: {},     // nome → id
+  produtosPorCategoria: {}, // id_categoria → [{id, nome}]
 };
 
 class DatabaseUpsert {
@@ -99,8 +101,19 @@ class DatabaseUpsert {
     if (_cache.produtos[nome]) return _cache.produtos[nome];
 
     const [rows] = await db.query(
-      'SELECT id FROM Produto WHERE nome = ? LIMIT 1', [nome]
+      'SELECT id FROM Produto WHERE nome = ? AND deleted_at IS NULL LIMIT 1', [nome]
     );
+
+    if (rows.length === 0) {
+      // Matching multi-loja: procura produto equivalente na MESMA categoria
+      // para o mesmo artigo vendido noutra loja com nome ligeiramente distinto.
+      const match = await this.findEquivalentProduct(nome, idCategoria);
+      if (match) {
+        _cache.produtos[nome] = match.id;
+        console.info(`[DatabaseUpsert] Matching: "${nome}" → produto #${match.id} "${match.nome}"`);
+        return match.id;
+      }
+    }
 
     if (rows.length > 0) {
       _cache.produtos[nome] = rows[0].id;
@@ -116,7 +129,29 @@ class DatabaseUpsert {
       [nome, marca, nome, idCategoria]
     );
     _cache.produtos[nome] = result.insertId;
+
+    // Manter cache de matching coerente com o novo produto
+    (_cache.produtosPorCategoria[idCategoria] ||= []).push({ id: result.insertId, nome });
     return result.insertId;
+  }
+
+  /**
+   * Procura, dentro da mesma categoria, um produto existente que represente
+   * o mesmo artigo (normalização + assinatura numérica + Jaccard ≥ 0.8).
+   */
+  static async findEquivalentProduct(nome, idCategoria) {
+    let candidatos = _cache.produtosPorCategoria[idCategoria];
+    if (!candidatos) {
+      const [cands] = await db.query(
+        `SELECT id, nome FROM Produto
+          WHERE id_categoria = ? AND deleted_at IS NULL
+          ORDER BY id ASC LIMIT 2000`,
+        [idCategoria]
+      );
+      candidatos = cands.map(r => ({ id: r.id, nome: r.nome }));
+      _cache.produtosPorCategoria[idCategoria] = candidatos;
+    }
+    return candidatos.find(c => areSameProduct(nome, c.nome)) || null;
   }
 
   // ─── Upsert principal ────────────────────────────────────────────────────
@@ -304,7 +339,6 @@ class DatabaseUpsert {
   /** Limpa cache em memória (útil para testes). */
   static clearCache() {
     Object.keys(_cache).forEach(k => { _cache[k] = {}; });
-  }
-}
+  }}
 
 module.exports = DatabaseUpsert;
