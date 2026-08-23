@@ -447,3 +447,10 @@
 @media (max-width: 340px) {
   .hero__title { font-size: 1.9rem; }
 }
+
+.hero__product-icon--skeleton {
+  background: linear-gradient(100deg, #e6edf5 40%, #f4f8fc 50%, #e6edf5 60%);
+  background-size: 200% 100%;
+  animation: heroSkeletonShimmer 1.4s ease-in-out infinite;
+}
+@keyframes heroSkeletonShimmer { to { background-position: -200% 0; } }

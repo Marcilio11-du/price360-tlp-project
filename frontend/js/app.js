@@ -36,6 +36,11 @@ if (navbarRoot) {
   navbar.init(navbarRoot);
 }
 
+// ─── 1.5 Luz ambiente que segue o cursor (desktop) ───────────────────────────
+import('./components/CursorGlow.js')
+  .then((m) => m.initCursorGlow())
+  .catch(() => {});
+
 // ─── 2. Registo de rotas ──────────────────────────────────────────────────────
 router.register('/',         (container) => new HomePage(container).render());
 router.register('/produtos', (container) => new ProductsPage(container).render());

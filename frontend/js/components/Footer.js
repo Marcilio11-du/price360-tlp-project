@@ -1,8 +1,10 @@
 /**
  * @file components/Footer.js
  * @description Rodapé da aplicação Xé Preço.
- * Colunas: logo + descrição | Categorias (3 sub-colunas) | Informações de contacto
+ * Colunas: logo + descrição | Categorias (dinâmicas, da API) | Contacto
  */
+
+import { api } from '../api.js';
 
 export class Footer {
   render() {
@@ -18,48 +20,13 @@ export class Footer {
             <p>Compare preços de produtos essenciais e encontre sempre a melhor oferta.</p>
           </div>
 
-          <!-- Categorias dos produtos -->
+          <!-- Categorias dos produtos (preenchidas dinamicamente) -->
           <div class="footer__categories">
             <h4 class="footer__title">Categorias dos produtos</h4>
-            <div class="footer__categories-grid">
-
-              <div class="footer__cat-col">
-                <span class="footer__cat-heading">Bens de Consumo Rápido (FMCG)</span>
-                <ul class="footer__links">
-                  <li><a href="#/produtos?categoria=1">Arroz, Grãos e Massas</a></li>
-                  <li><a href="#/produtos?categoria=2">Óleos e Temperos</a></li>
-                  <li><a href="#/produtos?categoria=3">Laticínios e Ovos</a></li>
-                  <li><a href="#/produtos?categoria=4">Talho e Peixaria</a></li>
-                  <li><a href="#/produtos?categoria=5">Padaria e Pastelaria</a></li>
-                  <li><a href="#/produtos?categoria=6">Frutas e Legumes</a></li>
-                  <li><a href="#/produtos?categoria=7">Bebidas e Sumos</a></li>
-                  <li><a href="#/produtos?categoria=8">Cervejas e Vinhos</a></li>
-                </ul>
-              </div>
-
-              <div class="footer__cat-col">
-                <span class="footer__cat-heading">Higiene e Limpeza</span>
-                <ul class="footer__links">
-                  <li><a href="#/produtos?categoria=9">Higiene Pessoal</a></li>
-                  <li><a href="#/produtos?categoria=10">Limpeza da Casa</a></li>
-                  <li><a href="#/produtos?categoria=11">Cuidados do Bebé</a></li>
-                </ul>
-              </div>
-
-              <div class="footer__cat-col">
-                <span class="footer__cat-heading">Diversos</span>
-                <ul class="footer__links">
-                  <li><a href="#/produtos?categoria=12">Conservas e Enlatados</a></li>
-                  <li><a href="#/produtos?categoria=13">Snacks e Doces</a></li>
-                  <li><a href="#/produtos?categoria=14">Congelados Prontos</a></li>
-                  <li><a href="#/produtos?categoria=15">Pet Shop</a></li>
-                </ul>
-              </div>
-
+            <div class="footer__categories-grid" id="footer-cats-grid">
+              <span style="font-size:0.85rem;color:var(--color-gray-400)">A carregar categorias…</span>
             </div>
           </div>
-
-
 
         </div>
 
@@ -72,7 +39,53 @@ export class Footer {
     `;
   }
 
+  /**
+   * Carrega as categorias reais da API e distribui-as em colunas.
+   * Se falhar, mostra apenas o atalho para /produtos.
+   */
+  async _loadCategories() {
+    const grid = document.getElementById('footer-cats-grid');
+    if (!grid) return;
+
+    try {
+      const res = await api.get('/categories');
+      const cats = (res.data || []).slice().sort((a, b) =>
+        String(a.nome).localeCompare(String(b.nome), 'pt'),
+      );
+
+      if (!cats.length) throw new Error('vazio');
+
+      // 3 colunas equilibradas com as categorias reais existentes
+      const perCol = Math.ceil(cats.length / 3);
+      const cols = [0, 1, 2].map((i) => cats.slice(i * perCol, (i + 1) * perCol));
+
+      grid.innerHTML = cols
+        .map(
+          (col) => `
+          <div class="footer__cat-col">
+            <ul class="footer__links">
+              ${col
+                .map(
+                  (c) =>
+                    `<li><a href="#/produtos?categoria=${c.id}">${c.nome}</a></li>`,
+                )
+                .join('')}
+            </ul>
+          </div>`,
+        )
+        .join('');
+    } catch {
+      grid.innerHTML = `
+        <div class="footer__cat-col">
+          <ul class="footer__links">
+            <li><a href="#/produtos">Ver todos os produtos →</a></li>
+          </ul>
+        </div>`;
+    }
+  }
+
   init(container) {
     container.innerHTML = this.render();
+    this._loadCategories();
   }
 }

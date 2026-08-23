@@ -82,11 +82,9 @@ export default class HomePage {
 
   /* ─── Hero ──────────────────────────────────────────────────── */
   _heroHTML() {
-    const slides = [
-      { name: 'Computador Portátil', store: 'NCR Angola', price: '1 118 086,92 Kz', tag: 'Melhor preço' },
-      { name: 'Laptop premium', store: 'MultiTek', price: '2 076 446,16 Kz', tag: 'Mais barato' },
-      { name: 'Laptop profissional', store: 'iTec', price: '1 214 721,30 Kz', tag: 'Promoção' }
-    ];
+    // Sem slides mockados: o carrossel mostra um esqueleto até os dados
+    // reais chegarem (_updateHeroFromProducts preenche com destaques reais).
+    const slides = [];
 
     return `
       <section class="hero" id="hero-section">
@@ -119,8 +117,8 @@ export default class HomePage {
             </div>
 
             <div class="hero__trust animate-hero" aria-label="Indicadores de confiança">
-              <span><strong>10+</strong> produtos reais</span>
-              <span><strong>4</strong> lojas ativas</span>
+              <span><strong id="stat-produtos">…</strong> produtos reais</span>
+              <span><strong id="stat-lojas">…</strong> lojas ativas</span>
               <span><strong>tempo real</strong></span>
             </div>
           </div>
@@ -128,6 +126,20 @@ export default class HomePage {
           <div class="hero__showcase animate-hero" aria-label="Comparação rápida de preços">
             <div class="hero__carousel" aria-live="polite">
               <div class="hero__slides">
+                ${slides.length === 0 ? `
+                  <article class="hero__slide hero__slide--loading" aria-hidden="true">
+                    <div class="hero__slide-top">
+                      <span class="hero__slide-tag">Destaques</span>
+                      <span class="hero__slide-status">Hoje</span>
+                    </div>
+                    <div class="hero__slide-main">
+                      <div class="hero__product-icon hero__product-icon--skeleton"></div>
+                      <div style="flex:1">
+                        <p class="hero__product-name">A carregar destaques…</p>
+                        <small class="hero__product-meta">os melhores preços de hoje</small>
+                      </div>
+                    </div>
+                  </article>` : ''}
                 ${slides.map(item => `
                   <article class="hero__slide">
                     <div class="hero__slide-top">
@@ -189,11 +201,11 @@ export default class HomePage {
 
           <div class="about-stats animate-fade">
             <div class="about-stat">
-              <strong>10+</strong>
+              <strong id="about-stat-produtos">…</strong>
               <span>produtos reais em comparação</span>
             </div>
             <div class="about-stat">
-              <strong>4</strong>
+              <strong id="about-stat-lojas">…</strong>
               <span>lojas ativas em Angola</span>
             </div>
             <div class="about-stat">
@@ -347,6 +359,7 @@ export default class HomePage {
       this._updateHeroFromProducts(displayed);
       this._bindProductEvents(grid);
       observeNewElements();
+      this._fillStats();
     } catch {
       const grid = this.container.querySelector('#home-products-grid');
       if (grid)
@@ -361,6 +374,27 @@ export default class HomePage {
     }
     // Sem imagem real → placeholder neutro (nada de fotos de stock inventadas)
     return PRODUCT_PLACEHOLDER_IMG;
+  }
+
+  /* ─── Stats reais (hero + secção sobre) ─────────────────────── */
+  async _fillStats() {
+    const nProdutos = this.storeProducts.length;
+    const set = (id, value) => {
+      const el = this.container.querySelector(`#${id}`);
+      if (el) el.textContent = value;
+    };
+    set('stat-produtos', String(nProdutos));
+    set('about-stat-produtos', `${nProdutos}`);
+
+    try {
+      const res = await api.get('/stores');
+      const lojas = (res.data || []).length;
+      set('stat-lojas', String(lojas));
+      set('about-stat-lojas', String(lojas));
+    } catch {
+      set('stat-lojas', '—');
+      set('about-stat-lojas', '—');
+    }
   }
 
   _updateHeroFromProducts(products = []) {

@@ -1,181 +1,164 @@
 /* =============================================================
-   toast.css — Sistema de Notificações Toast | Price360
+   toast.css — Notificações elegantes | Xé Preço
+   Cartões claros com acento por tipo, entrada com mola,
+   saída suave e linha de vida discreta (pausa no hover).
    ============================================================= */
 
-
-/* ─── 1. Root Container ─────────────────────────────────────── */
 #toast-root {
   position: fixed;
   bottom: 24px;
   right: 24px;
   z-index: 9999;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  /* Acessibilidade: lida por leitores de ecrã */
+  flex-direction: column-reverse; /* novo entra por baixo, não empurra os outros */
+  gap: 10px;
   pointer-events: none;
 }
 
-
-/* ─── 2. Toast Base ─────────────────────────────────────────── */
+/* ─── Cartão ───────────────────────────────────────────────── */
 .toast {
+  --accent: var(--color-primary, #1565c0);
+  --accent-soft: rgba(21, 101, 192, 0.1);
+
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  color: var(--color-white);
-  font-weight: 500;
-  font-size: var(--font-size-sm);
-  min-width: 280px;
+  gap: 12px;
+  padding: 13px 14px 15px;
+  min-width: 300px;
   max-width: 400px;
-  box-shadow: var(--shadow-lg);
-  animation: toastIn 0.3s ease-out forwards;
+
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border: 1px solid rgba(15, 40, 80, 0.07);
+  border-radius: 14px;
+  box-shadow:
+    0 12px 32px rgba(10, 30, 60, 0.14),
+    0 2px 8px rgba(10, 30, 60, 0.06);
+
+  color: #24344d;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.45;
+
   pointer-events: auto;
-  position: relative;
   overflow: hidden;
+  cursor: default;
+
+  opacity: 0;
+  transform: translateY(16px) scale(0.96);
+  transition:
+    opacity 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.38s cubic-bezier(0.22, 1.4, 0.4, 1); /* leve overshoot */
 }
 
-/* Barra de progresso de auto-dismiss */
-.toast::before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  height: 3px;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.4);
-  transform-origin: left;
-  animation: toastProgress var(--toast-duration, 4s) linear forwards;
+.toast.is-in {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-/* Estado de saída */
-.toast.toast--hiding {
-  animation: toastOut 0.3s ease-in forwards;
-}
-.toast.toast--hiding::before {
-  animation: none;
-}
-
-
-/* ─── 3. Variantes de tipo ──────────────────────────────────── */
-.toast--success {
-  background-color: #388E3C;
+.toast--hiding {
+  opacity: 0 !important;
+  transform: translateY(8px) scale(0.97) !important;
+  transition:
+    opacity 0.3s ease forwards,
+    transform 0.3s ease forwards;
+  pointer-events: none;
 }
 
-.toast--error {
-  background-color: #C62828;
-}
+/* ─── Acentos por tipo (suaves, nada de blocos saturados) ──── */
+.toast--success { --accent: #188038; --accent-soft: rgba(24, 128, 56, 0.11); }
+.toast--error   { --accent: #c5221f; --accent-soft: rgba(197, 34, 31, 0.09); }
+.toast--info    { --accent: #1565c0; --accent-soft: rgba(21, 101, 192, 0.10); }
+.toast--warning { --accent: #b26a00; --accent-soft: rgba(178, 106, 0, 0.11); }
 
-.toast--info {
-  background-color: var(--color-primary);
-}
-
-.toast--warning {
-  background-color: #F57C00;
-}
-
-
-/* ─── 4. Partes internas ────────────────────────────────────── */
+/* ─── Ícone num círculo tinted ─────────────────────────────── */
 .toast__icon {
-  width: 20px;
-  height: 20px;
+  width: 34px;
+  height: 34px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.toast__icon svg {
-  width: 20px;
-  height: 20px;
+  border-radius: 11px;
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .toast__message {
   flex: 1;
-  line-height: 1.4;
+  padding-right: 2px;
 }
 
-.toast__title {
-  font-weight: 700;
-  font-size: var(--font-size-sm);
-  display: block;
-}
-
-.toast__description {
-  font-size: var(--font-size-xs);
-  opacity: 0.9;
-  margin-top: 2px;
-  display: block;
-}
-
+/* ─── Botão fechar discreto ────────────────────────────────── */
 .toast__close {
   cursor: pointer;
-  opacity: 0.7;
+  align-self: flex-start;
   background: transparent;
   border: none;
-  color: inherit;
+  color: #7c8aa0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-full);
+  width: 22px;
+  height: 22px;
+  border-radius: 8px;
   padding: 0;
-  transition: opacity var(--transition), background-color var(--transition);
+  opacity: 0.55;
+  transition: opacity 0.18s ease, background-color 0.18s ease;
   flex-shrink: 0;
 }
 
-.toast__close:hover {
-  opacity: 1;
-  background-color: rgba(255, 255, 255, 0.2);
+.toast:hover .toast__close { opacity: 1; }
+.toast__close:hover { background: rgba(15, 40, 80, 0.07); }
+
+/* ─── Linha de vida (subtil, pausa no hover) ───────────────── */
+.toast__life {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 6px;
+  height: 2.5px;
+  border-radius: 99px;
+  background: var(--accent-soft);
+  overflow: hidden;
 }
 
-.toast__close svg {
-  width: 14px;
-  height: 14px;
+.toast__life::after {
+  content: '';
+  display: block;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  opacity: 0.55;
+  transform-origin: left;
+  animation: toastLife var(--life-duration, 4200ms) linear forwards;
 }
 
-
-/* ─── 5. Keyframe Animations ────────────────────────────────── */
-@keyframes toastIn {
-  from {
-    transform: translateX(120%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
+.toast--paused .toast__life::after {
+  animation-play-state: paused;
 }
 
-@keyframes toastOut {
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(120%);
-    opacity: 0;
-  }
-}
-
-@keyframes toastProgress {
+@keyframes toastLife {
   from { transform: scaleX(1); }
   to   { transform: scaleX(0); }
 }
 
-
-/* ─── 6. Responsividade ─────────────────────────────────────── */
+/* ─── Responsividade ───────────────────────────────────────── */
 @media (max-width: 480px) {
   #toast-root {
-    bottom: 16px;
-    right: 16px;
-    left: 16px;
+    bottom: 14px;
+    right: 14px;
+    left: 14px;
   }
-
   .toast {
     min-width: unset;
     max-width: 100%;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { transition-duration: 0.01s; transform: none; }
 }

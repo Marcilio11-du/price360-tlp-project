@@ -56,12 +56,12 @@ class HeroParticles {
   }
 
   targetCount() {
-    return Math.max(8, Math.min(22, Math.round((this.w * this.h) / 68000)));
+    return Math.max(12, Math.min(32, Math.round((this.w * this.h) / 42000)));
   }
 
   createParticle(initial = false) {
     const shape = pick(SHAPES);
-    const size = rand(13, 40) * (shape === 'bubble' ? rand(0.6, 1.4) : 1);
+    const size = rand(18, 52) * (shape === 'bubble' ? rand(0.65, 1.5) : 1);
     const progress = initial ? Math.random() : 0;
     return {
       shape,
@@ -128,7 +128,7 @@ class HeroParticles {
       const px = p.x + sway;
       const py = p.y;
       const scale = 0.32 + 0.68 * depth;
-      const alpha = (0.08 + 0.14 * depth) * fade;
+      const alpha = (0.16 + 0.26 * depth) * fade;
       const s = p.size * scale;
       const rot = p.spin * (now - p.born) * (p.shape === 'bubble' ? 0 : 1);
 
@@ -160,7 +160,7 @@ class HeroParticles {
     const r = s / 2;
     ctx.fillStyle = 'rgba(255,255,255,0.06)';
     ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-    ctx.lineWidth = 1.1;
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, TAU);
     ctx.fill();
@@ -176,7 +176,7 @@ class HeroParticles {
     const warm = s > 16;
     ctx.fillStyle   = warm ? 'rgba(255,208,110,0.10)' : 'rgba(255,255,255,0.07)';
     ctx.strokeStyle = warm ? 'rgba(255,214,130,0.95)' : 'rgba(255,255,255,0.8)';
-    ctx.lineWidth = 1.1;
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, TAU);
     ctx.fill();
@@ -198,7 +198,7 @@ class HeroParticles {
     const w = s, h = s * 0.62, r = Math.min(4, s * 0.12);
     ctx.fillStyle = 'rgba(255,255,255,0.06)';
     ctx.strokeStyle = 'rgba(255,255,255,0.85)';
-    ctx.lineWidth = 1.1;
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
     ctx.roundRect(-w / 2, -h / 2, w, h, [r, h / 2, h / 2, r]);
     ctx.fill();
@@ -211,7 +211,7 @@ class HeroParticles {
   cart(ctx, s) {
     ctx.strokeStyle = 'rgba(255,255,255,0.9)';
     ctx.fillStyle = 'rgba(255,255,255,0.9)';
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.5;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     const u = s / 26;
@@ -271,7 +271,7 @@ class HeroParticles {
   trend(ctx, s) {
     const warm = s > 20;
     ctx.strokeStyle = warm ? 'rgba(140,235,180,0.95)' : 'rgba(255,255,255,0.85)';
-    ctx.lineWidth = 1.3;
+    ctx.lineWidth = 1.6;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     const u = s / 24;
