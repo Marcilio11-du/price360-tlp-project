@@ -90,9 +90,8 @@ async function main() {
           const [manterId, removerId] = nova >= velha ? [oferta.id, existente[0].id] : [existente[0].id, oferta.id];
           await db.query('DELETE FROM Historico_Preco WHERE id_produto_loja = ?', [removerId]);
           await db.query('DELETE FROM Produto_Loja WHERE id = ?', [removerId]);
-          if (manterId !== oferta.id) {
-            await db.query('UPDATE Produto_Loja SET id_produto = ? WHERE id = ?', [canonical.id, oferta.id]);
-          }
+          // A linha mantida tem de pertencer ao canónico em ambos os casos
+          await db.query('UPDATE Produto_Loja SET id_produto = ? WHERE id = ?', [canonical.id, manterId]);
           conflitos++;
         }
       }
