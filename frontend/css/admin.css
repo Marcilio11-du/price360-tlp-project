@@ -981,3 +981,43 @@
   0%, 100% { opacity: 1; transform: scale(1); }
   50%      { opacity: .35; transform: scale(.8); }
 }
+
+/* ─── Pesquisa em tabelas ───────────────────────────────────── */
+.admin-search {
+  position: relative;
+  margin: 0 0 var(--space-4);
+  max-width: 340px;
+}
+
+.admin-search .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-gray-500);
+  pointer-events: none;
+}
+
+.admin-search__input {
+  width: 100%;
+  padding: .6rem .9rem .6rem 2.3rem;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md, 10px);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  background: var(--color-bg-light-elevated);
+  color: var(--color-text-on-light);
+}
+
+.admin-search__input:focus {
+  outline: none;
+  border-color: var(--color-accent-dark);
+}
+
+.stars-icon {
+  display: inline-flex;
+  gap: 2px;
+  color: var(--color-accent);
+}
+
+.stars-icon .icon { width: 1em; height: 1em; }

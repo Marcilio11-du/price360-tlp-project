@@ -4,6 +4,7 @@ import { router } from '../router.js';
 import { toast }  from '../components/Toast.js';
 import { modal }  from '../components/Modal.js';
 import { Loader } from '../components/Loader.js';
+import { plus, refresh, warning, search, starsHtml } from '../components/icons.js';
 import { observeNewElements } from '../animations.js';
 
 /* ─── Secções disponíveis na sidebar ──────────────────────────── */
@@ -189,7 +190,7 @@ export default class AdminDashboardPage {
                 </div>
               </div>
               <p style="font-size:var(--font-size-xs);color:var(--color-gray-500);margin-bottom:.75rem;">
-                Última execução: ${ultimaExecFmt}${stats ? ` · ➕ ${stats.totalInserts ?? 0} inserções · 🔄 ${stats.totalUpdates ?? 0} actualizações · ⚠️ ${stats.totalErrors ?? 0} erros` : ''}
+                Última execução: ${ultimaExecFmt}${stats ? ` · <span class="icon">${plus}</span> ${stats.totalInserts ?? 0} inserções · <span class="icon">${refresh}</span> ${stats.totalUpdates ?? 0} actualizações · <span class="icon">${warning}</span> ${stats.totalErrors ?? 0} erros` : ''}
               </p>
               <div class="admin-table-wrapper">
                 <table class="admin-table">
@@ -503,6 +504,7 @@ export default class AdminDashboardPage {
             <button class="btn--create" id="btn-novo-user">Novo Utilizador</button>
           </div>
           <div id="user-form-wrapper"></div>
+          ${this._searchBoxHtml('Pesquisar por nome, email, role…')}
           <div class="admin-table-wrapper">
             <table class="admin-table">
               <thead>
@@ -555,6 +557,7 @@ export default class AdminDashboardPage {
       `;
 
       this._bindUserEvents(main, users);
+      this._bindTableSearch(main);
     } catch (err) {
       main.innerHTML = `<p style="padding:2rem;color:#757575">Erro ao carregar utilizadores: ${err.message}</p>`;
     }
@@ -594,7 +597,7 @@ export default class AdminDashboardPage {
     main.querySelectorAll('[data-action="restore-user"]').forEach(btn => {
       btn.addEventListener('click', async () => {
         try {
-          await api.put(`/users/${btn.dataset.id}/restore`, {});
+          await api.patch(`/users/${btn.dataset.id}/restore`, null);
           toast.success('Utilizador restaurado.');
           await this.renderUtilizadores(main);
         } catch (err) { toast.error(err.message || 'Erro ao restaurar.'); }
@@ -823,6 +826,7 @@ export default class AdminDashboardPage {
           ${avaliacoes.length === 0
             ? '<p style="color:var(--color-gray-600);padding:1rem 0;">Ainda não existem avaliações.</p>'
             : `
+          ${this._searchBoxHtml('Pesquisar por loja, utilizador, comentário…')}
           <div class="admin-table-wrapper">
             <table class="admin-table">
               <thead>
@@ -834,7 +838,7 @@ export default class AdminDashboardPage {
                     <td>${av.id}</td>
                     <td><strong>${av.loja_nome}</strong></td>
                     <td>${av.utilizador_nome} ${av.utilizador_unome || ''}<br><span style="color:var(--color-gray-600);font-size:.78rem;">${av.utilizador_email}</span></td>
-                    <td style="color:var(--color-accent);letter-spacing:1px;">${'★'.repeat(av.nota)}${'☆'.repeat(5 - av.nota)}</td>
+                    <td>${starsHtml(av.nota)}</td>
                     <td style="max-width:320px;">${av.comentario || '—'}</td>
                     <td>${new Date(av.created_at).toLocaleDateString('pt-PT')}</td>
                     <td>
@@ -847,6 +851,7 @@ export default class AdminDashboardPage {
         </div>
       `;
 
+      this._bindTableSearch(main);
       main.querySelectorAll('[data-review-id]').forEach(btn => {
         btn.addEventListener('click', async () => {
           if (!window.confirm('Remover esta avaliação?')) return;
@@ -865,6 +870,35 @@ export default class AdminDashboardPage {
   }
 
   /* ══════════════════════════════════════════════════════════ */
+  /* PESQUISA EM TABELAS                                        */
+  /* ══════════════════════════════════════════════════════════ */
+  _searchBoxHtml(placeholder = 'Pesquisar…') {
+    return `
+      <div class="admin-search">
+        <span class="icon">${search}</span>
+        <input type="search" class="admin-search__input" placeholder="${placeholder}" autocomplete="off" />
+      </div>`;
+  }
+
+  /**
+   * Liga um input .admin-search à tabela da mesma secção: filtra as linhas
+   * do tbody pelo texto, sem recarregar dados.
+   */
+  _bindTableSearch(scope = this.container) {
+    scope.querySelectorAll('.admin-search').forEach(box => {
+      const input = box.querySelector('input');
+      const tbody = box.closest('.admin-section')?.querySelector('.admin-table tbody');
+      if (!input || !tbody) return;
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        tbody.querySelectorAll('tr').forEach(tr => {
+          tr.style.display = (!q || tr.textContent.toLowerCase().includes(q)) ? '' : 'none';
+        });
+      });
+    });
+  }
+
+  /* ══════════════════════════════════════════════════════════ */
   /* TABELA GENÉRICA (Categorias, Produtos)                     */
   /* ══════════════════════════════════════════════════════════ */
   async renderGenericTable(main, { title, endpoint, fields, headers, editableFields, editHeaders }) {
@@ -877,6 +911,7 @@ export default class AdminDashboardPage {
           <div class="admin-section__header">
             <h3>${title}</h3>
           </div>
+          ${this._searchBoxHtml(`Pesquisar ${title.toLowerCase()}…`)}
           <div class="admin-table-wrapper">
             <table class="admin-table">
               <thead>
@@ -909,6 +944,9 @@ export default class AdminDashboardPage {
           </div>
         </div>
       `;
+
+      // Pesquisa
+      this._bindTableSearch(main);
 
       // Editar
       main.querySelectorAll('[data-action="edit"]').forEach(btn => {
