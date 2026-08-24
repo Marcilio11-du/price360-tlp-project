@@ -5,6 +5,8 @@ import { toast }             from '../components/Toast.js';
 import { ProductCard }       from '../components/ProductCard.js';
 import { Loader }            from '../components/Loader.js';
 import { observeNewElements } from '../animations.js';
+import { CATALOG_BOOTSTRAP_NOTICE_HTML } from '../utils.js';
+import { decorateProductCards } from '../components/FavoriteButton.js';
 
 export default class ProductsPage {
   constructor(container) {
@@ -13,6 +15,7 @@ export default class ProductsPage {
     this.categories     = [];
     this.activeCategory = null;
     this.searchQuery    = '';
+    this.sortBy         = 'nome';
   }
 
   async render() {
@@ -30,10 +33,27 @@ export default class ProductsPage {
           </h1>
         </div>
         <div class="products-page__filters" id="category-filters"></div>
-        <p class="products-page__count" id="products-count"></p>
+        <div class="products-page__toolbar">
+          <p class="products-page__count" id="products-count"></p>
+          <label class="products-page__sort">
+            Ordenar:
+            <select id="products-sort">
+              <option value="nome">Nome (A–Z)</option>
+              <option value="preco-asc">Preço: mais baixo</option>
+              <option value="preco-desc">Preço: mais alto</option>
+              <option value="poupanca">Maior poupança</option>
+              <option value="lojas">Mais lojas</option>
+            </select>
+          </label>
+        </div>
         <div class="products-page__grid" id="products-grid">${Loader.renderSkeleton(8)}</div>
       </div>
     `;
+
+    this.container.querySelector('#products-sort')?.addEventListener('change', (e) => {
+      this.sortBy = e.target.value;
+      this.renderProducts();
+    });
 
     await Promise.all([this.loadCategories(), this.loadProducts()]);
     observeNewElements();
@@ -54,7 +74,7 @@ export default class ProductsPage {
       `<div class="filter-chip ${!this.activeCategory ? 'filter-chip--active' : ''}" data-id="">Todos</div>`,
       ...this.categories.map(cat => `
         <div class="filter-chip ${this.activeCategory === cat.id ? 'filter-chip--active' : ''}" data-id="${cat.id}">
-          ${cat.nome}
+          ${cat.nome}${cat.totalProdutos != null ? ` <span class="filter-chip__count">${cat.totalProdutos}</span>` : ''}
         </div>
       `)
     ].join('');
@@ -79,7 +99,7 @@ export default class ProductsPage {
       if (this.activeCategory) params.set('categoria', this.activeCategory);
       const res = await api.get(`/store-products/grouped?${params}`);
       this.allProducts = res.data || [];
-      this.renderProducts();
+      await this.renderProducts();
     } catch {
       if (grid)
         grid.innerHTML = `
@@ -90,18 +110,30 @@ export default class ProductsPage {
     }
   }
 
-  renderProducts() {
+  async renderProducts() {
     const grid  = this.container.querySelector('#products-grid');
     const count = this.container.querySelector('#products-count');
     if (!grid) return;
 
-    const filtered = this.allProducts;
+    const filtered = this.sortProducts(this.allProducts);
 
     if (count) {
       count.textContent = `${filtered.length} produto${filtered.length !== 1 ? 's' : ''} encontrado${filtered.length !== 1 ? 's' : ''}`;
     }
 
     if (filtered.length === 0) {
+      // Lista vazia SEM filtros activos pode significar que o catálogo
+      // ainda está a ser populado pelos scrapers — verifica antes de
+      // mostrar a mensagem genérica de "sem resultados".
+      if (!this.searchQuery && !this.activeCategory) {
+        try {
+          const status = await api.get('/store-products/catalog-status');
+          if (status.data?.populado === false) {
+            grid.innerHTML = CATALOG_BOOTSTRAP_NOTICE_HTML;
+            return;
+          }
+        } catch { /* segue para o estado normal */ }
+      }
       grid.innerHTML = `
         <div class="products-page__empty">
           <div class="empty-icon">0</div>
@@ -137,5 +169,24 @@ export default class ProductsPage {
     });
 
     observeNewElements();
+    decorateProductCards(grid);
+  }
+
+  /**
+   * Ordenação client-side sobre a lista agrupada de produtos.
+   * @param {Array} list
+   * @returns {Array} nova lista ordenada
+   */
+  sortProducts(list) {
+    const sorted = [...list];
+    switch (this.sortBy) {
+      case 'preco-asc':  sorted.sort((a, b) => a.preco_min - b.preco_min); break;
+      case 'preco-desc': sorted.sort((a, b) => b.preco_min - a.preco_min); break;
+      case 'poupanca':   sorted.sort((a, b) =>
+        ((b.preco_max ?? b.preco_min) - b.preco_min) - ((a.preco_max ?? a.preco_min) - a.preco_min)); break;
+      case 'lojas':      sorted.sort((a, b) => b.total_lojas - a.total_lojas); break;
+      default:           sorted.sort((a, b) => String(a.nome).localeCompare(String(b.nome), 'pt'));
+    }
+    return sorted;
   }
 }

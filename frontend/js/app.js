@@ -27,6 +27,8 @@ import ProfilePage         from './pages/ProfilePage.js';
 import AdminDashboardPage  from './pages/AdminDashboardPage.js';
 import ProductDetailPage   from './pages/ProductDetailPage.js';
 import PriceAlertsPage     from './pages/PriceAlertsPage.js';
+import StorePage           from './pages/StorePage.js';
+import FavoritesPage       from './pages/FavoritesPage.js';
 import EmailVerificationPage from './pages/EmailVerificationPage.js';
 
 // ─── 1. Navbar persistente ────────────────────────────────────────────────────
@@ -53,12 +55,14 @@ router.register('/lista',    (container) => new ShoppingListPage(container).rend
 router.register('/profile',  (container) => new ProfilePage(container).render());
 router.register('/admin',    (container) => new AdminDashboardPage(container).render());
 router.register('/alertas',  (container) => new PriceAlertsPage(container).render());
+router.register('/loja',     (container) => new StorePage(container).render());
+router.register('/favoritos', (container) => new FavoritesPage(container).render());
 
 /** Página 404 inline */
 router.register('/404', (container) => {
   container.innerHTML = `
     <div style="text-align:center;padding:6rem 1rem">
-      <div style="width:68px;height:68px;border-radius:50%;margin:0 auto;background:rgba(21,101,192,.08);display:flex;align-items:center;justify-content:center;color:var(--color-primary);font-weight:900;font-size:1.6rem">404</div>
+      <div style="width:68px;height:68px;border-radius:50%;margin:0 auto;background:rgba(255, 140, 26,.08);display:flex;align-items:center;justify-content:center;color:var(--color-accent);font-weight:900;font-size:1.6rem">404</div>
       <h2 style="font-size:2rem;font-weight:800;margin:1rem 0">Página não encontrada</h2>
       <p style="color:#757575;margin-bottom:2rem">A página que procuras não existe.</p>
       <a href="#/" class="btn btn--primary">Voltar ao início</a>

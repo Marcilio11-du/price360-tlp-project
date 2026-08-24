@@ -18,7 +18,7 @@ import { auth } from './auth.js';
 const routes = {};
 
 /** Rotas que requerem utilizador autenticado */
-const protectedRoutes = ['/lista', '/profile', '/alertas'];
+const protectedRoutes = ['/lista', '/profile', '/alertas', '/favoritos'];
 
 /** Rotas que requerem role 'admin' */
 const adminRoutes = ['/admin'];

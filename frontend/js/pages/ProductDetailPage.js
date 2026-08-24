@@ -110,7 +110,8 @@ export default class ProductDetailPage {
         <div class="offer__store">
           <figure class="offer__thumb">${productImgHtml(o.imagem, o.loja_nome, 'offer__thumb-img')}</figure>
           <div>
-            <strong>${o.loja_nome}</strong>
+            <a class="offer__store-link" href="#/loja?id=${o.id_loja}"
+               title="Ver perfil da loja ${o.loja_nome || ''}"><strong>${o.loja_nome}</strong></a>
             <span>${o.municipio || ''}</span>
           </div>
         </div>

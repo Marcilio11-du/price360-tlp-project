@@ -388,7 +388,7 @@ export default class OnboardingPage {
     if (/[^A-Za-z0-9]/.test(value)) score++;
 
     const levels = ['', 'Fraca', 'Razoável', 'Boa', 'Forte'];
-    const colors = ['', '#f44336', '#ff9800', '#2196f3', '#4caf50'];
+    const colors = ['', '#f44336', '#ff9800', '#ffab52', '#4caf50'];
 
     bars.forEach((bar, i) => {
       bar.style.background = i < score ? colors[score] : '';

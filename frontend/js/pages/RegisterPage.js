@@ -21,7 +21,7 @@ export default class RegisterPage {
         <div class="auth-card animate-scroll" style="max-width:540px">
           <div class="auth-card__logo">
             <div class="navbar__logo-text" style="font-size:1.5rem;text-align:center">
-              XÉ <span style="color:var(--color-secondary)">PREÇO</span>
+              XÉ <span style="color:var(--color-accent)">PREÇO</span>
             </div>
           </div>
           <h2 class="auth-card__title">Criar <span>conta</span></h2>

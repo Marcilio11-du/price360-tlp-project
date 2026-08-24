@@ -111,3 +111,24 @@ export const productImgHtml = (url, alt, cls = '') => {
   return `<img src="${src}" alt="${safeAlt}" class="${cls}" loading="lazy"
     onerror="this.onerror=null;this.src='${PRODUCT_PLACEHOLDER_IMG}'">`;
 };
+
+/**
+ * Estado dedicado de "catálogo ainda a ser populado" (primeira execução).
+ * Mostrado quando a lista vem vazia sem filtros activos e o endpoint
+ * /store-products/catalog-status indica populado === false.
+ */
+export const CATALOG_BOOTSTRAP_NOTICE_HTML = `
+  <div class="catalog-bootstrap-notice">
+    <div class="catalog-bootstrap-notice__icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="34" height="34" fill="none"
+           stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22v-9"/>
+        <path d="M12 13c-1.5-1.5-4-4-4-6.5C8 4.5 9.8 3 12 3s4 1.5 4 3.5c0 2.5-2.5 5-4 6.5z"/>
+      </svg>
+    </div>
+    <h3>A preparar o catálogo</h3>
+    <p>🌱 A preparar o catálogo com dados reais das lojas parceiras pela
+       primeira vez — isto pode levar alguns minutos. Actualiza a página
+       daqui a pouco.</p>
+  </div>
+`;

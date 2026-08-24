@@ -82,6 +82,7 @@ export class Navbar {
         ${auth.isAdmin() ? `<a href="#/admin">Dashboard</a>` : ""}
         <a href="#/profile">Perfil</a>
         <a href="#/lista">Listas de Compras</a>
+        <a href="#/favoritos">Favoritos</a>
         <a href="#/alertas">Alertas de preço</a>
       `
       : "";
@@ -159,6 +160,25 @@ export class Navbar {
                 <path d="M16 10a4 4 0 01-8 0"/>
               </svg>
             </button>
+
+            ${isAuth ? `
+            <!-- Sino de notificações -->
+            <div class="navbar__notif" id="navbar-notif">
+              <button class="navbar__cart btn btn--icon" id="navbar-notif-btn" aria-label="Notificações">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                </svg>
+                <span class="navbar__notif-badge" id="notif-badge" hidden>0</span>
+              </button>
+              <div class="navbar__notif-panel" id="notif-panel" style="display:none">
+                <div class="navbar__notif-head">Notificações</div>
+                <div class="navbar__notif-list" id="notif-list">
+                  <span class="navbar__notif-empty">A carregar…</span>
+                </div>
+              </div>
+            </div>` : ""}
           </div>
 
           <!-- Hamburger menu (mobile) -->
@@ -298,6 +318,88 @@ export class Navbar {
     container.querySelector(".js-nav-alerts")?.addEventListener("click", () => {
       router.navigate("/alertas");
     });
+
+    // --- Sino de notificações ---
+    const notifBtn = container.querySelector("#navbar-notif-btn");
+    const notifPanel = container.querySelector("#notif-panel");
+    const notifList = container.querySelector("#notif-list");
+    const notifBadge = container.querySelector("#notif-badge");
+
+    const renderNotifs = (data) => {
+      if (!notifList) return;
+      const items = [];
+
+      (data.alertas || []).forEach((a) => {
+        items.push(`
+          <div class="navbar__notif-item ${a.visto ? "" : "navbar__notif-item--new"}" data-alert-id="${a.id}" data-produto-id="${a.id_produto}">
+            <strong>🔔 Alerta de preço</strong>
+            <span>${a.produto_nome} — alvo ${Number(a.preco_alvo).toLocaleString("pt-PT", { style: "currency", currency: "AOA", maximumFractionDigits: 0 })}</span>
+            <small>${new Date(a.notificado_em).toLocaleString("pt-PT")}</small>
+          </div>`);
+      });
+
+      (data.favoritos || []).forEach((f) => {
+        const pct = Math.round(((f.preco_no_momento - f.preco_min_actual) / f.preco_no_momento) * 100);
+        items.push(`
+          <div class="navbar__notif-item navbar__notif-item--drop" data-produto-id="${f.id_produto}">
+            <strong>📉 Queda de preço (${pct}%)</strong>
+            <span>${f.nome} — agora a ${Number(f.preco_min_actual).toLocaleString("pt-PT", { style: "currency", currency: "AOA", maximumFractionDigits: 0 })}</span>
+            <small>estavas a seguir desde ${new Date(f.favoritado_em).toLocaleDateString("pt-PT")}</small>
+          </div>`);
+      });
+
+      notifList.innerHTML = items.length
+        ? items.join("")
+        : '<span class="navbar__notif-empty">Sem notificações por agora.</span>';
+
+      // Alertas não vistos → marca como visto ao clicar
+      notifList.querySelectorAll("[data-alert-id]").forEach((el) => {
+        el.addEventListener("click", async () => {
+          try { await api.patch(`/notifications/${el.dataset.alertId}/marcar-visto`, {}); } catch { /* silencioso */ }
+          router.navigate(`/produto?id=${el.dataset.produtoId ?? ""}`);
+        });
+      });
+      // Quedas em favoritos → vai para o produto
+      notifList.querySelectorAll("[data-produto-id]").forEach((el) => {
+        el.addEventListener("click", () =>
+          router.navigate(`/produto?id=${el.dataset.produtoId}`));
+      });
+    };
+
+    const loadNotifs = async () => {
+      if (!auth.isAuthenticated()) return;
+      try {
+        const res = await api.get("/notifications");
+        renderNotifs(res.data || {});
+        if (notifBadge) {
+          const total = res.data?.totalNaoVistas ?? 0;
+          notifBadge.textContent = String(total);
+          notifBadge.hidden = total === 0;
+        }
+      } catch {
+        if (notifList) notifList.innerHTML =
+          '<span class="navbar__notif-empty">Não foi possível carregar as notificações.</span>';
+      }
+    };
+
+    notifBtn?.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const open = notifPanel.style.display === "none";
+      notifPanel.style.display = open ? "block" : "none";
+      if (open) {
+        await loadNotifs();
+        // Ao abrir, considera tudo visto visualmente
+        if (notifBadge) notifBadge.hidden = true;
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (notifPanel && !e.target.closest("#navbar-notif")) {
+        notifPanel.style.display = "none";
+      }
+    });
+
+    if (auth.isAuthenticated()) loadNotifs();
 
     // --- Hamburger menu (mobile) ---
     const hamburger = container.querySelector("#navbar-hamburger");

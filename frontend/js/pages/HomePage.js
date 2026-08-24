@@ -13,7 +13,7 @@ import { Footer }            from '../components/Footer.js';
 import { openSearchModal }   from '../components/SearchModal.js';
 import { Loader }            from '../components/Loader.js';
 import { modal }             from '../components/Modal.js';
-import { PRODUCT_PLACEHOLDER_IMG } from '../utils.js';
+import { PRODUCT_PLACEHOLDER_IMG, CATALOG_BOOTSTRAP_NOTICE_HTML } from '../utils.js';
 import { observeNewElements } from '../animations.js';
 import { initHeroParticles } from '../components/HeroParticles.js';
 
@@ -371,6 +371,15 @@ export default class HomePage {
         .slice(0, 8);
 
       if (displayed.length === 0) {
+        // Sem produtos e sem filtros (homepage não tem): pode ser o
+        // bootstrap inicial do catálogo — mostra estado dedicado.
+        try {
+          const status = await api.get('/store-products/catalog-status');
+          if (status.data?.populado === false) {
+            grid.innerHTML = `<div style="grid-column:1/-1">${CATALOG_BOOTSTRAP_NOTICE_HTML}</div>`;
+            return;
+          }
+        } catch { /* segue para o estado normal */ }
         grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--color-gray-600)"><p>Nenhum produto disponível ainda.</p></div>`;
         return;
       }
@@ -382,6 +391,7 @@ export default class HomePage {
       this._updateHeroFromProducts(displayed);
       this._bindProductEvents(grid);
       observeNewElements();
+      import('../components/FavoriteButton.js').then(m => m.decorateProductCards(grid));
       this._fillStats();
     } catch {
       const grid = this.container.querySelector('#home-products-grid');
@@ -422,17 +432,25 @@ export default class HomePage {
   }
 
   _updateHeroFromProducts(products = []) {
-    const slides = (products || []).slice(0, 3).map((product, index) => {
+    // Prioriza produtos comparáveis (presentes em ≥2 lojas) para o widget
+    // de comparação ao vivo fazer sentido.
+    const ordered = [
+      ...(products || []).filter(p => Number(p?.total_lojas ?? 0) >= 2),
+      ...(products || []).filter(p => Number(p?.total_lojas ?? 0) < 2),
+    ];
+    const slides = ordered.slice(0, 3).map((product, index) => {
       const price = Number(product?.preco_min ?? product?.preco ?? 0);
       const lojas = Number(product?.total_lojas ?? 0);
       return {
+        id: product?.id,
         name: product?.nome || 'Produto',
         meta: product?.categoria_nome || 'Catálogo',
         price: Number.isFinite(price) ? new Intl.NumberFormat('pt-AO', {
           style: 'currency', currency: 'AOA', minimumFractionDigits: 2, maximumFractionDigits: 2
         }).format(price) : 'Consulte',
         tag: lojas > 1 ? `Em ${lojas} lojas` : '',
-        image: this._resolveProductImage(product)
+        image: this._resolveProductImage(product),
+        comparavel: index === 0 && lojas >= 2,
       };
     });
 
@@ -441,7 +459,19 @@ export default class HomePage {
     if (!carousel || !track) return;
 
     if (!slides.length) {
-      track.innerHTML = '';
+      // Catálogo ainda em bootstrap — mostra estado dedicado (ver P0.1/P1.7).
+      track.innerHTML = `
+        <article class="hero__slide hero__slide--loading" aria-hidden="true">
+          <div class="hero__slide-top">
+            <span class="hero__slide-tag">A preparar</span>
+          </div>
+          <div class="hero__slide-main">
+            <div style="flex:1">
+              <p class="hero__product-name">As comparações ao vivo chegam já…</p>
+              <small class="hero__product-meta">estamos a recolher os preços actuais das lojas</small>
+            </div>
+          </div>
+        </article>`;
       return;
     }
 
@@ -463,8 +493,12 @@ export default class HomePage {
           <span>Oferta mais baixa</span>
           <strong>${item.price}</strong>
         </div>
+        ${item.comparavel ? `<div class="hero__compare" data-compare-for="${item.id}"></div>` : ''}
       </article>
     `).join('');
+
+    const primeiroComparavel = ordered.find(p => Number(p?.total_lojas ?? 0) >= 2);
+    if (primeiroComparavel) this._loadHeroCompare(primeiroComparavel.id);
 
     const dots = [...this.container.querySelectorAll('.hero__dot')];
     if (dots.length !== slides.length) {
@@ -475,6 +509,41 @@ export default class HomePage {
     }
 
     this._bindHeroCarousel();
+  }
+
+  /**
+   * P1.7 — widget "comparação ao vivo": preenche o painel do slide com as
+   * ofertas reais do produto (melhor preço destacado + poupança).
+   */
+  async _loadHeroCompare(idProduto) {
+    const box = this.container.querySelector(`[data-compare-for="${idProduto}"]`);
+    if (!box) return;
+    try {
+      const res  = await api.get(`/products/${idProduto}/compare`);
+      const data = res.data || {};
+      const ofertas = (data.ofertas || []).slice(0, 3);
+      const stats   = data.estatisticas;
+      if (!ofertas.length || !stats) { box.remove(); return; }
+
+      const fmt = new Intl.NumberFormat('pt-AO', {
+        style: 'currency', currency: 'AOA', minimumFractionDigits: 0, maximumFractionDigits: 0,
+      });
+
+      box.innerHTML = `
+        <p class="hero__compare-title">Comparação ao vivo</p>
+        <ul class="hero__compare-list">
+          ${ofertas.map(o => `
+            <li class="${o.melhor_preco ? 'is-best' : ''}">
+              <span>${o.loja_nome}${o.melhor_preco ? ' · melhor' : ''}</span>
+              <strong>${fmt.format(o.preco)}</strong>
+            </li>`).join('')}
+        </ul>
+        ${stats.poupanca_absoluta > 0
+          ? `<p class="hero__compare-save">Poupas até <strong>${fmt.format(stats.poupanca_absoluta)}</strong> (${Math.round(stats.poupanca_percentual)}%)</p>`
+          : ''}`;
+    } catch {
+      box.remove();
+    }
   }
 
   /* ─── Eventos dos cards de produto ──────────────────────────── */

@@ -137,6 +137,14 @@ export const api = {
   put: (endpoint, body) => request('PUT', endpoint, body),
 
   /**
+   * PATCH /endpoint  com corpo JSON
+   * @param {string} endpoint
+   * @param {Object} body
+   * @returns {Promise<{status: string, data: any, message?: string}>}
+   */
+  patch: (endpoint, body = null) => request('PATCH', endpoint, body),
+
+  /**
    * DELETE /endpoint
    * @param {string} endpoint
    * @returns {Promise<{status: string, data: any, message?: string}>}

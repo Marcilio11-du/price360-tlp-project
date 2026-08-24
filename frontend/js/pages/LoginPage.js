@@ -56,12 +56,12 @@ export default class LoginPage {
               <i class="icon-lock"></i> Entrar como Admin
             </button>
           </div>
-          <div id="admin-credentials-box" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:var(--color-gray-50);border:1px solid var(--color-gray-200);border-radius:var(--radius-md);font-size:0.78rem;color:var(--color-gray-600);text-align:left">
+          <div id="admin-credentials-box" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:var(--color-bg-light);border:1px solid var(--color-gray-200);border-radius:var(--radius-md);font-size:0.78rem;color:var(--color-gray-600);text-align:left">
             <div style="font-weight:700;margin-bottom:0.4rem;color:var(--color-gray-700)">Credenciais de Admin</div>
             <div id="admin-creds-display" style="font-family:monospace"></div>
             <button id="admin-fill-btn" style="
               margin-top:0.6rem;width:100%;padding:0.45rem;
-              background:var(--color-primary);color:#fff;border:none;
+              background:var(--color-accent-dark);color:#fff;border:none;
               border-radius:var(--radius-md);font-size:0.8rem;font-weight:600;cursor:pointer;
             ">Preencher e entrar</button>
           </div>

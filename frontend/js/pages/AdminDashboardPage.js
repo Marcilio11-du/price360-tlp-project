@@ -14,6 +14,7 @@ const SECTIONS = [
   { id: 'categorias',    label: 'Categorias',    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/><path d="M8 9h8M8 12h8M8 15h5"/></svg>' },
   { id: 'produtos',      label: 'Produtos',      icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8.5 12 4l7 4.5v7L12 20l-7-4.5z"/><path d="M12 4v8m0 8v-8m-7-4.5 7 4 7-4"/></svg>' },
   { id: 'logs',          label: 'Logs Scrapers', icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>' },
+  { id: 'avaliacoes',    label: 'Avaliações',   icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></svg>' },
 ];
 
 export default class AdminDashboardPage {
@@ -89,6 +90,7 @@ export default class AdminDashboardPage {
           editableFields: ['nome','marca'], editHeaders: ['Nome','Marca'],
         }); break;
       case 'logs':         await this.renderLogs(main);        break;
+      case 'avaliacoes':   await this.renderAvaliacoes(main);  break;
     }
     observeNewElements();
   }
@@ -98,10 +100,36 @@ export default class AdminDashboardPage {
   /* ══════════════════════════════════════════════════════════ */
   async renderOverview(main) {
     try {
-      const [users, products, stores, categories] = await Promise.all([
-        api.get('/users'), api.get('/products'),
-        api.get('/stores'), api.get('/categories'),
+      const [users, categories, catalog, scrapingCfg, scrapingStatus] = await Promise.all([
+        api.get('/users'),
+        api.get('/categories'),
+        api.get('/store-products/catalog-status'),
+        api.get('/admin/scraping/config'),
+        api.get('/admin/scraping/status'),
       ]);
+
+      const totalUtilizadores = (users.data || []).length;
+      const totalCategorias  = (categories.data || []).length;
+      const cat   = catalog.data || {};
+      const totalOfertas    = cat.totalOfertas ?? 0;
+      const minimoEsperado  = cat.minimoEsperado ?? 60;
+      const catalogoPopulado = cat.populado !== false;
+
+      const cfg       = scrapingCfg.data || { total: 0, scrapers: [] };
+      const scrapers  = cfg.scrapers || [];
+      const activos   = scrapers.filter(s => s.ativo).length;
+
+      const st    = scrapingStatus.data || {};
+      const stats = st.ultimasEstatisticas || null;
+      const statsScrapers = stats?.scrapers || {};
+      const ultimaExecFmt = st.ultimaExecucao
+        ? new Date(st.ultimaExecucao).toLocaleString('pt-PT')
+        : 'ainda não executou';
+
+      const ofertaTrend = catalogoPopulado
+        ? `mínimo definido: ${minimoEsperado}`
+        : 'catálogo a ser populado…';
+
       main.innerHTML = `
         <div class="admin-overview">
           <div class="overview-header">
@@ -118,72 +146,72 @@ export default class AdminDashboardPage {
                 <span class="stat-card__dot stat-card__dot--primary"></span>
                 <span>Utilizadores</span>
               </div>
-              <div class="stat-card__value">${(users.data||[]).length}</div>
-              <div class="stat-card__label">activos</div>
-              <div class="stat-card__trend stat-card__trend--up">+12.4% vs. mês passado</div>
+              <div class="stat-card__value">${totalUtilizadores}</div>
+              <div class="stat-card__label">registados na plataforma</div>
             </div>
             <div class="stat-card stat-card--secondary animate-scroll">
               <div class="stat-card__meta">
                 <span class="stat-card__dot stat-card__dot--secondary"></span>
-                <span>Produtos</span>
+                <span>Ofertas no catálogo</span>
               </div>
-              <div class="stat-card__value">${(products.data||[]).length}</div>
-              <div class="stat-card__label">activos</div>
-              <div class="stat-card__trend stat-card__trend--up">+8.1% em stock</div>
+              <div class="stat-card__value">${totalOfertas}</div>
+              <div class="stat-card__label">${ofertaTrend}</div>
             </div>
             <div class="stat-card stat-card--success animate-scroll">
               <div class="stat-card__meta">
                 <span class="stat-card__dot stat-card__dot--success"></span>
-                <span>Lojas</span>
+                <span>Scrapers</span>
               </div>
-              <div class="stat-card__value">${(stores.data||[]).length}</div>
-              <div class="stat-card__label">activas</div>
-              <div class="stat-card__trend stat-card__trend--up">96.2% a operar</div>
+              <div class="stat-card__value">${activos}<span style="font-size:0.5em;color:var(--color-gray-500)">/${cfg.total}</span></div>
+              <div class="stat-card__label">activos na configuração</div>
             </div>
             <div class="stat-card stat-card--neutral animate-scroll">
               <div class="stat-card__meta">
                 <span class="stat-card__dot stat-card__dot--wood"></span>
                 <span>Categorias</span>
               </div>
-              <div class="stat-card__value">${(categories.data||[]).length}</div>
-              <div class="stat-card__label">ativas</div>
-              <div class="stat-card__trend stat-card__trend--up">+2 novas no mês</div>
+              <div class="stat-card__value">${totalCategorias}</div>
+              <div class="stat-card__label">cadastradas</div>
             </div>
           </div>
 
           <div class="overview-panels">
             <div class="admin-section animate-scroll">
               <div class="admin-section__header">
-                <h3>Resumo operacional</h3>
+                <h3>Estado dos scrapers</h3>
+                <div style="display:flex;align-items:center;gap:.75rem;">
+                  ${st.emExecucao
+                    ? '<span style="display:inline-flex;align-items:center;gap:.4rem;font-size:var(--font-size-xs);font-weight:700;color:#e6740a;"><span style="width:8px;height:8px;border-radius:50%;background:#e6740a;animation:pulse-dot 1.2s infinite;"></span>Em execução…</span>'
+                    : ''}
+                  <button id="btn-run-scrapers" class="btn btn--primary btn--sm" ${st.emExecucao ? 'disabled' : ''}>
+                    ${st.emExecucao ? 'A correr…' : 'Correr scrapers agora'}
+                  </button>
+                </div>
               </div>
-              <div class="overview-gauges">
-                <div class="gauge-card">
-                  <div class="gauge gauge--orange" style="--value:78">
-                    <div class="gauge__value">78%</div>
-                  </div>
-                  <div class="gauge-card__meta">
-                    <strong>Base activa</strong>
-                    <span>Utilizadores e lojas online</span>
-                  </div>
-                </div>
-                <div class="gauge-card">
-                  <div class="gauge gauge--blue" style="--value:64">
-                    <div class="gauge__value">64%</div>
-                  </div>
-                  <div class="gauge-card__meta">
-                    <strong>Produtos em stock</strong>
-                    <span>cobertura de catálogo</span>
-                  </div>
-                </div>
-                <div class="gauge-card">
-                  <div class="gauge gauge--green" style="--value:82">
-                    <div class="gauge__value">82%</div>
-                  </div>
-                  <div class="gauge-card__meta">
-                    <strong>Scraping</strong>
-                    <span>sincronização em execução</span>
-                  </div>
-                </div>
+              <p style="font-size:var(--font-size-xs);color:var(--color-gray-500);margin-bottom:.75rem;">
+                Última execução: ${ultimaExecFmt}${stats ? ` · ➕ ${stats.totalInserts ?? 0} inserções · 🔄 ${stats.totalUpdates ?? 0} actualizações · ⚠️ ${stats.totalErrors ?? 0} erros` : ''}
+              </p>
+              <div class="admin-table-wrapper">
+                <table class="admin-table">
+                  <thead>
+                    <tr><th>Loja</th><th>Config.</th><th>Produtos recolhidos</th><th>Upserts</th><th>Erros de upsert</th></tr>
+                  </thead>
+                  <tbody>
+                    ${scrapers.map(s => {
+                      const r = statsScrapers[s.codigo];
+                      return `
+                        <tr>
+                          <td><strong>${s.nome}</strong></td>
+                          <td>${s.ativo
+                            ? '<span style="color:#2e7d32;font-weight:700;">activo</span>'
+                            : '<span style="color:#9e9e9e;">inactivo</span>'}</td>
+                          <td>${r ? (r.produtosColetados ?? 0) : '—'}</td>
+                          <td>${r ? `${r.upsertStats?.inserts ?? 0} ins. / ${r.upsertStats?.updates ?? 0} act.` : '—'}</td>
+                          <td>${r ? (r.upsertStats?.errors ?? 0) : '—'}</td>
+                        </tr>`;
+                    }).join('')}
+                  </tbody>
+                </table>
               </div>
             </div>
 
@@ -201,6 +229,20 @@ export default class AdminDashboardPage {
           </div>
         </div>
       `;
+
+      main.querySelector('#btn-run-scrapers')?.addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        btn.textContent = 'A iniciar…';
+        try {
+          await api.post('/admin/scraping/run', {});
+          this._scheduleScraperRefresh();
+        } catch (err) {
+          btn.textContent = err.status === 409 ? 'Já está a correr' : 'Correr scrapers agora';
+          btn.disabled = err.status === 409;
+        }
+      });
+
       main.querySelectorAll('[data-goto]').forEach(btn => {
         btn.addEventListener('click', () => {
           this.activeSection = btn.dataset.goto;
@@ -209,9 +251,30 @@ export default class AdminDashboardPage {
           this.renderSection();
         });
       });
+
+      // Se o pipeline já estava a correr ao abrir o painel, acompanha.
+      if (st.emExecucao) this._scheduleScraperRefresh();
     } catch {
       main.innerHTML = '<p style="padding:2rem;color:#757575">Erro ao carregar dados.</p>';
     }
+  }
+
+  /**
+   * Re-renderiza o overview após alguns segundos para apanhar o resultado
+   * da execução dos scrapers. Continua a acompanhar enquanto estiver a correr.
+   */
+  _scheduleScraperRefresh() {
+    clearTimeout(this._scraperTimer);
+    this._scraperTimer = setTimeout(async () => {
+      if (this.activeSection !== 'overview') return;
+      let aindaACorrer = false;
+      try {
+        const st = await api.get('/admin/scraping/status');
+        aindaACorrer = !!st.data?.emExecucao;
+      } catch { /* segue com re-render normal */ }
+      await this.renderSection();
+      if (aindaACorrer) this._scheduleScraperRefresh();
+    }, 5000);
   }
 
   /* ══════════════════════════════════════════════════════════ */
@@ -257,7 +320,7 @@ export default class AdminDashboardPage {
                     <td>
                       ${linksMap[l.id]
                         ? `<a href="${linksMap[l.id]}" target="_blank" rel="noopener noreferrer"
-                              style="color:var(--color-primary);font-size:0.8rem;display:inline-flex;align-items:center;gap:0.35rem;font-weight:600" title="${linksMap[l.id]}">
+                              style="color:var(--color-accent);font-size:0.8rem;display:inline-flex;align-items:center;gap:0.35rem;font-weight:600" title="${linksMap[l.id]}">
                              <svg viewBox="0 0 24 24" aria-hidden="true" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M14 4h6v6"/><path d="M10 14 20 4"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg>
                              Abrir
                            </a>`
@@ -742,6 +805,63 @@ export default class AdminDashboardPage {
       textFilter = e.target.value;
       renderEntries();
     });
+  }
+
+  /* ══════════════════════════════════════════════════════════ */
+  /* AVALIAÇÕES — moderação                                     */
+  /* ══════════════════════════════════════════════════════════ */
+  async renderAvaliacoes(main) {
+    try {
+      const res = await api.get('/admin/reviews');
+      const avaliacoes = res.data || [];
+
+      main.innerHTML = `
+        <div class="admin-section animate-scroll">
+          <div class="admin-section__header">
+            <h3>Avaliações de Lojas</h3>
+          </div>
+          ${avaliacoes.length === 0
+            ? '<p style="color:var(--color-gray-600);padding:1rem 0;">Ainda não existem avaliações.</p>'
+            : `
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr><th>ID</th><th>Loja</th><th>Utilizador</th><th>Nota</th><th>Comentário</th><th>Data</th><th>Ações</th></tr>
+              </thead>
+              <tbody>
+                ${avaliacoes.map(av => `
+                  <tr>
+                    <td>${av.id}</td>
+                    <td><strong>${av.loja_nome}</strong></td>
+                    <td>${av.utilizador_nome} ${av.utilizador_unome || ''}<br><span style="color:var(--color-gray-600);font-size:.78rem;">${av.utilizador_email}</span></td>
+                    <td style="color:var(--color-accent);letter-spacing:1px;">${'★'.repeat(av.nota)}${'☆'.repeat(5 - av.nota)}</td>
+                    <td style="max-width:320px;">${av.comentario || '—'}</td>
+                    <td>${new Date(av.created_at).toLocaleDateString('pt-PT')}</td>
+                    <td>
+                      <button class="btn btn--danger btn--sm" data-review-id="${av.id}" data-store-id="${av.id_loja}">Eliminar</button>
+                    </td>
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>`}
+        </div>
+      `;
+
+      main.querySelectorAll('[data-review-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!window.confirm('Remover esta avaliação?')) return;
+          try {
+            await api.delete(`/stores/${btn.dataset.storeId}/reviews/${btn.dataset.reviewId}`);
+            toast.success('Avaliação removida.');
+            this.renderAvaliacoes(main);
+          } catch (err) {
+            toast.error(err.message || 'Não foi possível remover.');
+          }
+        });
+      });
+    } catch (err) {
+      main.innerHTML = `<p style="padding:2rem;color:#757575">Erro ao carregar avaliações: ${err.message}</p>`;
+    }
   }
 
   /* ══════════════════════════════════════════════════════════ */
