@@ -9,7 +9,7 @@
 
 .search-modal {
   width: min(640px, 100%);
-  background: var(--color-white, #fff);
+  background: #ffffff;
   border-radius: 20px;
   box-shadow: 0 30px 80px rgba(10, 50, 114, 0.28), 0 4px 16px rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -89,7 +89,7 @@
 .search-modal__all:hover,
 .search-modal__item.is-selected,
 .search-modal__all.is-selected {
-  background: rgba(21, 101, 192, 0.07);
+  background: rgba(255, 140, 26, 0.07);
 }
 
 .search-modal__thumb {
@@ -133,7 +133,7 @@
 }
 
 .search-modal__meta strong {
-  color: var(--color-primary, #1565c0);
+  color: var(--color-accent-dark);
   font-size: 0.84rem;
 }
 
@@ -148,7 +148,7 @@
 .search-modal__item:hover .search-modal__arrow,
 .search-modal__item.is-selected .search-modal__arrow {
   transform: translateX(2px);
-  color: var(--color-primary, #1565c0);
+  color: var(--color-accent-dark);
 }
 
 /* Link "ver todos" */
@@ -157,7 +157,7 @@
   margin-top: 4px;
   font-size: 0.85rem;
   font-weight: 700;
-  color: var(--color-primary, #1565c0) !important;
+  color: var(--color-accent-dark) !important;
   gap: 8px;
 }
 
@@ -192,8 +192,8 @@
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2.5px solid rgba(21, 101, 192, 0.18);
-  border-top-color: var(--color-primary, #1565c0);
+  border: 2.5px solid rgba(255, 140, 26, 0.18);
+  border-top-color: var(--color-accent-dark);
   border-radius: 50%;
   animation: searchSpin 0.7s linear infinite;
 }
@@ -204,7 +204,7 @@
 .search-modal__footer {
   padding: 0.55rem 1.25rem;
   border-top: 1px solid var(--color-gray-100, #eef2f7);
-  background: var(--color-gray-50, #f8fafc);
+  background: var(--color-bg-light);
   font-size: 0.72rem;
   color: var(--color-gray-400, #94a3b8);
   text-align: center;

@@ -47,7 +47,7 @@
 
 /* ─── 2. Modal Card ─────────────────────────────────────────── */
 .modal {
-  background-color: var(--color-white);
+  background-color: #ffffff;
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 540px;
@@ -131,7 +131,7 @@
 .modal__header h3 {
   font-size: var(--font-size-xl);
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-text-on-light);
   line-height: 1.2;
 }
 
@@ -154,7 +154,7 @@
 
 .modal__close:hover {
   background-color: var(--color-gray-100);
-  color: var(--color-text);
+  color: var(--color-text-on-light);
 }
 
 .modal__close svg {
@@ -212,8 +212,8 @@
   border-radius: var(--radius-sm);
   outline: none;
   font-size: var(--font-size-base);
-  color: var(--color-text);
-  background-color: var(--color-white);
+  color: var(--color-text-on-light);
+  background-color: #ffffff;
   transition: border-color var(--transition), box-shadow var(--transition);
   width: 100%;
 }
@@ -226,8 +226,8 @@
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(255, 140, 26, 0.1);
 }
 
 .form-group input.input--error,

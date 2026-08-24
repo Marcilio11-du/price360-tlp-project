@@ -22,8 +22,8 @@
 
 .category-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(21, 101, 192, 0.1);
-  border-color: rgba(21, 101, 192, 0.25);
+  box-shadow: 0 6px 20px rgba(255, 140, 26, 0.1);
+  border-color: rgba(255, 140, 26, 0.25);
 }
 
 .category-card:active {
@@ -31,15 +31,15 @@
 }
 
 .category-card--active {
-  border-color: var(--color-primary);
-  background: rgba(21, 101, 192, 0.04);
+  border-color: var(--color-accent);
+  background: rgba(255, 140, 26, 0.04);
 }
 
 /* ── Ícone PNG ─────────────────────────────────────────────── */
 .category-card__icon {
   width: 40px;
   height: 40px;
-  color: var(--color-primary);
+  color: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;

@@ -11,9 +11,9 @@
   justify-content: center;
   background: linear-gradient(
     135deg,
-    var(--color-primary-dark) 0%,
-    var(--color-primary)      50%,
-    #90CAF9                   100%
+    var(--color-accent-dark) 0%,
+    var(--color-accent)      50%,
+    #FFD9A8                   100%
   );
   padding: var(--space-8) var(--space-4);
   position: relative;
@@ -48,7 +48,7 @@
 
 /* ─── 2. Auth Card ──────────────────────────────────────────── */
 .auth-card {
-  background-color: var(--color-white);
+  background-color: #ffffff;
   border-radius: var(--radius-lg);
   padding: var(--space-8);
   width: 100%;
@@ -81,8 +81,8 @@
   margin-top: var(--space-2);
 }
 
-.auth-card__logo-text .logo-price { color: var(--color-primary); }
-.auth-card__logo-text .logo-360   { color: var(--color-secondary); }
+.auth-card__logo-text .logo-price { color: var(--color-accent); }
+.auth-card__logo-text .logo-360   { color: var(--color-accent); }
 
 
 /* ─── 4. Título ─────────────────────────────────────────────── */
@@ -91,12 +91,12 @@
   font-weight: 800;
   text-align: center;
   margin-bottom: var(--space-6);
-  color: var(--color-text);
+  color: var(--color-text-on-light);
   line-height: 1.2;
 }
 
 .auth-card__title span {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 
@@ -137,7 +137,7 @@
 
 .form-field input:focus + .form-field__icon,
 .form-field:focus-within .form-field__icon {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 /* Toggle visibilidade da password */
@@ -175,8 +175,8 @@
   padding: 0.875rem;
   font-size: var(--font-size-base);
   font-weight: 700;
-  background-color: var(--color-secondary);
-  color: var(--color-white);
+  background-color: var(--color-accent);
+  color: #ffffff;
   border: none;
   border-radius: var(--radius-full);
   cursor: pointer;
@@ -186,7 +186,7 @@
 }
 
 .auth-card__submit:hover {
-  background-color: var(--color-secondary-dark);
+  background-color: var(--color-accent-dark);
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(245, 166, 35, 0.4);
 }
@@ -211,7 +211,7 @@
 }
 
 .auth-card__footer a {
-  color: var(--color-primary);
+  color: var(--color-accent);
   font-weight: 600;
   text-decoration: none;
   transition: text-decoration var(--transition);
@@ -230,7 +230,7 @@
 
 .auth-form__forgot a {
   font-size: var(--font-size-xs);
-  color: var(--color-primary);
+  color: var(--color-accent);
   text-decoration: none;
   font-weight: 500;
   transition: text-decoration var(--transition);
@@ -277,7 +277,7 @@
   padding: 0.65rem 1rem;
   border: 1.5px solid var(--color-gray-200);
   border-radius: var(--radius-full);
-  background-color: var(--color-white);
+  background-color: #ffffff;
   color: var(--color-gray-800);
   font-size: var(--font-size-sm);
   font-weight: 600;

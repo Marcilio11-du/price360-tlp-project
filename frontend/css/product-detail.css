@@ -49,6 +49,8 @@
 .offer { display:flex; align-items:center; justify-content:space-between; gap:1rem; position:relative; background:var(--color-bg-light-elevated); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:1.25rem; }
 .offer--best { border:2px solid var(--color-savings); background:linear-gradient(135deg, rgba(34,197,94,.06), rgba(34,197,94,0) 55%), var(--color-bg-light-elevated); }
 .offer__store { display:flex; align-items:center; gap:.9rem; min-width:0; }
+.offer__store-link { color:inherit; text-decoration:none; }
+.offer__store-link:hover strong { color:var(--color-accent-dark); text-decoration:underline; }
 .offer__thumb {
   margin:0;
   width:64px;

@@ -29,12 +29,12 @@
 .section-title {
   font-size: clamp(1.6rem, 3.2vw, 2.2rem);
   font-weight: 800;
-  color: var(--color-text);
+  color: var(--color-text-on-light);
   line-height: 1.18;
 }
 
 .section-title em {
-  color: var(--color-price);
+  color: var(--color-accent-dark);
   font-style: italic;
 }
 
@@ -47,7 +47,7 @@
 /* ── Products section ──────────────────────────────────────── */
 .products-section {
   padding: 60px 0 72px;
-  background: var(--color-gray-50);
+  background: var(--color-bg-light);
 }
 
 .products-section__header {
@@ -63,9 +63,9 @@
 .view-all {
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-accent);
   text-decoration: none;
-  border: 1.5px solid var(--color-primary);
+  border: 1.5px solid var(--color-accent);
   padding: 0.4rem 1rem;
   border-radius: 50px;
   white-space: nowrap;
@@ -74,7 +74,7 @@
 }
 
 .view-all:hover {
-  background: var(--color-primary);
+  background: var(--color-accent);
   color: #fff;
 }
 
@@ -103,7 +103,7 @@
 
 .about-stat {
   background: linear-gradient(180deg, #ffffff 0%, #f5f7fb 100%);
-  border: 1px solid rgba(21, 101, 192, 0.1);
+  border: 1px solid rgba(255, 140, 26, 0.1);
   border-radius: 20px;
   padding: 1.2rem 1.1rem;
   display: flex;
@@ -115,7 +115,7 @@
 .about-stat strong {
   font-size: clamp(1.5rem, 3vw, 2.2rem);
   line-height: 1;
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .about-stat span {
@@ -131,7 +131,7 @@
 }
 
 .about-card {
-  background: var(--color-gray-50);
+  background: var(--color-bg-light);
   border: 1.5px solid var(--color-gray-200);
   border-radius: 16px;
   padding: 28px 22px;
@@ -142,27 +142,27 @@
 }
 
 .about-card:hover {
-  box-shadow: 0 8px 24px rgba(21, 101, 192, 0.09);
+  box-shadow: 0 8px 24px rgba(255, 140, 26, 0.09);
   transform: translateY(-3px);
-  border-color: rgba(21, 101, 192, 0.2);
+  border-color: rgba(255, 140, 26, 0.2);
 }
 
 .about-card__icon {
   width: 52px;
   height: 52px;
-  background: rgba(21, 101, 192, 0.08);
+  background: rgba(255, 140, 26, 0.08);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary);
+  color: var(--color-accent);
   flex-shrink: 0;
 }
 
 .about-card h3 {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-text-on-light);
   line-height: 1.3;
 }
 
@@ -181,7 +181,7 @@
 
 .about-step {
   background: #fff;
-  border: 1px solid rgba(21, 101, 192, 0.08);
+  border: 1px solid rgba(255, 140, 26, 0.08);
   border-radius: 18px;
   padding: 1.2rem 1rem 1.3rem;
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.04);
@@ -194,8 +194,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: rgba(21, 101, 192, 0.08);
-  color: var(--color-primary);
+  background: rgba(255, 140, 26, 0.08);
+  color: var(--color-accent);
   font-weight: 800;
   font-size: 0.8rem;
 }
@@ -223,7 +223,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--color-secondary);
+  background: var(--color-accent);
   color: #fff;
   border: none;
   border-radius: 50px;
@@ -237,7 +237,7 @@
 }
 
 .about-cta__btn:hover {
-  background: var(--color-secondary-dark);
+  background: var(--color-accent-dark);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(245, 166, 35, 0.35);
 }
@@ -245,7 +245,7 @@
 .about-cta__link {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--color-primary);
+  color: var(--color-accent);
   text-decoration: none;
   transition: opacity 0.2s;
 }

@@ -1,0 +1,271 @@
+/**
+ * @file store.css
+ * @description Página pública de perfil de loja (#/loja?id=X).
+ */
+
+.store-page {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-16);
+}
+
+.store-page__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-on-light-muted);
+  margin-bottom: var(--space-6);
+}
+
+.store-page__breadcrumb a {
+  color: var(--color-accent-dark);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.store-page__breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* ─── Cabeçalho da loja ─────────────────────────────────────── */
+.store-page__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding: var(--space-6);
+  background: var(--color-bg-light-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+}
+
+.store-page__avatar {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-accent-dark) 100%);
+  color: #ffffff;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  box-shadow: 0 8px 22px rgba(255, 140, 26, 0.35);
+}
+
+.store-page__info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.store-page__info h1 {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--color-text-on-light);
+  margin: 0 0 var(--space-1);
+}
+
+.store-page__location {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-on-light-muted);
+  margin: 0 0 var(--space-3);
+}
+
+.store-page__contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+}
+
+.store-page__contacts a {
+  color: var(--color-accent-dark);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.store-page__contacts a:hover {
+  text-decoration: underline;
+}
+
+.store-page__stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  background: rgba(255, 140, 26, 0.10);
+  border-radius: var(--radius-md);
+  min-width: 120px;
+}
+
+.store-page__stats strong {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  color: var(--color-accent-dark);
+}
+
+.store-page__stats span {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-on-light-muted);
+  text-align: center;
+}
+
+/* ─── Grelha de produtos ────────────────────────────────────── */
+.store-page__subtitle {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  color: var(--color-text-on-light);
+  margin: var(--space-8) 0 var(--space-4);
+}
+
+/* ─── Responsivo ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .store-page__header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .store-page__stats {
+    align-self: stretch;
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-2);
+  }
+}
+
+/* ─── Avaliações da loja ────────────────────────────────────── */
+.store-reviews {
+  margin-top: var(--space-8);
+}
+
+.store-reviews__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+
+.store-reviews__stars {
+  color: var(--color-accent);
+  font-size: var(--font-size-lg);
+  letter-spacing: 2px;
+}
+
+.store-reviews__media {
+  font-weight: 800;
+  color: var(--color-text-on-light);
+}
+
+.store-reviews__nostars {
+  color: var(--color-text-on-light-muted);
+  font-size: var(--font-size-sm);
+}
+
+.store-reviews__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-bg-light-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 12px);
+  margin-bottom: var(--space-6);
+}
+
+.store-reviews__nota {
+  display: flex;
+  gap: var(--space-3);
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-on-light-muted);
+  flex-wrap: wrap;
+}
+
+.store-reviews__nota label {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  cursor: pointer;
+  color: var(--color-accent-dark);
+  font-weight: 700;
+}
+
+.store-reviews__form textarea {
+  resize: vertical;
+  padding: var(--space-3);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md, 10px);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+}
+
+.store-reviews__form-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.store-reviews__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.store-review {
+  padding: var(--space-4);
+  background: var(--color-bg-light-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 12px);
+}
+
+.store-review__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.store-review__stars {
+  color: var(--color-accent);
+  letter-spacing: 1px;
+}
+
+.store-review time {
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  margin-left: auto;
+}
+
+.store-review__delete {
+  background: none;
+  border: none;
+  color: var(--color-gray-500);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+}
+
+.store-review__delete:hover {
+  color: var(--color-danger);
+}
+
+.store-review p {
+  margin: var(--space-2) 0 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-on-light-muted);
+}
+
+.store-reviews__empty {
+  color: var(--color-text-on-light-muted);
+  font-size: var(--font-size-sm);
+}

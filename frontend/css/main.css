@@ -14,31 +14,28 @@
     --color-text-on-dark-muted: rgba(245, 239, 232, 0.62);
     --color-text-on-light: #201510;
     --color-text-on-light-muted: #6b5f55;
-    --color-accent: #f5a623;
-    --color-accent-dark: #e8960a;
-    --color-accent-light: #ffd166;
+    --color-accent: #ff8c1a;
+    --color-accent-dark: #e6740a;
+    --color-accent-light: #ffb35c;
     --color-savings: #17c971;
     --color-savings-dark: #0ea05a;
-    /* Papéis de cor: azul = estrutura/acção · âmbar = preço/poupança */
-    --color-brand-blue: #1565c0;
-    --color-brand-blue-dark: #0d47a1;
-    --color-price: #b45309;
-    --color-price-strong: #8a5200;
-    /* Aliases de compatibilidade para os componentes existentes. */
-    --color-primary: var(--color-brand-blue);
-    --color-primary-dark: var(--color-brand-blue-dark);
-    --color-primary-light: #42a5f5;
-    --color-secondary: var(--color-accent);
-    --color-secondary-dark: var(--color-accent-dark);
-    --color-white: #ffffff;
-    --color-gray-50: var(--color-bg-light);
+
+    /* Neutros (Material grey) — rampa única para toda a app */
     --color-gray-100: #f5f5f5;
     --color-gray-200: #eeeeee;
+    --color-gray-300: #e0e0e0;
     --color-gray-400: #bdbdbd;
+    --color-gray-500: #9e9e9e;
     --color-gray-600: #757575;
+    --color-gray-700: #616161;
     --color-gray-800: #424242;
-    --color-text: var(--color-text-on-light);
-    --color-success: var(--color-savings);
+
+    /* Tokens utilitários derivados */
+    --color-surface: var(--color-bg-light-elevated);
+    --color-surface-2: #f4f1ec;
+    --color-border: var(--color-gray-200);
+    --color-text-muted: var(--color-text-on-light-muted);
+    --color-danger: #ed4956;
     --color-error: #f44336;
 
     /* Tipografia */
@@ -59,6 +56,7 @@
     --space-2: 0.5rem;
     --space-3: 0.75rem;
     --space-4: 1rem;
+    --space-5: 1.25rem;
     --space-6: 1.5rem;
     --space-8: 2rem;
     --space-12: 3rem;
@@ -104,7 +102,7 @@ body {
 body {
     font-family: var(--font-family);
     font-size: var(--font-size-base);
-    color: var(--color-text);
+    color: var(--color-text-on-light);
     background: var(--color-bg-light);
     line-height: 1.6;
     min-height: 100vh;
@@ -205,37 +203,37 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
-    outline: 3px solid rgba(21, 101, 192, 0.2);
+    outline: 3px solid rgba(255, 140, 26, 0.2);
     outline-offset: 2px;
 }
 
 /* Variantes de cor */
 .btn--primary {
-    background-color: var(--color-primary);
-    color: var(--color-white);
+    background-color: var(--color-accent-dark);
+    color: #ffffff;
     font-family: inherit;
     text-decoration: none;
 }
 .btn--primary:hover {
-    background-color: var(--color-primary-dark);
+    background-color: #c96206;
 }
 
 .btn--outline {
     background-color: transparent;
-    border: 2px solid var(--color-primary);
-    color: var(--color-primary);
+    border: 2px solid var(--color-accent);
+    color: var(--color-accent);
     font-family: inherit;
     text-decoration: none;
 }
 .btn--outline:hover {
-    background-color: var(--color-primary);
-    color: var(--color-white);
+    background-color: var(--color-accent);
+    color: #ffffff;
 }
 
 .btn--outline-white {
     background-color: transparent;
-    border: 2px solid var(--color-white);
-    color: var(--color-white);
+    border: 2px solid #ffffff;
+    color: #ffffff;
 }
 .btn--outline-white:hover {
     background-color: rgba(255, 255, 255, 0.15);
@@ -251,8 +249,8 @@ a:focus-visible {
 }
 
 .btn--success {
-    background-color: var(--color-success);
-    color: var(--color-white);
+    background-color: var(--color-savings);
+    color: #ffffff;
 }
 .btn--success:hover {
     background-color: #388e3c;
@@ -260,7 +258,7 @@ a:focus-visible {
 
 .btn--cancel {
     background-color: var(--color-gray-400);
-    color: var(--color-white);
+    color: #ffffff;
 }
 .btn--cancel:hover {
     background-color: var(--color-gray-600);
@@ -268,7 +266,7 @@ a:focus-visible {
 
 .btn--danger {
     background-color: var(--color-error);
-    color: var(--color-white);
+    color: #ffffff;
 }
 .btn--danger:hover {
     background-color: #c62828;
@@ -301,13 +299,13 @@ a:focus-visible {
 .section-title {
     font-size: var(--font-size-2xl);
     font-weight: 800;
-    color: var(--color-text);
+    color: var(--color-text-on-light);
     margin-bottom: var(--space-8);
     line-height: 1.2;
 }
 
 .section-title span {
-    color: var(--color-secondary);
+    color: var(--color-accent);
     font-style: italic;
 }
 
@@ -438,16 +436,16 @@ a:focus-visible {
 
 /* Cores de texto rápidas */
 .text-primary {
-    color: var(--color-primary);
+    color: var(--color-accent);
 }
 .text-secondary {
-    color: var(--color-secondary);
+    color: var(--color-accent);
 }
 .text-error {
     color: var(--color-error);
 }
 .text-success {
-    color: var(--color-success);
+    color: var(--color-savings);
 }
 .text-muted {
     color: var(--color-gray-600);
@@ -576,6 +574,46 @@ a:focus-visible {
     .gap-4 { gap: 12px; }
     .gap-6 { gap: 16px; }
     .gap-8 { gap: 16px; }
+}
+
+/* ─── Estado "catálogo a ser populado" (bootstrap inicial) ───── */
+.catalog-bootstrap-notice {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.75rem;
+    padding: var(--space-12) var(--space-4);
+    background: var(--color-bg-light-elevated);
+    border: 1.5px dashed rgba(255, 140, 26, 0.45);
+    border-radius: var(--radius-lg);
+    max-width: 560px;
+    margin: var(--space-8) auto;
+}
+
+.catalog-bootstrap-notice__icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    background: rgba(255, 140, 26, 0.12);
+}
+
+.catalog-bootstrap-notice h3 {
+    font-size: var(--font-size-lg);
+    font-weight: 800;
+    color: var(--color-text-on-light);
+}
+
+.catalog-bootstrap-notice p {
+    color: var(--color-text-on-light-muted);
+    font-size: var(--font-size-sm);
+    max-width: 420px;
 }
 
 /* ─── Luz ambiente que segue o cursor (fundo do site) ───────── */

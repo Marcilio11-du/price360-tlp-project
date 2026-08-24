@@ -15,11 +15,11 @@
 }
 
 .alerts-page__title {
-  font-family: var(--font-display);
+  font-family: var(--font-family-heading);
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-text);
+  color: var(--color-text-on-light);
 }
 
 .alerts-page__subtitle {
@@ -67,7 +67,7 @@
 
 .alert-card__name {
   font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-text-on-light);
   overflow-wrap: anywhere;
 }
 
@@ -113,7 +113,7 @@
 
 .alert-badge--wait {
   background: rgba(255, 90, 54, 0.1);
-  color: var(--color-primary, #ff5a36);
+  color: var(--color-accent-dark);
 }
 
 .alert-card__remove {
@@ -142,14 +142,14 @@
 }
 
 .alerts-empty svg {
-  color: var(--color-primary, #ff5a36);
+  color: var(--color-accent-dark);
   opacity: 0.75;
 }
 
 .alerts-empty h2 {
   font-size: 1.15rem;
   margin: 1rem 0 0.4rem;
-  color: var(--color-text);
+  color: var(--color-text-on-light);
 }
 
 .alerts-empty p {

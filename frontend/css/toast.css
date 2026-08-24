@@ -17,8 +17,8 @@
 
 /* ─── Cartão ───────────────────────────────────────────────── */
 .toast {
-  --accent: var(--color-primary, #1565c0);
-  --accent-soft: rgba(21, 101, 192, 0.1);
+  --accent: var(--color-accent-dark);
+  --accent-soft: rgba(255, 140, 26, 0.1);
 
   position: relative;
   display: flex;
@@ -70,7 +70,7 @@
 /* ─── Acentos por tipo (suaves, nada de blocos saturados) ──── */
 .toast--success { --accent: #188038; --accent-soft: rgba(24, 128, 56, 0.11); }
 .toast--error   { --accent: #c5221f; --accent-soft: rgba(197, 34, 31, 0.09); }
-.toast--info    { --accent: #1565c0; --accent-soft: rgba(21, 101, 192, 0.10); }
+.toast--info    { --accent: #e6740a; --accent-soft: rgba(255, 140, 26, 0.10); }
 .toast--warning { --accent: #b26a00; --accent-soft: rgba(178, 106, 0, 0.11); }
 
 /* ─── Ícone num círculo tinted ─────────────────────────────── */
