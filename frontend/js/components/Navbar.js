@@ -49,13 +49,6 @@ export class Navbar {
     // --- Bloco de autenticação (desktop) ---
     const authButtons = isAuth
       ? `
-        <button class="navbar__cart btn btn--icon js-nav-alerts" aria-label="Alertas de preço" title="Alertas de preço">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
-               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h14s-3-2-3-9"/>
-            <path d="M13.7 21a2 2 0 01-3.4 0"/>
-          </svg>
-        </button>
         <div class="navbar__user" id="navbar-user-menu">
           <div class="navbar__user-avatar">${avatarImg}</div>
           <span class="navbar__user-name">${fullName}</span>
@@ -165,7 +158,7 @@ export class Navbar {
             ${isAuth ? `
             <!-- Sino de notificações -->
             <div class="navbar__notif" id="navbar-notif">
-              <button class="navbar__cart btn btn--icon" id="navbar-notif-btn" aria-label="Notificações">
+              <button class="navbar__notif-btn btn btn--icon" id="navbar-notif-btn" aria-label="Notificações">
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none"
                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
@@ -313,11 +306,6 @@ export class Navbar {
         toast.info("Faz login para aceder à tua lista de compras.");
         router.navigate("/login");
       }
-    });
-
-    // --- Ícone de alertas (autenticado) ---
-    container.querySelector(".js-nav-alerts")?.addEventListener("click", () => {
-      router.navigate("/alertas");
     });
 
     // --- Sino de notificações ---

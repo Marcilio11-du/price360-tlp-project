@@ -774,6 +774,22 @@
 
 .navbar__notif-btn {
   position: relative;
+  background: none;
+  border: 1.5px solid var(--color-gray-200);
+  border-radius: 50px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-text-on-light);
+}
+
+.navbar__notif-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(255, 140, 26, 0.04);
 }
 
 .navbar__notif-badge {
