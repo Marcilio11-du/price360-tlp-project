@@ -10,6 +10,7 @@ import { router } from "../router.js";
 import { toast } from "./Toast.js";
 import { api } from "../api.js";
 import { openSearchModal } from "./SearchModal.js";
+import { bell, trendDown } from "./icons.js";
 
 /** Cache de categorias para o dropdown (partilhado entre re-renders) */
 let categoriesCache = null;
@@ -332,7 +333,7 @@ export class Navbar {
       (data.alertas || []).forEach((a) => {
         items.push(`
           <div class="navbar__notif-item ${a.visto ? "" : "navbar__notif-item--new"}" data-alert-id="${a.id}" data-produto-id="${a.id_produto}">
-            <strong>🔔 Alerta de preço</strong>
+            <strong><span class="icon">${bell}</span> Alerta de preço</strong>
             <span>${a.produto_nome} — alvo ${Number(a.preco_alvo).toLocaleString("pt-PT", { style: "currency", currency: "AOA", maximumFractionDigits: 0 })}</span>
             <small>${new Date(a.notificado_em).toLocaleString("pt-PT")}</small>
           </div>`);
@@ -342,7 +343,7 @@ export class Navbar {
         const pct = Math.round(((f.preco_no_momento - f.preco_min_actual) / f.preco_no_momento) * 100);
         items.push(`
           <div class="navbar__notif-item navbar__notif-item--drop" data-produto-id="${f.id_produto}">
-            <strong>📉 Queda de preço (${pct}%)</strong>
+            <strong><span class="icon">${trendDown}</span> Queda de preço (${pct}%)</strong>
             <span>${f.nome} — agora a ${Number(f.preco_min_actual).toLocaleString("pt-PT", { style: "currency", currency: "AOA", maximumFractionDigits: 0 })}</span>
             <small>estavas a seguir desde ${new Date(f.favoritado_em).toLocaleDateString("pt-PT")}</small>
           </div>`);

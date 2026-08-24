@@ -9,6 +9,7 @@ import { api }         from '../api.js';
 import { router }      from '../router.js';
 import { toast }       from '../components/Toast.js';
 import { ProductCard } from '../components/ProductCard.js';
+import { heart } from '../components/icons.js';
 import { Loader }      from '../components/Loader.js';
 import { observeNewElements } from '../animations.js';
 import { decorateProductCards, invalidateFavoritesCache } from '../components/FavoriteButton.js';
@@ -64,9 +65,9 @@ export default class FavoritesPage {
     if (this.favoritos.length === 0) {
       grid.innerHTML = `
         <div class="products-page__empty" style="grid-column:1/-1;">
-          <div class="empty-icon">♥</div>
+          <div class="empty-icon empty-icon--svg">${heart}</div>
           <h3>Ainda não tens favoritos</h3>
-          <p>Toca no ♥ nos produtos para os guardares aqui.</p>
+          <p>Toca no coração dos produtos para os guardares aqui.</p>
           <button type="button" class="btn btn--primary" id="fav-go-products">Ver produtos</button>
         </div>`;
       grid.querySelector('#fav-go-products')?.addEventListener('click', () => router.navigate('/produtos'));

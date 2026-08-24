@@ -641,3 +641,18 @@ a:focus-visible {
 .cursor-glow--on {
   opacity: 1;
 }
+
+/* ─── Ícones SVG partilhados (icons.js) ─────────────────────── */
+.icon {
+  display: inline-flex;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.14em;
+  flex-shrink: 0;
+}
+
+.icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}

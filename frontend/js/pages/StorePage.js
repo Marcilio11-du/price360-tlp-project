@@ -12,6 +12,7 @@ import { toast }       from '../components/Toast.js';
 import { ProductCard } from '../components/ProductCard.js';
 import { Loader }      from '../components/Loader.js';
 import { observeNewElements } from '../animations.js';
+import { mail, phone, globe, pin, trash, star, starsHtml as iconsStarsHtml } from '../components/icons.js';
 
 export default class StorePage {
   constructor(container) {
@@ -51,15 +52,12 @@ export default class StorePage {
   }
 
   /**
-   * Linha de estrelas (★ cheias / ☆ vazias) a partir de uma média 0–5.
+   * Linha de estrelas (SVG) a partir de uma média 0–5.
    */
   static starsHtml(media) {
     if (media == null) return '<span class="store-reviews__nostars">Sem avaliações</span>';
-    const full = Math.round(media);
     return `
-      <span class="store-reviews__stars" aria-label="${media.toFixed(1)} de 5">
-        ${'★'.repeat(full)}${'☆'.repeat(5 - full)}
-      </span>
+      <span class="store-reviews__stars">${iconsStarsHtml(media)}</span>
       <span class="store-reviews__media">${media.toFixed(1)}</span>`;
   }
 
@@ -91,11 +89,11 @@ export default class StorePage {
         <div class="store-page__avatar" aria-hidden="true">${(nome || '?')[0].toUpperCase()}</div>
         <div class="store-page__info">
           <h1>${nome}</h1>
-          <p class="store-page__location">📍 ${municipio}${endereco ? ` · ${endereco}` : ''}</p>
+          <p class="store-page__location"><span class="icon">${pin}</span> ${municipio}${endereco ? ` · ${endereco}` : ''}</p>
           <div class="store-page__contacts">
-            ${email ? `<span>✉️ ${email}</span>` : ''}
-            ${telefones.slice(0, 2).map(t => `<span>📞 ${t.n_telefone || t.telefone || t}</span>`).join('')}
-            ${websiteUrl ? `<a href="${websiteUrl}" target="_blank" rel="noopener noreferrer">🔗 Website</a>` : ''}
+            ${email ? `<span><span class="icon">${mail}</span> ${email}</span>` : ''}
+            ${telefones.slice(0, 2).map(t => `<span><span class="icon">${phone}</span> ${t.n_telefone || t.telefone || t}</span>`).join('')}
+            ${websiteUrl ? `<a href="${websiteUrl}" target="_blank" rel="noopener noreferrer"><span class="icon">${globe}</span> Website</a>` : ''}
           </div>
         </div>
         <div class="store-page__stats">
@@ -117,7 +115,7 @@ export default class StorePage {
           <fieldset class="store-reviews__nota">
             <legend>A tua nota:</legend>
             ${[5, 4, 3, 2, 1].map(n => `
-              <label><input type="radio" name="nota" value="${n}" required> ${n} ★</label>
+              <label><input type="radio" name="nota" value="${n}" required> ${n} <span class="star-inline">${star}</span></label>
             `).join('')}
           </fieldset>
           <textarea name="comentario" maxlength="500" rows="3"
@@ -146,9 +144,9 @@ export default class StorePage {
       <li class="store-review animate-scroll" data-id="${av.id}">
         <div class="store-review__head">
           <strong>${av.utilizador_nome}</strong>
-          <span class="store-review__stars">${'★'.repeat(av.nota)}${'☆'.repeat(5 - av.nota)}</span>
+          <span class="store-review__stars">${iconsStarsHtml(av.nota)}</span>
           <time>${new Date(av.created_at).toLocaleDateString('pt-PT')}</time>
-          ${this._canDelete(av) ? `<button type="button" class="store-review__delete" data-id="${av.id}" aria-label="Remover avaliação">✕</button>` : ''}
+          ${this._canDelete(av) ? `<button type="button" class="store-review__delete" data-id="${av.id}" aria-label="Remover avaliação"><span class="icon">${trash}</span></button>` : ''}
         </div>
         ${av.comentario ? `<p>${av.comentario}</p>` : ''}
       </li>`).join('');

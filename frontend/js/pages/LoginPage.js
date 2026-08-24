@@ -2,6 +2,7 @@ import { api } from "../api.js";
 import { auth } from "../auth.js";
 import { router } from "../router.js";
 import { toast } from "../components/Toast.js";
+import { mail } from "../components/icons.js";
 import { Navbar } from "../components/Navbar.js";
 import { requestResend } from "../components/EmailVerificationUI.js";
 import { observeNewElements } from "../animations.js";
@@ -84,7 +85,7 @@ export default class LoginPage {
     banner.id = "resend-verification-banner";
     banner.className = "resend-verification";
     banner.innerHTML = `
-      <p class="resend-verification__title">📧 A tua conta ainda não está activa</p>
+      <p class="resend-verification__title"><span class="icon">${mail}</span> A tua conta ainda não está activa</p>
       <p class="resend-verification__text">
         Enviámos um link de confirmação quando criaste a conta.
         Não chegou nada? Reenvia para o email indicado acima.
@@ -208,7 +209,7 @@ export default class LoginPage {
       adminBox.style.display = isOpen ? "none" : "block";
       if (!isOpen && adminCreds) {
         adminCreds.innerHTML = `
-          <div>📧 <strong>Email:</strong> ${ADMIN_EMAIL}</div>
+          <div><span class="icon">${mail}</span> <strong>Email:</strong> ${ADMIN_EMAIL}</div>
           <div><i class="icon-lock"></i> <strong>Password:</strong> ${ADMIN_PASS}</div>
         `;
       }

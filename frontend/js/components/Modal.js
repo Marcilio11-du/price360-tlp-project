@@ -18,6 +18,8 @@
  *   });
  */
 
+import { x } from './icons.js';
+
 /** Referência ao contentor DOM (lazy init) */
 let modalRoot = null;
 
@@ -62,7 +64,7 @@ export const modal = {
         <div class="modal ${size ? 'modal--' + size : ''}">
           <div class="modal__header">
             <h3>${title}</h3>
-            <button class="modal__close btn btn--icon btn--ghost" id="modal-close" aria-label="Fechar">✕</button>
+            <button class="modal__close btn btn--icon btn--ghost" id="modal-close" aria-label="Fechar"><span class="icon">${x}</span></button>
           </div>
           <div class="modal__body">${body}</div>
           <div class="modal__footer">

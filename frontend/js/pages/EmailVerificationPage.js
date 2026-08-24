@@ -9,6 +9,7 @@
 import { api } from '../api.js';
 import { router } from '../router.js';
 import { requestResend } from '../components/EmailVerificationUI.js';
+import { check } from '../components/icons.js';
 
 const ICON_OK = `
   <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -52,7 +53,7 @@ export default class EmailVerificationPage {
   async _verify(card, token) {
     try {
       const res = await api.get(`/auth/verify-email?token=${encodeURIComponent(token)}`);
-      this._renderState(card, 'ok', 'Email confirmado! 🎉',
+      this._renderState(card, 'ok', `Email confirmado! <span class="icon">${check}</span>`,
         res.message || 'A tua conta está activa. Já podes entrar no Xé Preço.',
         [{ label: 'Entrar na minha conta', href: '#/login', primary: true }]);
     } catch (err) {

@@ -127,7 +127,7 @@ export const CATALOG_BOOTSTRAP_NOTICE_HTML = `
       </svg>
     </div>
     <h3>A preparar o catálogo</h3>
-    <p>🌱 A preparar o catálogo com dados reais das lojas parceiras pela
+    <p>A preparar o catálogo com dados reais das lojas parceiras pela
        primeira vez — isto pode levar alguns minutos. Actualiza a página
        daqui a pouco.</p>
   </div>
