@@ -110,6 +110,33 @@ const getGroupedSummary = async (req, res) => {
 };
 
 /**
+ * Estado de população do catálogo.
+ * Indica se já existem ofertas suficientes em Produto_Loja para o site
+ * mostrar conteúdo — usado pelo frontend para distinguir "catálogo a ser
+ * populado pela primeira vez" de "sem resultados para o filtro".
+ *
+ * @route  GET /store-products/catalog-status
+ */
+const getCatalogStatus = async (_req, res) => {
+  try {
+    const { totalOfertas, minimoEsperado } = await storeProductModel.countActiveOffers();
+    return sendSuccess(
+      res,
+      200,
+      {
+        totalOfertas,
+        minimoEsperado,
+        populado: totalOfertas >= minimoEsperado,
+      },
+      "Estado do catálogo obtido com sucesso.",
+    );
+  } catch (error) {
+    console.error("Erro ao obter estado do catálogo:", error);
+    return sendError(res, 500, "Falha interna ao obter estado do catálogo.");
+  }
+};
+
+/**
  * Lista todos os registos (activos e removidos). Destinado a uso administrativo.
  *
  * @route  GET /store-products/all
@@ -443,6 +470,7 @@ const hardDeleteStoreProduct = async (req, res) => {
 module.exports = {
   getStoreProducts,
   getGroupedSummary,
+  getCatalogStatus,
   getAllStoreProducts,
   getDeletedStoreProducts,
   getStoreProductById,

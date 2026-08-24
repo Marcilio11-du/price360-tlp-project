@@ -9,7 +9,7 @@
 const express = require("express");
 const router = express.Router();
 const storeController = require("../controllers/storeControllers");
-const { isAdmin } = require("../middlewares/authenticate");
+const { isAdmin, authenticate } = require("../middlewares/authenticate");
 const {
   validateStoreIdParam,
   validateCreateStore,
@@ -19,6 +19,11 @@ const {
 router.get("/", storeController.getStores);
 router.get("/all",     isAdmin, storeController.getAllStores);
 router.get("/deleted", isAdmin, storeController.getDeletedStores);
+router.get("/:id/profile", validateStoreIdParam, storeController.getStoreProfile);
+router.get("/:id/products", validateStoreIdParam, storeController.getStoreProducts);
+router.get("/:id/reviews", validateStoreIdParam, storeController.getStoreReviews);
+router.post("/:id/reviews", authenticate, validateStoreIdParam, storeController.createStoreReview);
+router.delete("/:id/reviews/:reviewId", authenticate, validateStoreIdParam, storeController.deleteStoreReview);
 router.get("/:id", validateStoreIdParam, storeController.getStoreById);
 router.post("/",   isAdmin, validateCreateStore, storeController.createStore);
 router.put(

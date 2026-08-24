@@ -1,4 +1,8 @@
 const storeModel = require("../models/storeModels");
+const storePhoneModel = require("../models/storePhoneModel");
+const storeLinkModel = require("../models/storeLinkModel");
+const priceComparisonModel = require("../models/priceComparisonModel");
+const reviewModel = require("../models/reviewModel");
 
 /** Resposta de sucesso normalizada. */
 const sendSuccess = (res, statusCode, data, message) => {
@@ -251,11 +255,167 @@ const hardDeleteStore = async (req, res) => {
   }
 };
 
+/**
+ * GET /stores/:id/profile
+ * Perfil público de uma loja: dados, contactos, website e contadores.
+ */
+const getStoreProfile = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const loja = await storeModel.findById(id);
+
+    if (!loja) {
+      return sendError(res, 404, "Loja nao encontrada.");
+    }
+
+    const [telefones, links] = await Promise.all([
+      storePhoneModel.findByStoreId(id),
+      storeLinkModel.findByStoreId(id),
+    ]);
+
+    const produtos = await priceComparisonModel.findByStore(id);
+    const totalProdutos = produtos.length;
+
+    return sendSuccess(
+      res,
+      200,
+      { ...loja, telefones, links, totalProdutos },
+      "Perfil da loja obtido com sucesso.",
+    );
+  } catch (error) {
+    console.error("Erro ao obter perfil da loja:", error);
+    return sendError(res, 500, "Falha interna ao obter perfil da loja.");
+  }
+};
+
+/**
+ * GET /stores/:id/products
+ * Lista pública de produtos disponíveis numa loja (com preço directo).
+ */
+const getStoreProducts = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const loja = await storeModel.findById(id);
+
+    if (!loja) {
+      return sendError(res, 404, "Loja nao encontrada.");
+    }
+
+    const produtos = await priceComparisonModel.findByStore(id);
+    return sendSuccess(
+      res,
+      200,
+      produtos,
+      "Produtos da loja listados com sucesso.",
+    );
+  } catch (error) {
+    console.error("Erro ao listar produtos da loja:", error);
+    return sendError(res, 500, "Falha interna ao listar produtos da loja.");
+  }
+};
+
+/**
+ * GET /stores/:id/reviews
+ * Lista pública de avaliações de uma loja + estatísticas.
+ */
+const getStoreReviews = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    const loja = await storeModel.findById(id);
+    if (!loja) {
+      return sendError(res, 404, "Loja nao encontrada.");
+    }
+    const [avaliacoes, estatisticas] = await Promise.all([
+      reviewModel.findByStore(id),
+      reviewModel.findStoreStats(id),
+    ]);
+    return sendSuccess(res, 200, { avaliacoes, estatisticas }, "Avaliações obtidas com sucesso.");
+  } catch (error) {
+    console.error("Erro ao obter avaliações da loja:", error);
+    return sendError(res, 500, "Falha interna ao obter avaliações.");
+  }
+};
+
+/**
+ * POST /stores/:id/reviews   (autenticado)   body: { nota, comentario? }
+ * Cria ou actualiza a avaliação do utilizador nesta loja.
+ */
+const createStoreReview = async (req, res) => {
+  try {
+    const idLoja = Number(req.params.id);
+    const nota = Number(req.body?.nota);
+    const comentario =
+      typeof req.body?.comentario === "string" && req.body.comentario.trim() !== ""
+        ? req.body.comentario.trim().slice(0, 500)
+        : null;
+
+    if (!Number.isInteger(nota) || nota < 1 || nota > 5) {
+      return sendError(res, 400, "A nota deve ser um inteiro entre 1 e 5.");
+    }
+
+    const loja = await storeModel.findById(idLoja);
+    if (!loja) {
+      return sendError(res, 404, "Loja nao encontrada.");
+    }
+
+    const resultado = await reviewModel.upsert({
+      id_utilizador: req.user.id,
+      id_loja: idLoja,
+      nota,
+      comentario,
+    });
+
+    return sendSuccess(
+      res,
+      resultado === "created" ? 201 : 200,
+      await reviewModel.findStoreStats(idLoja),
+      resultado === "created"
+        ? "Avaliação publicada."
+        : "Avaliação actualizada.",
+    );
+  } catch (error) {
+    console.error("Erro ao criar avaliação:", error);
+    return sendError(res, 500, "Falha interna ao criar avaliação.");
+  }
+};
+
+/**
+ * DELETE /stores/:id/reviews/:reviewId   (autenticado)
+ * Remove uma avaliação — apenas o autor ou um admin.
+ */
+const deleteStoreReview = async (req, res) => {
+  try {
+    const reviewId = Number(req.params.reviewId);
+    const avaliacao = await reviewModel.findById(reviewId);
+
+    if (!avaliacao) {
+      return sendError(res, 404, "Avaliação não encontrada.");
+    }
+
+    const isOwner = avaliacao.id_utilizador === req.user.id;
+    const isAdminUser = req.user.role === "admin";
+    if (!isOwner && !isAdminUser) {
+      return sendError(res, 403, "Só podes remover as tuas próprias avaliações.");
+    }
+
+    await reviewModel.softDelete(reviewId);
+    return sendSuccess(res, 200, null, "Avaliação removida.");
+  } catch (error) {
+    console.error("Erro ao remover avaliação:", error);
+    return sendError(res, 500, "Falha interna ao remover avaliação.");
+  }
+};
+
 module.exports = {
   getStores,
   getAllStores,
   getDeletedStores,
   getStoreById,
+  getStoreProfile,
+  getStoreProducts,
+  getStoreReviews,
+  createStoreReview,
+  deleteStoreReview,
   createStore,
   updateStore,
   softDeleteStore,

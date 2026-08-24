@@ -76,8 +76,8 @@ class DatabaseUpsert {
       try {
         const nomeLoja = codigo.charAt(0).toUpperCase() + codigo.slice(1);
         const [ins] = await db.query(
-          "INSERT INTO Loja (codigo, nome, municipio, endereco) VALUES (?, ?, 'Luanda', 'Luanda, Angola')",
-          [codigo, nomeLoja]
+          "INSERT INTO Loja (codigo, nome, municipio, endereco, email) VALUES (?, ?, 'Luanda', 'Luanda, Angola', ?)",
+          [codigo, nomeLoja, `info@${codigo}.ao`]
         );
         _cache.lojas[codigo] = ins.insertId;
         console.warn(`[DatabaseUpsert] Loja "${codigo}" não existia e foi criada automaticamente (id ${ins.insertId}).`);

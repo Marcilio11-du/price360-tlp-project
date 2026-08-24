@@ -10,8 +10,45 @@ const fs      = require('fs');
 const path    = require('path');
 const { isAdmin } = require('../middlewares/authenticate');
 const { getScheduler } = require('../scrapers/scheduler');
+const { SCRAPER_CONFIG } = require('../scrapers/base/ScraperConfig');
+const reviewModel = require('../models/reviewModel');
 
 const LOGS_DIR = path.resolve(__dirname, '../../logs/scrapers');
+
+/**
+ * GET /admin/reviews
+ * Todas as avaliações activas, para moderação.
+ */
+router.get('/reviews', isAdmin, async (req, res) => {
+  try {
+    const avaliacoes = await reviewModel.findAllWithNames();
+    return res.json({ status: 'success', data: avaliacoes, message: 'Avaliações listadas.' });
+  } catch (error) {
+    console.error('Erro ao listar avaliações (admin):', error);
+    return res.status(500).json({ status: 'error', data: null, message: 'Falha ao listar avaliações.' });
+  }
+});
+
+/**
+ * GET /admin/scraping/config
+ * Lista os scrapers configurados (sem expor classes/funções internas).
+ */
+router.get('/scraping/config', isAdmin, (req, res) => {
+  const scrapers = Object.values(SCRAPER_CONFIG || {}).map((s) => ({
+    codigo: s.codigo,
+    nome: s.nome,
+    ativo: !!s.ativo,
+    categoria_principal: s.categoria_principal || null,
+    prioridade: s.prioridade ?? null,
+    intervaloExecucao: s.intervaloExecucao || null,
+    horaExecucao: s.horaExecucao || null,
+  }));
+  return res.json({
+    status: 'success',
+    data: { total: scrapers.length, scrapers },
+    message: 'Configuração de scrapers obtida.',
+  });
+});
 
 /**
  * POST /admin/scraping/run

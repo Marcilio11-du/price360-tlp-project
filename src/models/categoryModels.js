@@ -20,11 +20,19 @@ const baseSelectColumns = `
 
 /**
  * Devolve todas as categorias ativas (deleted_at IS NULL), ordenadas por nome.
+ * Inclui totalProdutos (produtos com oferta activa em loja) para a
+ * navegação pública por categorias.
  * @returns {Promise<Array>} Lista de categorias ativas.
  */
 const findAllActives = async () => {
   const sql = `
-    SELECT ${baseSelectColumns}
+    SELECT ${baseSelectColumns},
+      (
+        SELECT COUNT(DISTINCT p.id)
+        FROM Produto p
+        INNER JOIN Produto_Loja pl ON pl.id_produto = p.id AND pl.deleted_at IS NULL
+        WHERE p.id_categoria = ${TABLE}.id AND p.deleted_at IS NULL
+      ) AS totalProdutos
     FROM ${TABLE}
     WHERE deleted_at IS NULL
     ORDER BY nome ASC

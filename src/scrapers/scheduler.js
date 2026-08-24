@@ -12,7 +12,7 @@ const db = require('../config/db');
 
 // Se a BD tiver menos produtos que isto no arranque, dispara uma
 // execução inicial para popular (experiência de primeiro `npm run dev`).
-const MIN_PRODUCTS_ON_BOOT = Number(process.env.SCRAPER_MIN_PRODUCTS_ON_BOOT || 20);
+const MIN_PRODUCTS_ON_BOOT = Number(process.env.SCRAPER_MIN_PRODUCTS_ON_BOOT || 60);
 
 class ScraperScheduler {
   constructor() {

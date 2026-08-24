@@ -38,6 +38,7 @@ const listGroupedSummary = async (filters = {}) => {
   const [rows] = await db.execute(`
     SELECT p.id, p.nome, p.marca, p.descricao, p.id_categoria, c.nome AS categoria_nome,
       MIN(pl.preco) AS preco_min,
+      MAX(pl.preco) AS preco_max,
       COUNT(DISTINCT pl.id_loja) AS total_lojas,
       SUM(pl.quantidade) AS quantidade_total,
       MAX(CASE WHEN pl.imagem IS NOT NULL AND TRIM(pl.imagem) <> '' THEN pl.imagem END) AS imagem
@@ -47,8 +48,37 @@ const listGroupedSummary = async (filters = {}) => {
   return rows.map(row => ({
     ...row,
     preco_min: Number(row.preco_min),
+    preco_max: Number(row.preco_max),
     total_lojas: Number(row.total_lojas),
     quantidade_total: Number(row.quantidade_total),
+    imagem: row.imagem || null,
+  }));
+};
+
+/**
+ * Devolve os produtos de uma loja (ofertas activas), com o preço directo
+ * dessa loja. Usado pela página pública de perfil de loja.
+ *
+ * @param {number} idLoja - Identificador da loja.
+ * @returns {Promise<Array>} Lista de produtos com preço na loja.
+ */
+const findByStore = async (idLoja) => {
+  const [rows] = await db.execute(`
+    SELECT p.id, p.nome, p.marca, p.descricao, p.id_categoria, c.nome AS categoria_nome,
+      pl.preco AS preco_loja,
+      pl.quantidade,
+      pl.link AS produto_url,
+      pl.imagem,
+      pl.updated_at AS actualizado_em
+    FROM ${STORE_PRODUCT_TABLE} pl
+    INNER JOIN ${PRODUCT_TABLE} p ON p.id = pl.id_produto AND p.deleted_at IS NULL
+    INNER JOIN ${CATEGORY_TABLE} c ON c.id = p.id_categoria
+    WHERE pl.id_loja = ? AND pl.deleted_at IS NULL
+    ORDER BY p.nome ASC`, [idLoja]);
+  return rows.map(row => ({
+    ...row,
+    preco_loja: Number(row.preco_loja),
+    quantidade: Number(row.quantidade),
     imagem: row.imagem || null,
   }));
 };
@@ -63,4 +93,4 @@ const getPriceHistory = async (idProduto, dias = 90) => {
   return rows.map(row => ({ ...row, preco_min: Number(row.preco_min) }));
 };
 
-module.exports = { getComparison, listGroupedSummary, getPriceHistory };
+module.exports = { getComparison, listGroupedSummary, getPriceHistory, findByStore };

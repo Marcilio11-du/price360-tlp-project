@@ -40,6 +40,24 @@ const baseSelectColumns = `
 // --- Leitura ---
 
 /**
+ * Conta as ofertas activas em Produto_Loja (mesma query usada pelo
+ * `scheduler.bootstrapIfEmpty`) e devolve também o mínimo esperado
+ * configurado via `SCRAPER_MIN_PRODUCTS_ON_BOOT`.
+ *
+ * @returns {Promise<{totalOfertas: number, minimoEsperado: number}>}
+ */
+const countActiveOffers = async () => {
+  const minimoEsperado = Number(process.env.SCRAPER_MIN_PRODUCTS_ON_BOOT || 60);
+  const [rows] = await db.execute(
+    `SELECT COUNT(*) AS total FROM ${STORE_PRODUCT_TABLE} WHERE deleted_at IS NULL`,
+  );
+  return {
+    totalOfertas: Number(rows?.[0]?.total || 0),
+    minimoEsperado,
+  };
+};
+
+/**
  * Devolve todos os registos activos de produto-loja,
  * ordenados por preço ascendente (mais barato primeiro) e depois por ID.
  *
@@ -348,6 +366,7 @@ const hardDelete = async (id) => {
 };
 
 module.exports = {
+  countActiveOffers,
   findAllActives,
   findAll,
   findAllDeleted,

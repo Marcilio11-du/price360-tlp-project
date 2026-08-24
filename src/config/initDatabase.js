@@ -118,11 +118,13 @@ const schemaStatements = [
   `
     CREATE TABLE IF NOT EXISTS Loja (
       id INT AUTO_INCREMENT PRIMARY KEY,
-      nif VARCHAR(255) NOT NULL UNIQUE,
+      -- nif/email nullable: lojas de scraping são criadas sem NIF
+      -- (padrão já existente na base de dados de produção)
+      nif VARCHAR(255) NULL UNIQUE,
       nome VARCHAR(255) NOT NULL,
       endereco VARCHAR(255) NOT NULL,
       municipio VARCHAR(255) NOT NULL,
-      email VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       deleted_at TIMESTAMP NULL
@@ -195,6 +197,34 @@ const schemaStatements = [
       CONSTRAINT fk_alertapreco_utilizador FOREIGN KEY (id_utilizador) REFERENCES Utilizador(id) ON UPDATE CASCADE ON DELETE CASCADE,
       CONSTRAINT fk_alertapreco_produto FOREIGN KEY (id_produto) REFERENCES Produto(id) ON UPDATE CASCADE ON DELETE CASCADE,
       CONSTRAINT uq_alerta_utilizador_produto UNIQUE (id_utilizador, id_produto)
+    ) ENGINE=InnoDB
+  `,
+  `
+    CREATE TABLE IF NOT EXISTS Favorito (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_utilizador INT NOT NULL,
+      id_produto INT NOT NULL,
+      preco_no_momento DECIMAL(10,2) NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_favorito_utilizador FOREIGN KEY (id_utilizador) REFERENCES Utilizador(id) ON UPDATE CASCADE ON DELETE CASCADE,
+      CONSTRAINT fk_favorito_produto FOREIGN KEY (id_produto) REFERENCES Produto(id) ON UPDATE CASCADE ON DELETE CASCADE,
+      CONSTRAINT uq_favorito_utilizador_produto UNIQUE (id_utilizador, id_produto)
+    ) ENGINE=InnoDB
+  `,
+  `
+    CREATE TABLE IF NOT EXISTS Avaliacao_Loja (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_utilizador INT NOT NULL,
+      id_loja INT NOT NULL,
+      nota TINYINT NOT NULL,
+      comentario VARCHAR(500) NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      deleted_at DATETIME NULL,
+      CONSTRAINT fk_avaliacao_utilizador FOREIGN KEY (id_utilizador) REFERENCES Utilizador(id) ON UPDATE CASCADE ON DELETE CASCADE,
+      CONSTRAINT fk_avaliacao_loja FOREIGN KEY (id_loja) REFERENCES Loja(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+      CONSTRAINT uq_avaliacao_utilizador_loja UNIQUE (id_utilizador, id_loja),
+      CONSTRAINT chk_avaliacao_nota CHECK (nota BETWEEN 1 AND 5)
     ) ENGINE=InnoDB
   `,
   `
@@ -281,6 +311,11 @@ const initializeDatabaseSchema = async () => {
     }
 
     await ensureColumnExists(connection, "Categoria", "description TEXT");
+    await ensureColumnExists(
+      connection,
+      "Alerta_Preco",
+      "visto TINYINT(1) NOT NULL DEFAULT 0",
+    );
     await ensureUniqueConstraint(
       connection,
       "Categoria",
@@ -573,6 +608,15 @@ const initializeDatabaseSchema = async () => {
   }
 
   // Garantir lojas de scraping com codigo — derivadas do ScraperConfig (fonte única)
+  // Migração idempotente: em BDs antigas nif/email eram NOT NULL, o que impedia
+  // o seed das lojas de scraping (INSERT falhava em silêncio) e, por arrasto,
+  // TODOS os upserts do pipeline (Produto_Loja nunca chegava a ser escrito).
+  try {
+    await db.query(
+      "ALTER TABLE Loja MODIFY COLUMN nif VARCHAR(255) NULL DEFAULT NULL, MODIFY COLUMN email VARCHAR(255) NULL DEFAULT NULL"
+    );
+  } catch (_) { /* colunas já relaxadas ou tabela inexistente */ }
+
   let lojasScraper = [
     ['ncr',      'NCR Angola'],
     ['buitanda', 'Buitanda'],
@@ -590,8 +634,8 @@ const initializeDatabaseSchema = async () => {
   for (const [codigo, nome] of lojasScraper) {
     try {
       await db.query(
-        "INSERT INTO Loja (codigo, nome, municipio, endereco) VALUES (?, ?, 'Luanda', 'Luanda, Angola') ON DUPLICATE KEY UPDATE nome = VALUES(nome)",
-        [codigo, nome]
+        "INSERT INTO Loja (codigo, nome, municipio, endereco, email) VALUES (?, ?, 'Luanda', 'Luanda, Angola', ?) ON DUPLICATE KEY UPDATE nome = VALUES(nome), email = COALESCE(email, VALUES(email))",
+        [codigo, nome, `info@${codigo}.ao`]
       );
     } catch (_) {
       try { await db.query('UPDATE Loja SET codigo = ? WHERE nome = ? AND (codigo IS NULL OR codigo = "")', [codigo, nome]); }
