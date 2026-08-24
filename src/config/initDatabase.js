@@ -228,6 +228,17 @@ const schemaStatements = [
     ) ENGINE=InnoDB
   `,
   `
+    CREATE TABLE IF NOT EXISTS Utilizador_OAuth (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      id_utilizador INT NOT NULL,
+      provider ENUM('google','apple') NOT NULL,
+      provider_user_id VARCHAR(255) NOT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT fk_oauth_utilizador FOREIGN KEY (id_utilizador) REFERENCES Utilizador(id) ON UPDATE CASCADE ON DELETE CASCADE,
+      CONSTRAINT uq_oauth_provider_uid UNIQUE (provider, provider_user_id)
+    ) ENGINE=InnoDB
+  `,
+  `
     CREATE TABLE IF NOT EXISTS Lista_compras (
       id INT AUTO_INCREMENT PRIMARY KEY,
       nome VARCHAR(255) NOT NULL,

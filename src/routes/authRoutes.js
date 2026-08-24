@@ -8,6 +8,7 @@
 
 const express = require("express");
 const authController = require("../controllers/authController");
+const oauthController = require("../controllers/oauthController");
 
 const router = express.Router();
 
@@ -23,5 +24,14 @@ router.post("/register", validateCreateUser, authController.register);
 
 // POST /api/v1/auth/resend-verification — reenvia o link de confirmação
 router.post("/resend-verification", authController.resendVerification);
+
+// ─── Autenticação social (OAuth 2.0: Google e Apple) ──────────
+router.get("/oauth/providers", oauthController.listProviders);
+router.get("/oauth/google",          oauthController.startGoogle);
+router.get("/oauth/google/callback", oauthController.callbackGoogle);
+router.get("/oauth/apple",           oauthController.startApple);
+// A Apple responde com form_post (POST urlencoded)
+router.post("/oauth/apple/callback", express.urlencoded({ extended: false }), oauthController.callbackApple);
+router.get("/oauth/apple/callback",  oauthController.callbackAppleGet);
 
 module.exports = router;
