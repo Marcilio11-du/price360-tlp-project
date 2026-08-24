@@ -78,8 +78,11 @@ const createObserver = () =>
       });
     },
     {
-      threshold:   0.1,             // activa quando 10 % do elemento é visível
-      rootMargin: '0px 0px -50px 0px' // margem inferior negativa para trigger ligeiramente antes
+      // threshold 0: basta 1px visível. Com threshold alto (ex.: 0.1),
+      // secções muito altas (tabelas grandes do admin) nunca chegavam a
+      // 10 % de visibilidade e ficavam escondidas (opacity:0) para sempre.
+      threshold:   0,
+      rootMargin: '0px 0px -30px 0px' // trigger ligeiramente antes do fundo
     }
   );
 
