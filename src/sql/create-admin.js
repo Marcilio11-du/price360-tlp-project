@@ -40,7 +40,7 @@ const createAdminUser = async () => {
     );
 
     if (existingUser.length > 0) {
-      console.log('⚠️  Utilizador com este email já existe!\n');
+      console.log('AVISO: Utilizador com este email já existe!\n');
       await connection.end();
       process.exit(0);
     }
@@ -63,16 +63,16 @@ const createAdminUser = async () => {
       ]
     );
 
-    console.log('✅ Utilizador Admin criado com sucesso!\n');
-    console.log('📧 Email:    admin@price360.ao');
-    console.log('🔐 Password: Admin@123456\n');
-    console.log('⚠️  AVISO: Altere a senha após o primeiro login!\n');
+    console.log('Utilizador Admin criado com sucesso!\n');
+    console.log('Email:    admin@price360.ao');
+    console.log('Password: Admin@123456\n');
+    console.log('AVISO: Altere a senha após o primeiro login!\n');
 
     await connection.end();
     process.exit(0);
 
   } catch (error) {
-    console.error('❌ Erro ao criar admin:', error.message);
+    console.error('Erro ao criar admin:', error.message);
     await connection.end();
     process.exit(1);
   }

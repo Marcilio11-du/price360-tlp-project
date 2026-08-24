@@ -157,11 +157,11 @@ class BaseScraper {
     };
 
     if (level === 'error') {
-      console.error(`[${timestamp}] [${this.storeName}] ❌ ${message}`, metadata);
+      console.error(`[${timestamp}] [${this.storeName}] [ERRO] ${message}`, metadata);
     } else if (level === 'warn') {
-      console.warn(`[${timestamp}] [${this.storeName}] ⚠️  ${message}`, metadata);
+      console.warn(`[${timestamp}] [${this.storeName}] [AVISO] ${message}`, metadata);
     } else {
-      console.log(`[${timestamp}] [${this.storeName}] ℹ️  ${message}`, metadata);
+      console.log(`[${timestamp}] [${this.storeName}] [INFO] ${message}`, metadata);
     }
 
     return logEntry;

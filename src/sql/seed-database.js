@@ -43,16 +43,16 @@ const seedDatabase = async () => {
         );
       }
 
-      console.log(`✓ ${loja.nome} (${loja.codigo}) → id ${idLoja}`);
+      console.log(`[OK] ${loja.nome} (${loja.codigo}) → id ${idLoja}`);
     }
 
     const [lojaCount] = await db.query('SELECT COUNT(*) as total FROM Loja');
-    console.log(`\n📌 Total de lojas na BD: ${lojaCount[0].total}`);
-    console.log('ℹ️  Produtos e preços serão populados pelo pipeline de scraping (npm run dev arranca o scheduler; diariamente às 03:00).\n');
+    console.log(`\nTotal de lojas na BD: ${lojaCount[0].total}`);
+    console.log('Produtos e preços serão populados pelo pipeline de scraping (npm run dev arranca o scheduler; diariamente às 03:00).\n');
 
     process.exit(0);
   } catch (error) {
-    console.error('✗ Erro ao registar lojas:', error.message);
+    console.error('[ERRO] Erro ao registar lojas:', error.message);
     process.exit(1);
   }
 };

@@ -32,7 +32,7 @@ class ScraperScheduler {
    * Inicia o agendador com múltiplas tarefas.
    */
   start() {
-    logger.info('🕐 Iniciando ScraperScheduler');
+    logger.info('A iniciar ScraperScheduler');
 
     try {
     // Tarefa 1: Pipeline principal - Diariamente às 03:00 AM
@@ -44,14 +44,14 @@ class ScraperScheduler {
 
     // Tarefa 2: Limpeza de logs antigos - Semanalmente (domingo às 02:00 AM)
     const cleanLogsJob = cron.schedule('0 2 * * 0', () => {
-      logger.info('🧹 Disparando limpeza de logs antigos');
+      logger.info('[LIMPEZA] A disparar limpeza de logs antigos');
       logger.cleanOldLogs(30); // Mantém últimos 30 dias
     });
     this.scheduledJobs.push({ name: 'Clean Old Logs', job: cleanLogsJob });
 
     // Tarefa 3: Limpeza de dados antigos - Mensalmente (1º dia às 02:00 AM)
     const cleanDataJob = cron.schedule('0 2 1 * *', () => {
-      logger.info('🗑️ Disparando limpeza de dados antigos');
+      logger.info('[LIMPEZA] A disparar limpeza de dados antigos');
       this.executeDataCleanup();
     });
     this.scheduledJobs.push({ name: 'Clean Old Data', job: cleanDataJob });
@@ -78,7 +78,7 @@ class ScraperScheduler {
     this.lastExecutionTime = new Date();
 
     try {
-      logger.info('▶️ Iniciando execução do pipeline...');
+      logger.info('[RUN] A iniciar execucao do pipeline...');
 
       const stats = await this.pipeline.execute([
         'Laptop', 'iPhone', 'Samsung Galaxy', 'iPad', 'Monitor',
@@ -148,14 +148,14 @@ RESUMO DA EXECUÇÃO:
   [OK] Lojas Processadas: ${stats.processed}
   [ERROR] Lojas com Erro: ${stats.failed}
   
-📈 Dados Atualizados:
-  ➕ Produtos Inseridos: ${stats.totalInserts}
+Dados Actualizados:
+  Produtos Inseridos: ${stats.totalInserts}
   [UPDATE] Produtos Atualizados: ${stats.totalUpdates}
   [WARN] Erros: ${stats.totalErrors}
 
-⏱️  Tempo Total: ${stats.totalDuration}ms (${(stats.totalDuration / 1000).toFixed(2)}s)
+Tempo Total: ${stats.totalDuration}ms (${(stats.totalDuration / 1000).toFixed(2)}s)
 
-🕐 Horário: ${stats.endTime?.toLocaleString('pt-PT')}
+Horário: ${stats.endTime?.toLocaleString('pt-PT')}
 ════════════════════════════════════════════
     `;
 
@@ -168,7 +168,7 @@ RESUMO DA EXECUÇÃO:
   stop() {
     this.scheduledJobs.forEach(({ name, job }) => {
       job.stop();
-      logger.info(`⏸️ Job parado: ${name}`);
+      logger.info(`[PAUSA] Job parado: ${name}`);
     });
     this.scheduledJobs = [];
     logger.info('[OK] Todas as tarefas foram paradas');
@@ -194,10 +194,10 @@ RESUMO DA EXECUÇÃO:
         const totalProdutos = Number(produtos?.[0]?.total || 0);
 
         if (total < MIN_PRODUCTS_ON_BOOT) {
-          logger.info(`🌱 Catálogo com ${total} oferta(s) (${totalProdutos} produto(s)) — execução inicial para popular (pode levar alguns minutos).`);
+          logger.info(`Catálogo com ${total} oferta(s) (${totalProdutos} produto(s)) — execução inicial para popular (pode levar alguns minutos).`);
           this.triggerAsync();
         } else {
-          logger.info(`✔ BD já tem ${total} ofertas — execução inicial desnecessária.`);
+          logger.info(`[OK] BD já tem ${total} ofertas — execução inicial desnecessária.`);
         }
       } catch (error) {
         logger.warn('Não foi possível verificar o catálogo no arranque:', { erro: error.message });
@@ -224,7 +224,7 @@ RESUMO DA EXECUÇÃO:
    * @param {Array} termos - Termos de busca (opcional)
    */
   async executeNow(termos = null) {
-    logger.info('▶️ Execução manual do pipeline disparada pelo utilizador');
+    logger.info('[RUN] Execução manual do pipeline disparada pelo utilizador');
     return this.pipeline.execute(termos || this.pipeline.getDefaultSearchTerms());
   }
 }

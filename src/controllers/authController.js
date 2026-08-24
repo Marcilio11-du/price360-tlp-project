@@ -36,7 +36,7 @@ const sendVerificationEmail = async (user, token) => {
     subject: 'Confirma o teu email no Xé Preço',
     html: `
       <div style="font-family:Arial,sans-serif;line-height:1.6;color:#1f2937;padding:24px;max-width:520px;margin:0 auto;">
-        <h2 style="margin:0 0 12px;color:#0f172a;">Olá${firstName ? `, ${firstName}` : ''}! Falta só um passo 👋</h2>
+        <h2 style="margin:0 0 12px;color:#0f172a;">Olá${firstName ? `, ${firstName}` : ''}! Falta só um passo</h2>
         <p>Obrigado por criares conta no <strong>Xé Preço</strong>. Para a activar, confirma que este email é teu:</p>
         <p style="margin:24px 0;text-align:center;">
           <a href="${verificationLink}" style="display:inline-block;background:#16a34a;color:#fff;text-decoration:none;padding:13px 28px;border-radius:999px;font-weight:700;">

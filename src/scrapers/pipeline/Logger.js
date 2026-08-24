@@ -88,7 +88,7 @@ class Logger {
     const icon = {
       INFO: '[ℹ]',
       WARN: '[!]',
-      ERROR: '[✗]',
+      ERROR: '[x]',
       DEBUG: '[?]'
     }[level] || '•';
 
