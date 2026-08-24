@@ -77,6 +77,7 @@ export default class RegisterPage {
               Criar conta
             </button>
           </form>
+          <div class="social-auth-slot"></div>
           <div class="auth-card__footer">
             Já tem conta? <a href="#/login">Entrar</a>
           </div>
@@ -86,6 +87,7 @@ export default class RegisterPage {
 
     this.bindEvents();
     observeNewElements();
+    import("../components/SocialAuthButtons.js").then(m => m.renderSocialAuthButtons(this.container));
   }
 
   bindEvents() {

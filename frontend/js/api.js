@@ -20,6 +20,14 @@ const API_BASE_CANDIDATES = [
 let activeApiBase = API_BASE_CANDIDATES[0];
 
 /**
+ * Base da API em uso (para links completos, ex.: início do fluxo OAuth).
+ * @returns {string} Ex.: 'http://localhost:3000/api/v1'
+ */
+export const getApiBase = () =>
+  window.localStorage.getItem("price360_api_base") ||
+  `${window.location.origin}/api/v1`;
+
+/**
  * Verifica se a resposta tem a forma das nossas respostas de API
  * ({ status, data, message }). Respostas HTML/lixo (ex.: Live Server,
  * página de erro do navegador) são rejeitadas para tentar a base seguinte.

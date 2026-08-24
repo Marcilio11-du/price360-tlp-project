@@ -314,3 +314,47 @@
     font-size: var(--font-size-xl);
   }
 }
+
+/* ─── Autenticação social (Google / Apple) ──────────────────── */
+.social-auth {
+  margin-top: var(--space-5);
+}
+
+.social-auth__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-gray-500);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.social-auth__divider::before,
+.social-auth__divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.social-auth__btns {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.social-auth__btns .social-btn {
+  flex: 1;
+  min-width: 180px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .55rem;
+  white-space: nowrap;
+}
+
+.social-btn--apple {
+  color: var(--color-gray-800);
+}

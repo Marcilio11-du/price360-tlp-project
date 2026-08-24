@@ -43,6 +43,7 @@ export default class LoginPage {
             </div>
             <button type="submit" class="auth-card__submit" id="login-submit">Entrar</button>
           </form>
+          <div class="social-auth-slot"></div>
           <div class="auth-card__footer">
             Não possui uma conta? <a href="#/onboarding">Criar conta</a>
           </div>
@@ -71,6 +72,7 @@ export default class LoginPage {
     `;
     this.bindEvents();
     observeNewElements();
+    import("../components/SocialAuthButtons.js").then(m => m.renderSocialAuthButtons(this.container));
   }
 
   /**

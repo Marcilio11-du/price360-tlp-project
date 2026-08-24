@@ -58,6 +58,45 @@ router.register('/alertas',  (container) => new PriceAlertsPage(container).rende
 router.register('/loja',     (container) => new StorePage(container).render());
 router.register('/favoritos', (container) => new FavoritesPage(container).render());
 
+/**
+ * Retorno do fluxo OAuth (Google/Apple): o backend redirecciona para
+ * #/autenticacao-social?token=…&novo=1 ou ?erro=….
+ */
+router.register('/autenticacao-social', () => {
+  const query = window.location.hash.split('?')[1] || '';
+  const params = new URLSearchParams(query);
+  const token = params.get('token');
+
+  if (!token) {
+    import('./components/Toast.js').then(({ toast }) => {
+      toast.error(
+        'Autenticação social falhou: ' +
+        (params.get('erro') || 'resposta inválida').replace(/_/g, ' '),
+      );
+      router.navigate('/login');
+    });
+    return;
+  }
+
+  // Decodifica o payload do JWT para reconstruir a sessão local
+  const b64url = (s) =>
+    decodeURIComponent(
+      atob(s.replace(/-/g, '+').replace(/_/g, '/'))
+        .split('')
+        .map(c => '%' + c.charCodeAt(0).toString(16).padStart(2, '0'))
+        .join(''),
+    );
+  const payload = JSON.parse(b64url(token.split('.')[1]));
+  auth.setAuth(token, { id: payload.id, email: payload.email, role: payload.role });
+
+  import('./components/Toast.js').then(({ toast }) => {
+    toast.success(params.get('novo') === '1'
+      ? 'Conta criada! Bem-vindo ao Xé Preço.'
+      : 'Sessão iniciada. Bem-vindo de volta!');
+    router.navigate('/');
+  });
+});
+
 /** Página 404 inline */
 router.register('/404', (container) => {
   container.innerHTML = `
