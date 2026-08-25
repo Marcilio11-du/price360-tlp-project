@@ -33,10 +33,10 @@ export function renderSocialAuthButtons(container) {
     <div class="social-auth">
       <span class="social-auth__divider"><span>ou continua com</span></span>
       <div class="social-auth__btns">
-        <a class="btn btn--outline social-btn" href="${base}/auth/oauth/google" data-provider="google">
+        <a class="btn-social" href="${base}/auth/oauth/google" data-provider="google">
           ${GOOGLE_LOGO} Continuar com Google
         </a>
-        <a class="btn btn--outline social-btn social-btn--apple" href="${base}/auth/oauth/apple" data-provider="apple">
+        <a class="btn-social" href="${base}/auth/oauth/apple" data-provider="apple">
           ${APPLE_LOGO} Continuar com Apple
         </a>
       </div>

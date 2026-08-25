@@ -345,16 +345,8 @@
   flex-wrap: wrap;
 }
 
-.social-auth__btns .social-btn {
+.social-auth__btns .btn-social {
   flex: 1;
   min-width: 180px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: .55rem;
   white-space: nowrap;
-}
-
-.social-btn--apple {
-  color: var(--color-gray-800);
 }
