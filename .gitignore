@@ -3,3 +3,6 @@ node_modules/
 .DS_Store
 logs/
 frontend/assets/avatars/
+.claude/
+.codex/
+.impeccable/
