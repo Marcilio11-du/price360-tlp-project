@@ -7,6 +7,7 @@
 
 import { api }         from '../api.js';
 import { router }      from '../router.js';
+import { auth }        from '../auth.js';
 import { toast }       from '../components/Toast.js';
 import { ProductCard } from '../components/ProductCard.js';
 import { heart } from '../components/icons.js';
@@ -42,7 +43,15 @@ export default class FavoritesPage {
       const res = await api.get('/favorites');
       this.favoritos = res.data || [];
       this.renderList();
-    } catch {
+    } catch (err) {
+      if (err?.status === 401) {
+        // Sessão expirada: sem isto a página ficava só com
+        // "Erro ao carregar" (o token dura 24h).
+        toast.info('A tua sessão expirou. Entra de novo para veres os favoritos.');
+        auth.logout();
+        router.navigate('/login');
+        return;
+      }
       if (grid) {
         grid.innerHTML = `
           <div class="products-page__empty">

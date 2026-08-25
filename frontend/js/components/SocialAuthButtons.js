@@ -1,11 +1,11 @@
 /**
  * @file components/SocialAuthButtons.js
  * @description Secção "ou continua com" das páginas de autenticação.
- * Pergunta à API que providers estão configurados e mostra apenas esses;
- * sem credenciais no .env a secção simplesmente não aparece.
+ * Os botões aparecem sempre; se um provider não estiver configurado no
+ * .env do backend, o clique regressa ao login com um aviso claro (toast).
  */
 
-import { api, getApiBase } from "../api.js";
+import { getApiBase } from "../api.js";
 
 const GOOGLE_LOGO = `
 <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
@@ -24,37 +24,21 @@ const APPLE_LOGO = `
  * Preenche o slot `.social-auth-slot` dentro do container dado.
  * @param {HTMLElement} container - Raiz da página (auth-card)
  */
-export async function renderSocialAuthButtons(container) {
+export function renderSocialAuthButtons(container) {
   const slot = container.querySelector(".social-auth-slot");
   if (!slot) return;
 
-  let providers = { google: false, apple: false };
-  try {
-    const res = await api.get("/auth/oauth/providers");
-    providers = res.data || providers;
-  } catch {
-    return; // API indisponível → não mostramos nada
-  }
-
   const base = getApiBase();
-  const buttons = [];
-  if (providers.google) {
-    buttons.push(`
-      <a class="btn btn--outline social-btn" href="${base}/auth/oauth/google" data-provider="google">
-        ${GOOGLE_LOGO} Continuar com Google
-      </a>`);
-  }
-  if (providers.apple) {
-    buttons.push(`
-      <a class="btn btn--outline social-btn social-btn--apple" href="${base}/auth/oauth/apple" data-provider="apple">
-        ${APPLE_LOGO} Continuar com Apple
-      </a>`);
-  }
-  if (!buttons.length) return;
-
   slot.innerHTML = `
     <div class="social-auth">
       <span class="social-auth__divider"><span>ou continua com</span></span>
-      <div class="social-auth__btns">${buttons.join("")}</div>
+      <div class="social-auth__btns">
+        <a class="btn btn--outline social-btn" href="${base}/auth/oauth/google" data-provider="google">
+          ${GOOGLE_LOGO} Continuar com Google
+        </a>
+        <a class="btn btn--outline social-btn social-btn--apple" href="${base}/auth/oauth/apple" data-provider="apple">
+          ${APPLE_LOGO} Continuar com Apple
+        </a>
+      </div>
     </div>`;
 }
