@@ -21,7 +21,6 @@ import HomePage            from './pages/HomePage.js';
 import ProductsPage        from './pages/ProductsPage.js';
 import LoginPage           from './pages/LoginPage.js';
 import RegisterPage        from './pages/RegisterPage.js';
-import OnboardingPage      from './pages/OnboardingPage.js';
 import ShoppingListPage    from './pages/ShoppingListPage.js';
 import ProfilePage         from './pages/ProfilePage.js';
 import AdminDashboardPage  from './pages/AdminDashboardPage.js';
@@ -50,13 +49,16 @@ router.register('/produto',  (container) => new ProductDetailPage(container).ren
 router.register('/login',    (container) => new LoginPage(container).render());
 router.register('/cadastro', (container) => new RegisterPage(container).render());
 router.register('/verificar-email', (container) => new EmailVerificationPage(container).render());
-router.register('/onboarding', (container) => new OnboardingPage(container).render());
 router.register('/lista',    (container) => new ShoppingListPage(container).render());
 router.register('/profile',  (container) => new ProfilePage(container).render());
 router.register('/admin',    (container) => new AdminDashboardPage(container).render());
 router.register('/alertas',  (container) => new PriceAlertsPage(container).render());
 router.register('/loja',     (container) => new StorePage(container).render());
 router.register('/favoritos', (container) => new FavoritesPage(container).render());
+
+// O antigo formulário multi-passo foi unificado no /cadastro —
+// links antigos para /onboarding redireccionam.
+router.register('/onboarding', () => router.navigate('/cadastro'));
 
 /**
  * Retorno do fluxo OAuth (Google/Apple): o backend redirecciona para

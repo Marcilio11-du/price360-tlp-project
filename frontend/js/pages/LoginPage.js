@@ -45,7 +45,7 @@ export default class LoginPage {
           </form>
           <div class="social-auth-slot"></div>
           <div class="auth-card__footer">
-            Não possui uma conta? <a href="#/onboarding">Criar conta</a>
+            Não possui uma conta? <a href="#/cadastro">Criar conta</a>
           </div>
           <div style="text-align:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--color-gray-100)">
             <button id="admin-login-btn" style="
