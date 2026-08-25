@@ -67,7 +67,7 @@ export class Navbar {
       `
       :       `
         <a href="#/login" class="navbar__cta navbar__cta--ghost">Entrar</a>
-        <a href="#/cadastro" class="navbar__cta navbar__cta--primary">Criar conta</a>
+        <a href="#/onboarding" class="navbar__cta navbar__cta--primary">Criar conta</a>
       `;
 
     // --- Bloco de autenticação (mobile menu) ---
@@ -89,7 +89,7 @@ export class Navbar {
       `
       : `
         <a href="#/login" class="btn btn--primary navbar__mobile-cta">Entrar</a>
-        <a href="#/cadastro" class="btn btn--outline navbar__mobile-cta">Criar conta</a>
+        <a href="#/onboarding" class="btn btn--outline navbar__mobile-cta">Criar conta</a>
       `;
 
     return `

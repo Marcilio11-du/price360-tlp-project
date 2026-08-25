@@ -159,9 +159,12 @@ export default class OnboardingPage {
           Continuar
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
+
+        <div class="social-auth-slot"></div>
       </div>
     `;
 
+    import("../components/SocialAuthButtons.js").then(m => m.renderSocialAuthButtons(card));
     this._bindStep1();
     requestAnimationFrame(() => {
       card.querySelector('.ob-step').classList.add('ob-step--visible');

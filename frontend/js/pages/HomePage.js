@@ -282,7 +282,7 @@ export default class HomePage {
           </div>
 
           <div class="about-cta animate-fade">
-            <a href="#/cadastro" class="about-cta__btn">
+            <a href="#/onboarding" class="about-cta__btn">
               Criar conta grátis
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2.5">

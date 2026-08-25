@@ -522,3 +522,23 @@
   .ob-btn          { padding: 0.8rem 1.5rem; }
   .onboarding__main { padding: var(--space-8) var(--space-4); }
 }
+
+/* ─── Reaproveitamento do layout na página de login ─────────── */
+.login-logo {
+  width: 64px;
+  height: auto;
+  margin: 0 auto var(--space-4);
+}
+
+.ob-btn--full {
+  width: 100%;
+  justify-content: center;
+}
+
+.onboarding__card .social-auth {
+  margin-top: var(--space-6);
+}
+
+.onboarding__card .ob-fields {
+  margin-bottom: var(--space-5);
+}

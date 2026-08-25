@@ -19,55 +19,78 @@ export default class LoginPage {
     }
 
     this.container.innerHTML = `
-      <div class="auth-page">
-        <div class="auth-card animate-scroll">
-          <div class="auth-card__logo">
-            <img src="./assets/logo.png" alt="Xé Preço"
-              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
-            <div class="navbar__logo-text" style="font-size:1.8rem;justify-content:center;display:none">
-              XÉ <span class="logo-360">PREÇO</span>
+      <div class="onboarding" id="login-root">
+        <aside class="onboarding__aside" aria-hidden="true">
+          <div class="onboarding__aside-content">
+            <div class="onboarding__brand">
+              <span class="brand-price">XÉ</span><span class="brand-360">PREÇO</span>
+            </div>
+            <p class="onboarding__tagline">Compara preços.<br>Poupa dinheiro.<br>Decide melhor.</p>
+            <div class="onboarding__bubbles">
+              <div class="bubble bubble--1"></div>
+              <div class="bubble bubble--2"></div>
+              <div class="bubble bubble--3"></div>
             </div>
           </div>
-          <h2 class="auth-card__title">Bem-vindo de <span>volta</span></h2>
-          <p style="text-align:center;color:var(--color-gray-600);font-size:0.9rem;margin-bottom:8px">
-            Entra na tua conta para gerir as tuas listas de compras
-          </p>
-          <form class="auth-form" id="login-form" novalidate>
-            <div class="form-group">
-              <label for="login-email">Email</label>
-              <input type="email" id="login-email" placeholder="email@exemplo.com" required autocomplete="email" />
+        </aside>
+
+        <main class="onboarding__main">
+          <div class="onboarding__card">
+            <div class="ob-step ob-step--visible">
+              <div class="ob-step__header">
+                <img class="login-logo" src="./assets/logo.png" alt="Xé Preço"
+                  onerror="this.style.display='none'" />
+                <h1 class="ob-step__title">Bem-vindo de volta</h1>
+                <p class="ob-step__subtitle">Entra na tua conta para gerir as tuas listas de compras.</p>
+              </div>
+
+              <form class="ob-fields login-fields" id="login-form" novalidate>
+                <div class="ob-field">
+                  <label class="ob-field__label" for="login-email">Email</label>
+                  <div class="ob-field__wrap">
+                    <input class="ob-field__input" type="email" id="login-email"
+                           placeholder="email@exemplo.com" required autocomplete="email" />
+                  </div>
+                </div>
+                <div class="ob-field">
+                  <label class="ob-field__label" for="login-password">Palavra-passe</label>
+                  <div class="ob-field__wrap">
+                    <input class="ob-field__input" type="password" id="login-password"
+                           placeholder="A tua palavra-passe" required autocomplete="current-password" />
+                  </div>
+                </div>
+                <button type="submit" class="ob-btn ob-btn--submit ob-btn--full" id="login-submit">Entrar</button>
+              </form>
+
+              <div class="social-auth-slot"></div>
+
+              <p class="onboarding__login-link">
+                Ainda não tens conta? <a href="#/onboarding">Criar conta →</a>
+              </p>
+
+              <div style="text-align:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--color-gray-100)">
+                <button id="admin-login-btn" style="
+                  display:inline-flex;align-items:center;gap:0.5rem;
+                  background:transparent;border:1.5px solid var(--color-gray-300);
+                  border-radius:var(--radius-full);padding:0.5rem 1.25rem;
+                  font-size:0.8rem;font-weight:600;color:var(--color-gray-600);
+                  cursor:pointer;transition:all 0.2s;
+                ">
+                  <i class="icon-lock"></i> Entrar como Admin
+                </button>
+              </div>
+              <div id="admin-credentials-box" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:var(--color-bg-light);border:1px solid var(--color-gray-200);border-radius:var(--radius-md);font-size:0.78rem;color:var(--color-gray-600);text-align:left">
+                <div style="font-weight:700;margin-bottom:0.4rem;color:var(--color-gray-700)">Credenciais de Admin</div>
+                <div id="admin-creds-display" style="font-family:monospace"></div>
+                <button id="admin-fill-btn" style="
+                  margin-top:0.6rem;width:100%;padding:0.45rem;
+                  background:var(--color-accent-dark);color:#fff;border:none;
+                  border-radius:var(--radius-md);font-size:0.8rem;font-weight:600;cursor:pointer;
+                ">Preencher e entrar</button>
+              </div>
             </div>
-            <div class="form-group">
-              <label for="login-password">Palavra-passe</label>
-              <input type="password" id="login-password" placeholder="A tua palavra-passe" required autocomplete="current-password" />
-            </div>
-            <button type="submit" class="auth-card__submit" id="login-submit">Entrar</button>
-          </form>
-          <div class="social-auth-slot"></div>
-          <div class="auth-card__footer">
-            Não possui uma conta? <a href="#/cadastro">Criar conta</a>
           </div>
-          <div style="text-align:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--color-gray-100)">
-            <button id="admin-login-btn" style="
-              display:inline-flex;align-items:center;gap:0.5rem;
-              background:transparent;border:1.5px solid var(--color-gray-300);
-              border-radius:var(--radius-full);padding:0.5rem 1.25rem;
-              font-size:0.8rem;font-weight:600;color:var(--color-gray-600);
-              cursor:pointer;transition:all 0.2s;
-            ">
-              <i class="icon-lock"></i> Entrar como Admin
-            </button>
-          </div>
-          <div id="admin-credentials-box" style="display:none;margin-top:0.75rem;padding:0.75rem 1rem;background:var(--color-bg-light);border:1px solid var(--color-gray-200);border-radius:var(--radius-md);font-size:0.78rem;color:var(--color-gray-600);text-align:left">
-            <div style="font-weight:700;margin-bottom:0.4rem;color:var(--color-gray-700)">Credenciais de Admin</div>
-            <div id="admin-creds-display" style="font-family:monospace"></div>
-            <button id="admin-fill-btn" style="
-              margin-top:0.6rem;width:100%;padding:0.45rem;
-              background:var(--color-accent-dark);color:#fff;border:none;
-              border-radius:var(--radius-md);font-size:0.8rem;font-weight:600;cursor:pointer;
-            ">Preencher e entrar</button>
-          </div>
-        </div>
+        </main>
       </div>
     `;
     this.bindEvents();
@@ -80,7 +103,7 @@ export default class LoginPage {
    * email de verificação (aparece quando o login falha por 403).
    */
   _showResendVerification() {
-    const card = this.container.querySelector(".auth-card");
+    const card = this.container.querySelector(".onboarding__card");
     if (!card || card.querySelector("#resend-verification-banner")) return;
 
     const banner = document.createElement("div");
@@ -97,7 +120,7 @@ export default class LoginPage {
       </button>
       <p id="resend-verification-status" class="resend-verification__status" style="display:none"></p>
     `;
-    card.querySelector(".auth-card__footer")?.before(banner);
+    card.querySelector(".onboarding__login-link")?.before(banner);
     this._bindResendEvent();
   }
 
